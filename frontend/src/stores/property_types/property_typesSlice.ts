@@ -1,0 +1,174 @@
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
+import {
+  fulfilledNotify,
+  rejectNotify,
+  resetNotify,
+} from '../../helpers/notifyStateHandler';
+
+interface MainState {
+  property_types: any;
+  loading: boolean;
+  count: number;
+  notify: {
+    showNotification: boolean;
+    textNotification: string;
+    typeNotification: string;
+  };
+}
+
+const initialState: MainState = {
+  property_types: [],
+  loading: false,
+  count: 0,
+  notify: {
+    showNotification: false,
+    textNotification: '',
+    typeNotification: 'warn',
+  },
+};
+
+export const fetch = createAsyncThunk(
+  'property_types/fetch',
+  async (data: any) => {
+    const { id, query } = data;
+    const result = await axios.get(
+      `property_types${query || (id ? `/${id}` : '')}`,
+    );
+    return id
+      ? result.data
+      : { rows: result.data.rows, count: result.data.count };
+  },
+);
+
+export const deleteItem = createAsyncThunk(
+  'property_types/deleteProperty_types',
+  async (id: string, { rejectWithValue }) => {
+    try {
+      await axios.delete(`property_types/${id}`);
+    } catch (error) {
+      if (!error.response) {
+        throw error;
+      }
+
+      return rejectWithValue(error.response.data);
+    }
+  },
+);
+
+export const create = createAsyncThunk(
+  'property_types/createProperty_types',
+  async (data: any, { rejectWithValue }) => {
+    try {
+      const result = await axios.post('property_types', { data });
+      return result.data;
+    } catch (error) {
+      if (!error.response) {
+        throw error;
+      }
+
+      return rejectWithValue(error.response.data);
+    }
+  },
+);
+
+export const update = createAsyncThunk(
+  'property_types/updateProperty_types',
+  async (payload: any, { rejectWithValue }) => {
+    try {
+      const result = await axios.put(`property_types/${payload.id}`, {
+        id: payload.id,
+        data: payload.data,
+      });
+      return result.data;
+    } catch (error) {
+      if (!error.response) {
+        throw error;
+      }
+
+      return rejectWithValue(error.response.data);
+    }
+  },
+);
+
+export const property_typesSlice = createSlice({
+  name: 'property_types',
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(fetch.pending, (state) => {
+      state.loading = true;
+      resetNotify(state);
+    });
+    builder.addCase(fetch.rejected, (state, action) => {
+      state.loading = false;
+      rejectNotify(state, action);
+    });
+
+    builder.addCase(fetch.fulfilled, (state, action) => {
+      if (action.payload.count >= 0) {
+        state.property_types = action.payload.rows;
+        state.count = action.payload.count;
+      } else {
+        state.property_types = action.payload;
+      }
+      state.loading = false;
+    });
+
+    builder.addCase(deleteItem.pending, (state) => {
+      state.loading = true;
+      resetNotify(state);
+    });
+
+    builder.addCase(deleteItem.fulfilled, (state) => {
+      state.loading = false;
+      fulfilledNotify(
+        state,
+        `${'Property_types'.slice(0, -1)} has been deleted`,
+      );
+    });
+
+    builder.addCase(deleteItem.rejected, (state, action) => {
+      state.loading = false;
+      rejectNotify(state, action);
+    });
+
+    builder.addCase(create.pending, (state) => {
+      state.loading = true;
+      resetNotify(state);
+    });
+    builder.addCase(create.rejected, (state, action) => {
+      state.loading = false;
+      rejectNotify(state, action);
+    });
+
+    builder.addCase(create.fulfilled, (state) => {
+      state.loading = false;
+      fulfilledNotify(
+        state,
+        `${'Property_types'.slice(0, -1)} has been created`,
+      );
+    });
+
+    builder.addCase(update.pending, (state) => {
+      state.loading = true;
+      resetNotify(state);
+    });
+    builder.addCase(update.fulfilled, (state) => {
+      state.loading = false;
+      fulfilledNotify(
+        state,
+        `${'Property_types'.slice(0, -1)} has been updated`,
+      );
+    });
+    builder.addCase(update.rejected, (state, action) => {
+      state.loading = false;
+      rejectNotify(state, action);
+    });
+  },
+});
+
+// Action creators are generated for each case reducer function
+// export const {  } = usersSlice.actions
+
+export default property_typesSlice.reducer;
