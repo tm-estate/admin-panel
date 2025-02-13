@@ -1,18 +1,19 @@
-FROM node:19-alpine AS builder
+FROM node:19
 
-RUN apk add --no-cache git
-WORKDIR /app
-COPY frontend/package.json frontend/yarn.lock ./
-RUN yarn install --pure-lockfile
-COPY frontend .
-RUN yarn build
+# Create app directory
+WORKDIR /usr/src/app
 
-FROM node:16.10-alpine
-WORKDIR /app
-COPY backend/package.json backend/yarn.lock ./
-RUN yarn install --pure-lockfile
-COPY backend .
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
+COPY package*.json ./
 
-COPY --from=builder /app/build /app/public
-CMD ["yarn", "start"]
+RUN yarn install
+# If you are building your code for production
+# RUN npm ci --only=production
 
+# Bundle app source
+COPY . .
+
+EXPOSE 3000
+CMD [ "yarn", "start" ]
