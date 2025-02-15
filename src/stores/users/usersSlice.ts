@@ -30,10 +30,9 @@ const initialState: MainState = {
 
 export const fetch = createAsyncThunk('users/fetch', async (data: any) => {
   const { id, query } = data;
-  const result = await axios.get(`users${query || (id ? `/${id}` : '')}`);
-  return id
-    ? result.data
-    : { rows: result.data.rows, count: result.data.count };
+  console.log({query})
+  const result = await axios.get(`users/admin${query || (id ? `/${id}` : '')}`);
+  return id ? result.data.data : { rows: result.data.data.rows, count: result.data.data.count }
 });
 
 export const deleteItem = createAsyncThunk(

@@ -13,7 +13,6 @@ import { useRouter } from 'next/router'
 import dataFormatter from '../../helpers/dataFormatter'
 import { Field, Form, Formik } from 'formik'
 import { Pagination } from '../Pagination'
-import { saveFile } from '../../helpers/fileSaver'
 
 const perPage = 5
 
@@ -39,8 +38,8 @@ const TableSampleUsers = ({ filterItems, setFilterItems, filters }) => {
     if (page !== currentPage) setCurrentPage(page)
     if (request !== filterRequest) setFilterRequest(request)
 
-    const query = `?page=${page}&limit=${perPage}${request}&sort=${sort}&field=${field}`
-    dispatch(fetch({ limit: perPage, page, query }))
+    const query = `?page=${++page}&limit=${perPage}${request}&sort=${sort}&field=${field}`
+    dispatch(fetch({ limit: perPage, page: ++page, query }))
   }
 
   useEffect(() => {
