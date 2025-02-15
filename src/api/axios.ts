@@ -3,8 +3,7 @@ import { IServerError } from '../types/Auth'
 import { IAxiosInstance } from '../types/AxiosInstance'
 
 const axiosOptions = {
-  baseURL: 'http://41.216.181.33:3000/api/v1/',
-  // baseURL: 'http://18.133.244.75:3000/api/v1/',
+  baseURL: `${process.env.NEXT_PUBLIC_BASE_URL}:3000/api/v1/`,
   // withCredentials: false,
 }
 
