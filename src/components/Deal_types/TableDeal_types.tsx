@@ -7,13 +7,14 @@ import BaseButtons from '../BaseButtons'
 import CardBoxModal from '../CardBoxModal'
 import CardBox from '../CardBox'
 import ImageField from '../ImageField'
-import { fetch, deleteItem } from '../../stores/deal_types/deal_typesSlice'
 import { useAppDispatch, useAppSelector } from '../../stores/hooks'
 import { useRouter } from 'next/router'
 import dataFormatter from '../../helpers/dataFormatter'
 import { Field, Form, Formik } from 'formik'
 import { Pagination } from '../Pagination'
 import { saveFile } from '../../helpers/fileSaver'
+import { IDealType } from "../../interfaces";
+import { deleteDealType, getDealTypes } from "../../stores/thunks/deal-types";
 
 const perPage = 5
 
@@ -21,6 +22,12 @@ const TableSampleDeal_types = ({ filterItems, setFilterItems, filters }) => {
   const dispatch = useAppDispatch()
   const router = useRouter()
   const notify = (type, msg) => toast(msg, { type, position: 'bottom-center' })
+  const initValues: IDealType = {
+    titleEn: '',
+    titleRu: '',
+    titleTm: '',
+
+  }
 
   const pagesList = []
   const [id, setId] = useState(null)
@@ -45,7 +52,7 @@ const TableSampleDeal_types = ({ filterItems, setFilterItems, filters }) => {
     if (request !== filterRequest) setFilterRequest(request)
 
     const query = `?page=${++page}&limit=${perPage}${request}&sort=${sort}&field=${field}`
-    dispatch(fetch({ limit: perPage, page: ++page, query }))
+    dispatch(getDealTypes(query))
   }
 
   useEffect(() => {
@@ -73,7 +80,7 @@ const TableSampleDeal_types = ({ filterItems, setFilterItems, filters }) => {
   }
   const handleDeleteAction = async () => {
     if (id) {
-      await dispatch(deleteItem(id))
+      await dispatch(deleteDealType(id))
       await loadData(0)
       setIsModalTrashActive(false)
     }
@@ -154,7 +161,7 @@ const TableSampleDeal_types = ({ filterItems, setFilterItems, filters }) => {
 
   return (
     <>
-      {filterItems && Array.isArray(filterItems) && filterItems.length ? (
+      { filterItems && Array.isArray(filterItems) && filterItems.length ? (
         <CardBox>
           <Formik
             initialValues={{
@@ -166,7 +173,7 @@ const TableSampleDeal_types = ({ filterItems, setFilterItems, filters }) => {
           >
             <Form>
               <>
-                {filterItems &&
+                { filterItems &&
                   filterItems.map((filterItem) => {
                     return (
                       <div key={filterItem.id} className="flex mb-4">
