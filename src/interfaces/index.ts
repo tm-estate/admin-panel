@@ -1,3 +1,18 @@
+export * from './IAuth';
+export * from './IAxiosInstance';
+export * from './ICities';
+export * from './ICityAreas';
+export * from './IDealTypes';
+export * from './IPropertyTypes';
+export * from './IUsers';
+export * from './IServer';
+
+export interface ICoordinate {
+  _id?: string
+  latitude: number,
+  longitude: number,
+}
+
 export type UserPayloadObject = {
   name: string;
   email: string;

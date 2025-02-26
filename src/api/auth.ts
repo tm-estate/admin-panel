@@ -5,9 +5,9 @@ import {
   IForgotPasswordPayload,
   IResetPasswordPayload,
   ISignInPayload,
-  ISignUpPayload
-} from '../types/Auth';
-import { IUser } from '../types/User';
+  ISignUpPayload,
+  IUser
+} from '../interfaces';
 
 const authApi = {
   login(data: ISignInPayload) {

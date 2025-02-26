@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import styleReducer from './styleSlice'
 import mainReducer from './mainSlice'
-import authSlice from './authSlice'
+import authSlice from './auth/authSlice'
 
 import usersSlice from './users/usersSlice'
 import deal_typesSlice from './deal_types/deal_typesSlice'

@@ -1,55 +1,66 @@
-import axios from 'axios'
-import { IServerError } from '../types/Auth'
-import { IAxiosInstance } from '../types/AxiosInstance'
-
-const axiosOptions = {
-  baseURL: `${process.env.NEXT_PUBLIC_BASE_URL}:3000/api/v1/`,
-  // withCredentials: false,
-}
-
-const axiosInstance = axios.create(axiosOptions)
+import axios, {
+    AxiosInstance,
+    AxiosRequestConfig,
+    AxiosResponse,
+    AxiosError,
+    InternalAxiosRequestConfig,
+} from 'axios';
+import { IAxiosInstance, IServerError } from '../interfaces';
 
 const DEFAULT_ERROR: IServerError = {
-  code: 'SERVER__ERROR',
-  message: 'SERVER__ERROR',
-  data: {},
-}
+    code: 'SERVER__ERROR',
+    message: 'SERVER__ERROR',
+    data: {},
+};
+
+const axiosOptions: AxiosRequestConfig = {
+    baseURL: `${process.env.NEXT_PUBLIC_BASE_URL}:3000/api/v1/`,
+    // withCredentials: false, // Uncomment if needed
+};
+
+const axiosInstance: AxiosInstance = axios.create(axiosOptions);
 
 axiosInstance.interceptors.request.use(
-  async (reqConfig) => {
-    const jwt = localStorage.getItem('token')
+    (reqConfig: InternalAxiosRequestConfig) => {
+        const jwt = localStorage.getItem('token');
 
-    if (jwt && reqConfig.headers !== null) {
-      reqConfig.headers.Authorization = jwt
+        if (jwt && reqConfig.headers) {
+            reqConfig.headers.Authorization = jwt;
+        }
+
+        return reqConfig;
+    },
+    (err: AxiosError) => {
+        return Promise.reject(err);
     }
-
-    return reqConfig
-  },
-  async (err) => Promise.reject(err)
-)
+);
 
 axiosInstance.interceptors.response.use(
-  (successResponse) => {
-    if (!successResponse.data) {
-      throw DEFAULT_ERROR
+    (successResponse: AxiosResponse) => {
+        const { data, headers } = successResponse;
+
+        if (!data) {
+            throw DEFAULT_ERROR;
+        }
+
+        if (headers.authorization) {
+            return {
+                token: headers.authorization,
+                ...data,
+            };
+        }
+
+        return data;
+    },
+    (failedResponse: AxiosError) => {
+        const { response } = failedResponse;
+
+        if (!response || !response.data) {
+            throw DEFAULT_ERROR;
+        }
+
+        throw response.data;
     }
+);
 
-    if (successResponse.headers.authorization) {
-      return {
-        token: successResponse.headers.authorization,
-        ...successResponse.data, // in order to escape code like: res.data.data
-      }
-    }
-
-    return successResponse.data
-  },
-  async (failedResponse) => {
-    if (!failedResponse.response.data.statusCode) {
-      throw DEFAULT_ERROR
-    }
-
-    throw failedResponse.response.data
-  }
-)
-
-export default axiosInstance as unknown as IAxiosInstance
+export default axiosInstance as IAxiosInstance;

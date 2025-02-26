@@ -96,17 +96,15 @@
 
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { IUser } from '../types/User'
-import { getMe, login, logout, register } from './thunks/auth'
+import { IUser } from '../../interfaces'
+import { getMe, login, logout, register } from '../thunks/auth'
 
-// Define a type for the slice state
 interface AuthState {
   user: null | IUser
   loading: boolean
   errorMessage: string
 }
 
-// Define the initial state using that type
 const initialState: AuthState = {
   user: null,
   loading: false,
@@ -122,43 +120,43 @@ export const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(register.fulfilled, (state, action: PayloadAction<IUser>) => {
-        state.user = action.payload
-      })
-      .addCase(register.rejected, (state, action) => {
-        state.errorMessage = action.payload as string
-      })
-      .addCase(login.pending, (state) => {
-        state.loading = true
-      })
-      .addCase(login.fulfilled, (state) => {
-        state.loading = false
-      })
-      .addCase(login.rejected, (state, action) => {
-        state.loading = false
-        state.errorMessage = action.payload as string
-      })
-      .addCase(getMe.pending, (state) => {
-        state.loading = true
-      })
-      .addCase(getMe.fulfilled, (state, action: PayloadAction<IUser>) => {
-        state.user = action.payload
-        state.loading = false
-      })
-      .addCase(getMe.rejected, (state, action) => {
-        state.loading = false
-        state.errorMessage = action.payload as string
-      })
-      .addCase(logout.fulfilled, (state) => {
-        state.user = null
-      })
+  builder
+    .addCase(register.rejected, (state, action) => {
+      state.errorMessage = action.payload as string;
+    })
+    .addCase(register.pending, (state) => {
+      state.loading = true;
+    })
+    .addCase(register.fulfilled, (state, action: PayloadAction<IUser>) => {
+      state.user = action.payload;
+    })
+    .addCase(login.rejected, (state, action) => {
+      state.loading = false;
+      state.errorMessage = action.payload as string
+    })
+    .addCase(login.pending, (state) => {
+      state.loading = true;
+    })
+    .addCase(login.fulfilled, (state) => {
+      state.loading = false;
+    })
+    .addCase(getMe.rejected, (state, action) => {
+      state.loading = false;
+      state.errorMessage = action.payload as string;
+    })
+    .addCase(getMe.pending, (state) => {
+      state.loading = true;
+    })
+    .addCase(getMe.fulfilled, (state, action: PayloadAction<IUser>) => {
+      state.user = action.payload
+      state.loading = false;
+    })
+    .addCase(logout.fulfilled, (state) => {
+      state.user = null;
+    })
   },
-})
+});
 
-export const { setUser } = authSlice.actions
-
-// Other code such as selectors can use the imported `RootState` type
-// export const selectCount = (state: RootState) => state.auth.value
+// export const { setUser } = authSlice.actions;
 
 export default authSlice.reducer
