@@ -1,9 +1,11 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import axios from 'axios'
+import { createSlice,  } from '@reduxjs/toolkit'
 import { fulfilledNotify, rejectNotify, resetNotify } from '../../helpers/notifyStateHandler'
+import { IPropertyType } from "../../interfaces";
+import { create, deletePropertyType, getPropertyType, getPropertyTypes, update } from "../thunks/property-types";
 
 interface MainState {
-  property_types: any
+  property_type: IPropertyType
+  property_types: IPropertyType[]
   loading: boolean
   count: number
   notify: {
@@ -14,6 +16,7 @@ interface MainState {
 }
 
 const initialState: MainState = {
+  property_type: null,
   property_types: [],
   loading: false,
   count: 0,
@@ -24,128 +27,82 @@ const initialState: MainState = {
   },
 }
 
-export const fetch = createAsyncThunk('property_types/fetch', async (data: any) => {
-  const { id, query } = data
-  const result = await axios.get(`propertyTypes/admin${query || (id ? `/${id}` : '')}`)
-  return id ? result.data.data : { rows: result.data.data.rows, count: result.data.data.count }
-})
-
-export const deleteItem = createAsyncThunk(
-  'property_types/deleteProperty_types',
-  async (id: string, { rejectWithValue }) => {
-    try {
-      await axios.delete(`propertyTypes/${id}`)
-    } catch (error) {
-      if (!error.response) {
-        throw error
-      }
-
-      return rejectWithValue(error.response.data)
-    }
-  }
-)
-
-export const create = createAsyncThunk(
-  'property_types/createProperty_types',
-  async (data: any, { rejectWithValue }) => {
-    try {
-      const result = await axios.post('propertyTypes', data)
-      return result.data.data
-    } catch (error) {
-      if (!error.response) {
-        throw error
-      }
-
-      return rejectWithValue(error.response.data)
-    }
-  }
-)
-
-export const update = createAsyncThunk(
-  'property_types/updateProperty_types',
-  async (payload: any, { rejectWithValue }) => {
-    try {
-      const result = await axios.put(`propertyTypes/${payload.id}`, payload.data)
-      return result.data.data
-    } catch (error) {
-      if (!error.response) {
-        throw error
-      }
-
-      return rejectWithValue(error.response.data)
-    }
-  }
-)
-
 export const property_typesSlice = createSlice({
   name: 'property_types',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetch.pending, (state) => {
-      state.loading = true
-      resetNotify(state)
-    })
-    builder.addCase(fetch.rejected, (state, action) => {
-      state.loading = false
-      rejectNotify(state, action)
-    })
+    builder
+        .addCase(getPropertyTypes.rejected, (state, action) => {
+          state.loading = false;
+          rejectNotify(state, action);
+        })
+        .addCase(getPropertyTypes.pending, (state) => {
+          state.loading = true;
+          resetNotify(state);
+        })
+        .addCase(getPropertyTypes.fulfilled, (state, action) => {
+          if (action.payload) {
+            state.property_types = action.payload.rows;
+            state.count = action.payload.count;
+          }
+          state.loading = false;
+        })
 
-    builder.addCase(fetch.fulfilled, (state, action) => {
-      if (action.payload.count >= 0) {
-        state.property_types = action.payload.rows
-        state.count = action.payload.count
-      } else {
-        state.property_types = action.payload
-      }
-      state.loading = false
-    })
+        .addCase(getPropertyType.rejected, (state, action) => {
+          state.loading = false;
+          rejectNotify(state, action);
+        })
+        .addCase(getPropertyType.pending, (state) => {
+          state.loading = true;
+          resetNotify(state);
+        })
+        .addCase(getPropertyType.fulfilled, (state, action) => {
+          if (action.payload) {
+            state.property_type = action.payload;
+          }
+          state.loading = false;
+        })
 
-    builder.addCase(deleteItem.pending, (state) => {
-      state.loading = true
-      resetNotify(state)
-    })
+        .addCase(deletePropertyType.rejected, (state, action) => {
+          state.loading = false;
+          rejectNotify(state, action);
+        })
+        .addCase(deletePropertyType.pending, (state) => {
+          state.loading = true;
+          resetNotify(state);
+        })
+        .addCase(deletePropertyType.fulfilled, (state) => {
+          state.loading = false;
+          fulfilledNotify(state, 'Property has been deleted');
+        })
 
-    builder.addCase(deleteItem.fulfilled, (state) => {
-      state.loading = false
-      fulfilledNotify(state, `${'Property_types'.slice(0, -1)} has been deleted`)
-    })
+        .addCase(create.rejected, (state, action) => {
+          state.loading = false;
+          rejectNotify(state, action);
+        })
+        .addCase(create.pending, (state) => {
+          state.loading = true;
+          resetNotify(state);
+        })
+        .addCase(create.fulfilled, (state) => {
+          state.loading = false;
+          fulfilledNotify(state, 'Property has been created');
+        })
 
-    builder.addCase(deleteItem.rejected, (state, action) => {
-      state.loading = false
-      rejectNotify(state, action)
-    })
-
-    builder.addCase(create.pending, (state) => {
-      state.loading = true
-      resetNotify(state)
-    })
-    builder.addCase(create.rejected, (state, action) => {
-      state.loading = false
-      rejectNotify(state, action)
-    })
-
-    builder.addCase(create.fulfilled, (state) => {
-      state.loading = false
-      fulfilledNotify(state, `${'Property_types'.slice(0, -1)} has been created`)
-    })
-
-    builder.addCase(update.pending, (state) => {
-      state.loading = true
-      resetNotify(state)
-    })
-    builder.addCase(update.fulfilled, (state) => {
-      state.loading = false
-      fulfilledNotify(state, `${'Property_types'.slice(0, -1)} has been updated`)
-    })
-    builder.addCase(update.rejected, (state, action) => {
-      state.loading = false
-      rejectNotify(state, action)
-    })
+        .addCase(update.rejected, (state, action) => {
+          state.loading = false
+          rejectNotify(state, action)
+        })
+        .addCase(update.pending, (state) => {
+          state.loading = true
+          resetNotify(state)
+        })
+        .addCase(update.fulfilled, (state) => {
+          state.loading = false;
+          fulfilledNotify(state, 'Property has been updated');
+        })
   },
 })
-
-// Action creators are generated for each case reducer function
-// export const {  } = usersSlice.actions
 
 export default property_typesSlice.reducer
