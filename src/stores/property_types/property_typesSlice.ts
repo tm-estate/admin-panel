@@ -1,4 +1,4 @@
-import { createSlice,  } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 import { fulfilledNotify, rejectNotify, resetNotify } from '../../helpers/notifyStateHandler'
 import { IPropertyType } from "../../interfaces";
 import { create, deletePropertyType, getPropertyType, getPropertyTypes, update } from "../thunks/property-types";
@@ -74,7 +74,7 @@ export const property_typesSlice = createSlice({
         })
         .addCase(deletePropertyType.fulfilled, (state) => {
           state.loading = false;
-          fulfilledNotify(state, 'Property has been deleted');
+          fulfilledNotify(state, 'Property Type has been deleted');
         })
 
         .addCase(create.rejected, (state, action) => {
@@ -87,7 +87,7 @@ export const property_typesSlice = createSlice({
         })
         .addCase(create.fulfilled, (state) => {
           state.loading = false;
-          fulfilledNotify(state, 'Property has been created');
+          fulfilledNotify(state, 'Property Type has been created');
         })
 
         .addCase(update.rejected, (state, action) => {
@@ -100,7 +100,7 @@ export const property_typesSlice = createSlice({
         })
         .addCase(update.fulfilled, (state) => {
           state.loading = false;
-          fulfilledNotify(state, 'Property has been updated');
+          fulfilledNotify(state, 'Property Type has been updated');
         })
   },
 })

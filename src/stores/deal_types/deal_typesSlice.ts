@@ -74,7 +74,7 @@ export const deal_typesSlice = createSlice({
         })
         .addCase(deleteDealType.fulfilled, (state) => {
           state.loading = false;
-          fulfilledNotify(state, 'City has been deleted');
+          fulfilledNotify(state, 'Deal Type has been deleted');
         })
 
         .addCase(create.rejected, (state, action) => {
@@ -87,7 +87,7 @@ export const deal_typesSlice = createSlice({
         })
         .addCase(create.fulfilled, (state) => {
           state.loading = false;
-          fulfilledNotify(state, 'City has been created');
+          fulfilledNotify(state, 'Deal Type has been created');
         })
 
         .addCase(update.rejected, (state, action) => {
@@ -100,7 +100,7 @@ export const deal_typesSlice = createSlice({
         })
         .addCase(update.fulfilled, (state) => {
           state.loading = false;
-          fulfilledNotify(state, 'City has been updated');
+          fulfilledNotify(state, 'Deal Type has been updated');
         })
   },
 })

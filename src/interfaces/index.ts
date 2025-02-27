@@ -5,6 +5,7 @@ export * from './ICityAreas';
 export * from './IDealTypes';
 export * from './IPropertyTypes';
 export * from './IUsers';
+export * from './IRegions';
 export * from './IServer';
 
 export interface ICoordinate {
