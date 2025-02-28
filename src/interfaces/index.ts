@@ -1,12 +1,13 @@
+export * from './IAgencyTypes';
 export * from './IAuth';
 export * from './IAxiosInstance';
 export * from './ICities';
 export * from './ICityAreas';
 export * from './IDealTypes';
 export * from './IPropertyTypes';
-export * from './IUsers';
 export * from './IRegions';
 export * from './IServer';
+export * from './IUsers';
 
 export interface ICoordinate {
   _id?: string
