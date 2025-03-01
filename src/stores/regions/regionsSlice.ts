@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { fulfilledNotify, rejectNotify, resetNotify } from '../../helpers/notifyStateHandler'
-import { IRegion } from "../../interfaces";
+import { IRegion, INotify } from "../../interfaces";
 import {create, deleteRegion, getRegion, getRegions, update} from "../thunks/regions";
 
 interface MainState {
@@ -8,11 +8,7 @@ interface MainState {
   regions: IRegion[];
   loading: boolean;
   count: number;
-  notify: {
-    showNotification: boolean
-    textNotification: string
-    typeNotification: string
-  }
+  notify: INotify
 }
 
 const initialState: MainState = {

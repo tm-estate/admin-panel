@@ -1,19 +1,18 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import axios from 'axios'
+import { createSlice } from '@reduxjs/toolkit'
 import { fulfilledNotify, rejectNotify, resetNotify } from '../../helpers/notifyStateHandler'
+import { INotify, IProductParameter } from "../../interfaces";
+import { create, deleteProductParameter, getProductParameter, getProductParameters, update } from "../thunks/product-parameters";
 
 interface MainState {
-  product_parameters: any
-  loading: boolean
-  count: number
-  notify: {
-    showNotification: boolean
-    textNotification: string
-    typeNotification: string
-  }
+  product_parameter: IProductParameter;
+  product_parameters: IProductParameter[];
+  loading: boolean;
+  count: number;
+  notify: INotify
 }
 
 const initialState: MainState = {
+  product_parameter: null,
   product_parameters: [],
   loading: false,
   count: 0,
@@ -24,124 +23,83 @@ const initialState: MainState = {
   },
 }
 
-export const fetch = createAsyncThunk('product_parameters/fetch', async (data: any) => {
-  const { id, query } = data
-  const result = await axios.get(`productParameters/admin${query || (id ? `/${id}` : '')}`)
-  return id ? result.data.data : { rows: result.data.data.rows, count: result.data.data.count }
-})
-
-export const deleteItem = createAsyncThunk(
-  'product_parameters/deleteProduct_parameters',
-  async (id: string, { rejectWithValue }) => {
-    try {
-      await axios.delete(`productParameters/${id}`)
-    } catch (error) {
-      if (!error.response) {
-        throw error
-      }
-
-      return rejectWithValue(error.response.data)
-    }
-  }
-)
-
-export const create = createAsyncThunk(
-  'product_parameters/createProduct_parameters',
-  async (data: any, { rejectWithValue }) => {
-    try {
-      const result = await axios.post('productParameters', { data })
-      return result.data
-    } catch (error) {
-      if (!error.response) {
-        throw error
-      }
-
-      return rejectWithValue(error.response.data)
-    }
-  }
-)
-
-export const update = createAsyncThunk(
-  'product_parameters/updateProduct_parameters',
-  async (payload: any, { rejectWithValue }) => {
-    try {
-      const result = await axios.put(`productParameters/${payload.id}`, payload.data)
-      return result.data.data
-    } catch (error) {
-      if (!error.response) {
-        throw error
-      }
-
-      return rejectWithValue(error.response.data)
-    }
-  }
-)
-
 export const product_parametersSlice = createSlice({
   name: 'product_parameters',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetch.pending, (state) => {
-      state.loading = true
-      resetNotify(state)
-    })
-    builder.addCase(fetch.rejected, (state, action) => {
-      state.loading = false
-      rejectNotify(state, action)
-    })
+    builder
+        .addCase(getProductParameters.rejected, (state, action) => {
+          state.loading = false;
+          rejectNotify(state, action);
+        })
+        .addCase(getProductParameters.pending, (state) => {
+          state.loading = true;
+          resetNotify(state);
+        })
+        .addCase(getProductParameters.fulfilled, (state, action) => {
+          if (action.payload) {
+              console.log({ action: action.payload })
+            state.product_parameters = action.payload.rows;
+              console.log(state.product_parameters)
+            state.count = action.payload.count;
+          }
+          state.loading = false;
+        })
 
-    builder.addCase(fetch.fulfilled, (state, action) => {
-      if (action.payload.count >= 0) {
-        state.product_parameters = action.payload.rows
-        state.count = action.payload.count
-      } else {
-        state.product_parameters = action.payload
-      }
-      state.loading = false
-    })
+        .addCase(getProductParameter.rejected, (state, action) => {
+          state.loading = false;
+          rejectNotify(state, action);
+        })
+        .addCase(getProductParameter.pending, (state) => {
+          state.loading = true;
+          resetNotify(state);
+        })
+        .addCase(getProductParameter.fulfilled, (state, action) => {
+          if (action.payload) {
+            state.product_parameter = action.payload;
+          }
+          state.loading = false;
+        })
 
-    builder.addCase(deleteItem.pending, (state) => {
-      state.loading = true
-      resetNotify(state)
-    })
+        .addCase(deleteProductParameter.rejected, (state, action) => {
+          state.loading = false;
+          rejectNotify(state, action);
+        })
+        .addCase(deleteProductParameter.pending, (state) => {
+          state.loading = true;
+          resetNotify(state);
+        })
+        .addCase(deleteProductParameter.fulfilled, (state) => {
+          state.loading = false;
+          fulfilledNotify(state, 'Product Parameter has been deleted');
+        })
 
-    builder.addCase(deleteItem.fulfilled, (state) => {
-      state.loading = false
-      fulfilledNotify(state, `${'Product_parameters'.slice(0, -1)} has been deleted`)
-    })
+        .addCase(create.rejected, (state, action) => {
+          state.loading = false;
+          rejectNotify(state, action);
+        })
+        .addCase(create.pending, (state) => {
+          state.loading = true;
+          resetNotify(state);
+        })
+        .addCase(create.fulfilled, (state) => {
+          state.loading = false;
+          fulfilledNotify(state, 'Product Parameter has been created');
+        })
 
-    builder.addCase(deleteItem.rejected, (state, action) => {
-      state.loading = false
-      rejectNotify(state, action)
-    })
-
-    builder.addCase(create.pending, (state) => {
-      state.loading = true
-      resetNotify(state)
-    })
-    builder.addCase(create.rejected, (state, action) => {
-      state.loading = false
-      rejectNotify(state, action)
-    })
-
-    builder.addCase(create.fulfilled, (state) => {
-      state.loading = false
-      fulfilledNotify(state, `${'Product_parameters'.slice(0, -1)} has been created`)
-    })
-
-    builder.addCase(update.pending, (state) => {
-      state.loading = true
-      resetNotify(state)
-    })
-    builder.addCase(update.fulfilled, (state) => {
-      state.loading = false
-      fulfilledNotify(state, `${'Product_parameters'.slice(0, -1)} has been updated`)
-    })
-    builder.addCase(update.rejected, (state, action) => {
-      state.loading = false
-      rejectNotify(state, action)
-    })
+        .addCase(update.rejected, (state, action) => {
+          state.loading = false
+          rejectNotify(state, action)
+        })
+        .addCase(update.pending, (state) => {
+          state.loading = true
+          resetNotify(state)
+        })
+        .addCase(update.fulfilled, (state) => {
+          state.loading = false;
+          fulfilledNotify(state, 'Product Parameter has been updated');
+        })
   },
 })
 

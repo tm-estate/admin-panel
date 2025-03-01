@@ -7,7 +7,7 @@ import BaseButtons from '../BaseButtons'
 import CardBoxModal from '../CardBoxModal'
 import CardBox from '../CardBox'
 import ImageField from '../ImageField'
-import { fetch, deleteItem } from '../../stores/product_parameters/product_parametersSlice'
+import { getProductParameters, deleteProductParameter } from '../../stores/thunks/product-parameters'
 import { useAppDispatch, useAppSelector } from '../../stores/hooks'
 import { useRouter } from 'next/router'
 import dataFormatter from '../../helpers/dataFormatter'
@@ -45,7 +45,7 @@ const TableSampleProduct_parameters = ({ filterItems, setFilterItems, filters })
     if (request !== filterRequest) setFilterRequest(request)
 
     const query = `?page=${++page}&limit=${perPage}${request}&sort=${sort}&field=${field}`
-    dispatch(fetch({ limit: perPage, page: ++page, query }))
+    dispatch(getProductParameters(query))
   }
 
   useEffect(() => {
@@ -73,7 +73,7 @@ const TableSampleProduct_parameters = ({ filterItems, setFilterItems, filters })
   }
   const handleDeleteAction = async () => {
     if (id) {
-      await dispatch(deleteItem(id))
+      await dispatch(deleteProductParameter(id))
       await loadData(0)
       setIsModalTrashActive(false)
     }

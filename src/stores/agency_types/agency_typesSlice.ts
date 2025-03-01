@@ -1,18 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { fulfilledNotify, rejectNotify, resetNotify } from '../../helpers/notifyStateHandler'
 import { create, deleteAgencyType, getAgencyType, getAgencyTypes, update } from "../thunks/agency-types";
-import { IAgencyType } from "../../interfaces";
+import { IAgencyType, INotify } from "../../interfaces";
 
 interface MainState {
   agency_type: IAgencyType
   agency_types: IAgencyType[]
   loading: boolean
   count: number
-  notify: {
-    showNotification: boolean
-    textNotification: string
-    typeNotification: string
-  }
+  notify: INotify
 }
 
 const initialState: MainState = {

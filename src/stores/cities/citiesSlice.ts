@@ -1,18 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { fulfilledNotify, rejectNotify, resetNotify } from '../../helpers/notifyStateHandler';
 import { create, deleteCity, update, getCities, getCity } from '../thunks/cities';
-import { ICity } from "../../interfaces";
+import { ICity, INotify } from "../../interfaces";
 
 interface MainState {
   city: ICity;
   cities: ICity[];
   loading: boolean;
   count: number;
-  notify: {
-    showNotification: boolean;
-    textNotification: string;
-    typeNotification: string;
-  }
+  notify: INotify
 }
 
 const initialState: MainState = {

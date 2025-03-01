@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { fulfilledNotify, rejectNotify, resetNotify } from '../../helpers/notifyStateHandler'
-import { IPropertyType } from "../../interfaces";
+import { IPropertyType, INotify } from "../../interfaces";
 import { create, deletePropertyType, getPropertyType, getPropertyTypes, update } from "../thunks/property-types";
 
 interface MainState {
@@ -8,11 +8,7 @@ interface MainState {
   property_types: IPropertyType[]
   loading: boolean
   count: number
-  notify: {
-    showNotification: boolean
-    textNotification: string
-    typeNotification: string
-  }
+  notify: INotify
 }
 
 const initialState: MainState = {

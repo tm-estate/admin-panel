@@ -13,7 +13,6 @@ import dataFormatter from '../../helpers/dataFormatter'
 import { Field, Form, Formik } from 'formik'
 import { Pagination } from '../Pagination'
 import { saveFile } from '../../helpers/fileSaver'
-import { IDealType } from "../../interfaces";
 import { deleteDealType, getDealTypes } from "../../stores/thunks/deal-types";
 
 const perPage = 5
@@ -22,12 +21,6 @@ const TableSampleDeal_types = ({ filterItems, setFilterItems, filters }) => {
   const dispatch = useAppDispatch()
   const router = useRouter()
   const notify = (type, msg) => toast(msg, { type, position: 'bottom-center' })
-  const initValues: IDealType = {
-    titleEn: '',
-    titleRu: '',
-    titleTm: '',
-
-  }
 
   const pagesList = []
   const [id, setId] = useState(null)

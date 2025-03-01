@@ -26,59 +26,42 @@ import { SelectFieldMany } from '../../components/SelectFieldMany'
 import { SwitchField } from '../../components/SwitchField'
 import { RichTextField } from '../../components/RichTextField'
 
-import { update, fetch } from '../../stores/product_parameters/product_parametersSlice'
+import { update, getProductParameter } from '../../stores/thunks/product-parameters'
 import { useAppDispatch, useAppSelector } from '../../stores/hooks'
 import { useRouter } from 'next/router'
+import { IProductParameter } from "../../interfaces";
 
 const EditProduct_parameters = () => {
   const router = useRouter()
   const dispatch = useAppDispatch()
-  const initVals = {
+  const initValues: IProductParameter = {
     titleEn: '',
-
     titleRu: '',
-
     titleTm: '',
-
     selectType: '',
-
     isRequired: false,
-
     dealTypes: [],
-
     propertyTypes: [],
-
     key: '',
-
     items: [],
   }
-  const [initialValues, setInitialValues] = useState(initVals)
-
-  const { product_parameters } = useAppSelector((state) => state.product_parameters)
-
+  const [initialValues, setInitialValues] = useState(initValues)
+  const [isLoading, setIsLoading] = useState(true);
+  const { product_parameter } = useAppSelector((state) => state.product_parameters)
   const { product_parametersId } = router.query
 
   useEffect(() => {
-    dispatch(fetch({ id: product_parametersId }))
+    if(product_parametersId) dispatch(getProductParameter(product_parametersId))
   }, [product_parametersId])
 
   useEffect(() => {
-    if (typeof product_parameters === 'object') {
-      setInitialValues(product_parameters)
+    if (typeof product_parameter === 'object') {
+      setInitialValues(product_parameter)
+      setIsLoading(false)
     }
-  }, [product_parameters])
+  }, [product_parameter])
 
-  useEffect(() => {
-    if (typeof product_parameters === 'object') {
-      const newInitialVal = { ...initVals }
-
-      Object.keys(initVals).forEach((el) => (newInitialVal[el] = product_parameters[el]))
-
-      setInitialValues(newInitialVal)
-    }
-  }, [product_parameters])
-
-  const handleSubmit = async (data) => {
+  const handleSubmit = async (data: IProductParameter) => {
     await dispatch(update({ id: product_parametersId, data }))
     await router.push('/product_parameters/product_parameters-list')
   }
@@ -97,109 +80,111 @@ const EditProduct_parameters = () => {
           Breadcrumbs
         </SectionTitleLineWithButton>
         <CardBox>
-          <Formik
-            enableReinitialize
-            initialValues={initialValues}
-            onSubmit={(values) => handleSubmit(values)}
-          >
-            <Form>
-              <FormField label="Title En">
-                <Field name="titleEn" placeholder="Your Title En" />
-              </FormField>
+          { !isLoading && initialValues &&
+            <Formik
+                enableReinitialize
+                initialValues={initialValues}
+                onSubmit={(values) => handleSubmit(values)}
+            >
+              <Form>
+                <FormField label="Title En">
+                  <Field name="titleEn" placeholder="Your Title En"/>
+                </FormField>
 
-              <FormField label="Title Ru">
-                <Field name="titleRu" placeholder="Your Title Ru" />
-              </FormField>
+                <FormField label="Title Ru">
+                  <Field name="titleRu" placeholder="Your Title Ru"/>
+                </FormField>
 
-              <FormField label="Title Tm">
-                <Field name="titleTm" placeholder="Your Title Tm" />
-              </FormField>
+                <FormField label="Title Tm">
+                  <Field name="titleTm" placeholder="Your Title Tm"/>
+                </FormField>
 
-              <FormField label="Select Type">
-                <FormCheckRadioGroup>
-                  <FormCheckRadio type="radio" label="Single">
-                    <Field type="radio" name="selectType" value="Single" />
-                  </FormCheckRadio>
+                <FormField label="Select Type">
+                  <FormCheckRadioGroup>
+                    <FormCheckRadio type="radio" label="Single">
+                      <Field type="radio" name="selectType" value="Single"/>
+                    </FormCheckRadio>
 
-                  <FormCheckRadio type="radio" label="Multi">
-                    <Field type="radio" name="selectType" value="Multi" />
-                  </FormCheckRadio>
+                    <FormCheckRadio type="radio" label="Multi">
+                      <Field type="radio" name="selectType" value="Multi"/>
+                    </FormCheckRadio>
 
-                  <FormCheckRadio type="radio" label="String">
-                    <Field type="radio" name="selectType" value="String" />
-                  </FormCheckRadio>
+                    <FormCheckRadio type="radio" label="String">
+                      <Field type="radio" name="selectType" value="String"/>
+                    </FormCheckRadio>
 
-                  <FormCheckRadio type="radio" label="Number">
-                    <Field type="radio" name="selectType" value="Number" />
-                  </FormCheckRadio>
+                    <FormCheckRadio type="radio" label="Number">
+                      <Field type="radio" name="selectType" value="Number"/>
+                    </FormCheckRadio>
 
-                  <FormCheckRadio type="radio" label="Boolean">
-                    <Field type="radio" name="selectType" value="Boolean" />
-                  </FormCheckRadio>
-                </FormCheckRadioGroup>
-              </FormField>
+                    <FormCheckRadio type="radio" label="Boolean">
+                      <Field type="radio" name="selectType" value="Boolean"/>
+                    </FormCheckRadio>
+                  </FormCheckRadioGroup>
+                </FormField>
 
-              <FormField label="Is Required" labelFor="isRequired">
-                <Field
-                  name="isRequired"
-                  value={initialValues.isRequired}
-                  id="isRequired"
-                  component={SwitchField}
-                ></Field>
-              </FormField>
+                <FormField label="Is Required" labelFor="isRequired">
+                  <Field
+                      name="isRequired"
+                      value={initialValues.isRequired}
+                      id="isRequired"
+                      component={SwitchField}
+                  ></Field>
+                </FormField>
 
-              <FormField label="Deal Types" labelFor="dealTypes">
-                <Field
-                  name="dealTypes"
-                  id="dealTypes"
-                  component={SelectFieldMany}
-                  options={initialValues.dealTypes}
-                  itemRef={'dealTypes'}
-                  showField={'titleRu'}
-                ></Field>
-              </FormField>
+                <FormField label="Deal Types" labelFor="dealTypes">
+                  <Field
+                      name="dealTypes"
+                      id="dealTypes"
+                      component={SelectFieldMany}
+                      options={initialValues.dealTypes}
+                      itemRef={'dealTypes'}
+                      showField={'titleRu'}
+                  ></Field>
+                </FormField>
 
-              <FormField label="Property Types" labelFor="propertyTypes">
-                <Field
-                  name="propertyTypes"
-                  id="propertyTypes"
-                  component={SelectFieldMany}
-                  options={initialValues.propertyTypes}
-                  itemRef={'propertyTypes'}
-                  showField={'titleRu'}
-                ></Field>
-              </FormField>
+                <FormField label="Property Types" labelFor="propertyTypes">
+                  <Field
+                      name="propertyTypes"
+                      id="propertyTypes"
+                      component={SelectFieldMany}
+                      options={initialValues.propertyTypes}
+                      itemRef={'propertyTypes'}
+                      showField={'titleRu'}
+                  ></Field>
+                </FormField>
 
-              <FormField label="Key">
-                <Field name="key" placeholder="Your Key" />
-              </FormField>
+                <FormField label="Key">
+                  <Field name="key" placeholder="Your Key"/>
+                </FormField>
 
-              <FormField label="Items" labelFor="items">
-                <Field
-                  name="items"
-                  id="items"
-                  component={SelectFieldMany}
-                  options={initialValues.items}
-                  itemRef={'productParameterItems'}
-                  showField={'titleRu'}
-                ></Field>
-              </FormField>
+                <FormField label="Items" labelFor="items">
+                  <Field
+                      name="items"
+                      id="items"
+                      component={SelectFieldMany}
+                      options={initialValues.items}
+                      itemRef={'productParameterItems'}
+                      showField={'titleRu'}
+                  ></Field>
+                </FormField>
 
-              <BaseDivider />
+                <BaseDivider/>
 
-              <BaseButtons>
-                <BaseButton type="submit" color="info" label="Submit" />
-                <BaseButton type="reset" color="info" outline label="Reset" />
-                <BaseButton
-                  type="reset"
-                  color="danger"
-                  outline
-                  label="Cancel"
-                  onClick={() => router.push('/product_parameters/product_parameters-list')}
-                />
-              </BaseButtons>
-            </Form>
-          </Formik>
+                <BaseButtons>
+                  <BaseButton type="submit" color="info" label="Submit"/>
+                  <BaseButton type="reset" color="info" outline label="Reset"/>
+                  <BaseButton
+                      type="reset"
+                      color="danger"
+                      outline
+                      label="Cancel"
+                      onClick={() => router.push('/product_parameters/product_parameters-list')}
+                  />
+                </BaseButtons>
+              </Form>
+            </Formik>
+          }
         </CardBox>
       </SectionMain>
     </>
