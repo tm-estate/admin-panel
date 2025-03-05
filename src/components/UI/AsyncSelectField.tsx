@@ -6,7 +6,7 @@ export const AsyncSelectField = ({ options, field, form, itemRef, showField }) =
   const [value, setValue] = useState(null);
 
   useEffect(() => {
-    console.log({ itemRef })
+    // console.log({ itemRef })
     if (options?._id) {
       setValue({ value: options._id, label: options[showField] })
       // setValue(options.map((el) => ({ value: el._id, label: el[showField] })))
@@ -17,12 +17,12 @@ export const AsyncSelectField = ({ options, field, form, itemRef, showField }) =
     }
   }, [options])
 
-  // useEffect(() => {
-  //   if (options?.id && field?.value?.id) {
-  //     setValue({ value: field.value?.id, label: field.value[showField] });
-  //     form.setFieldValue(field.name, field.value?.id);
-  //   }
-  // }, [options?.id, field?.value?.id]);
+  useEffect(() => {
+    if (options?.id && field?.value?.id) {
+      setValue({ value: field.value?.id, label: field.value[showField] });
+      form.setFieldValue(field.name, field.value?.id);
+    }
+  }, [options?.id, field?.value?.id]);
 
   const mapResponseToValuesAndLabels = (data) => ({
     value: data._id,
@@ -34,13 +34,9 @@ export const AsyncSelectField = ({ options, field, form, itemRef, showField }) =
   };
 
   async function callApi() {
-    console.log(3333)
+    // console.log(3333)
     const { data } = await axios(`/${itemRef}/autocomplete?limit=100`);
-    const test = data.data.map(mapResponseToValuesAndLabels);
-
-    console.log({ test })
-
-    return test
+    return data.data.map(mapResponseToValuesAndLabels);
   }
   return (
     <AsyncSelect
