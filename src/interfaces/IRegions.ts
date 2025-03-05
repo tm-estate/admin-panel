@@ -1,12 +1,8 @@
 import { ICity } from "./ICities";
-import { ICoordinate } from "./index";
+import {ICoordinate, ILocalizedTitles} from "./index";
 
-export interface IRegion {
-    _id?: string;
+export interface IRegion extends ILocalizedTitles {
     cities: ICity[];
-    titleEn: string;
-    titleRu: string;
-    titleTm: string;
     coordinate: ICoordinate
     createdAt?: string;
     updatedAt?: string;

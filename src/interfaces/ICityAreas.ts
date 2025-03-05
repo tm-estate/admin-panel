@@ -1,11 +1,7 @@
-import { ICoordinate } from "./index";
+import { ICoordinate, ILocalizedTitles } from "./index";
 
-export interface ICityArea {
-    _id?: string
-    coordinate: ICoordinate
-    titleEn: string
-    titleRu: string
-    titleTm: string
+export interface ICityArea extends ILocalizedTitles{
+    coordinate: ICoordinate;
 }
 
 export interface ICityAreas {

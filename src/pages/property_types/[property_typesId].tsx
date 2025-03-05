@@ -19,7 +19,7 @@ import BaseButton from '../../components/BaseButton'
 import { update, getPropertyType } from '../../stores/thunks/property-types'
 import { useAppDispatch, useAppSelector } from '../../stores/hooks'
 import { useRouter } from 'next/router'
-import { SelectFieldMany } from '../../components/SelectFieldMany'
+import { AsyncSelectFieldMany } from '../../components/UI/AsyncSelectFieldMany'
 import { IPropertyType } from "../../interfaces";
 
 const EditProperty_types = () => {
@@ -85,7 +85,7 @@ const EditProperty_types = () => {
                   <Field
                       name="dealTypes"
                       id="dealTypes"
-                      component={SelectFieldMany}
+                      component={AsyncSelectFieldMany}
                       options={initialValues.dealTypes}
                       itemRef={'dealTypes'}
                       showField={'titleRu'}

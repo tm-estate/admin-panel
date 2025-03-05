@@ -15,7 +15,7 @@ import FormField from '../../components/FormField'
 import BaseDivider from '../../components/BaseDivider'
 import BaseButtons from '../../components/BaseButtons'
 import BaseButton from '../../components/BaseButton'
-import { SelectFieldMany } from '../../components/SelectFieldMany'
+import { AsyncSelectFieldMany } from '../../components/UI/AsyncSelectFieldMany'
 
 import { update, getRegion } from '../../stores/thunks/regions'
 import { useAppDispatch, useAppSelector } from '../../stores/hooks'
@@ -94,7 +94,7 @@ const EditRegions = () => {
                   <Field
                       name="cities"
                       id="cities"
-                      component={SelectFieldMany}
+                      component={AsyncSelectFieldMany}
                       options={initialValues.cities}
                       itemRef={'cities'}
                       showField={'titleRu'}

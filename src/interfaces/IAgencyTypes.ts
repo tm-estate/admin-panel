@@ -1,8 +1,6 @@
-export interface IAgencyType {
-    _id?: string;
-    titleEn: string;
-    titleRu: string;
-    titleTm: string;
+import { ILocalizedTitles } from "./ILocalizedTitles";
+
+export interface IAgencyType extends ILocalizedTitles{
     createdAt?: string,
     updatedAt?: string,
 }

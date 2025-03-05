@@ -17,7 +17,7 @@ import BaseButton from '../../components/BaseButton'
 import { create } from '../../stores/thunks/property-types'
 import { useAppDispatch } from '../../stores/hooks'
 import { useRouter } from 'next/router'
-import { SelectFieldMany } from '../../components/SelectFieldMany'
+import { AsyncSelectFieldMany } from '../../components/UI/AsyncSelectFieldMany'
 import { IPropertyType } from "../../interfaces";
 
 const TablesPage = () => {
@@ -68,7 +68,7 @@ const TablesPage = () => {
                   itemRef={'dealTypes'}
                   showField={'titleRu'}
                   options={[]}
-                  component={SelectFieldMany}
+                  component={AsyncSelectFieldMany}
                 ></Field>
               </FormField>
 

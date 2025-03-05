@@ -26,8 +26,8 @@ import FormCheckRadio from '../../components/FormCheckRadio';
 import FormCheckRadioGroup from '../../components/FormCheckRadioGroup';
 import FormFilePicker from '../../components/FormFilePicker';
 import FormImagePicker from '../../components/FormImagePicker';
-import { SelectField } from '../../components/SelectField';
-import { SelectFieldMany } from '../../components/SelectFieldMany';
+// import { SelectField } from '../../components/SelectField';
+// import { AsyncSelectFieldMany } from '../../components/UI/AsyncSelectFieldMany';
 import { SwitchField } from '../../components/SwitchField';
 import { RichTextField } from '../../components/RichTextField';
 
@@ -42,11 +42,11 @@ const EditProduct_parameter_items = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const initVals = {
-    ['titleEn']: '',
+    titleEn: '',
 
-    ['titleRu']: '',
+    titleRu: '',
 
-    ['titleTm']: '',
+    titleTm: '',
   };
   const [initialValues, setInitialValues] = useState(initVals);
 

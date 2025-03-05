@@ -21,8 +21,8 @@ import FormCheckRadio from '../../components/FormCheckRadio'
 import FormCheckRadioGroup from '../../components/FormCheckRadioGroup'
 import FormFilePicker from '../../components/FormFilePicker'
 import FormImagePicker from '../../components/FormImagePicker'
-import { SelectField } from '../../components/SelectField'
-import { SelectFieldMany } from '../../components/SelectFieldMany'
+// import { SelectField } from '../../components/SelectField'
+import { SelectFieldMany } from '../../components/UI/SelectFieldMany'
 import { SwitchField } from '../../components/SwitchField'
 import { RichTextField } from '../../components/RichTextField'
 
@@ -30,6 +30,7 @@ import { update, getProductParameter } from '../../stores/thunks/product-paramet
 import { useAppDispatch, useAppSelector } from '../../stores/hooks'
 import { useRouter } from 'next/router'
 import { IProductParameter } from "../../interfaces";
+import {AsyncSelectFieldMany} from "../../components/UI/AsyncSelectFieldMany";
 
 const EditProduct_parameters = () => {
   const router = useRouter()
@@ -136,7 +137,7 @@ const EditProduct_parameters = () => {
                   <Field
                       name="dealTypes"
                       id="dealTypes"
-                      component={SelectFieldMany}
+                      component={AsyncSelectFieldMany}
                       options={initialValues.dealTypes}
                       itemRef={'dealTypes'}
                       showField={'titleRu'}
@@ -147,7 +148,7 @@ const EditProduct_parameters = () => {
                   <Field
                       name="propertyTypes"
                       id="propertyTypes"
-                      component={SelectFieldMany}
+                      component={AsyncSelectFieldMany}
                       options={initialValues.propertyTypes}
                       itemRef={'propertyTypes'}
                       showField={'titleRu'}
@@ -162,7 +163,7 @@ const EditProduct_parameters = () => {
                   <Field
                       name="items"
                       id="items"
-                      component={SelectFieldMany}
+                      component={AsyncSelectFieldMany}
                       options={initialValues.items}
                       itemRef={'productParameterItems'}
                       showField={'titleRu'}

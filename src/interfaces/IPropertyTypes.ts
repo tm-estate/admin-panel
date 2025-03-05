@@ -1,11 +1,8 @@
 import { IDealType } from "./IDealTypes";
+import { ILocalizedTitles } from "./index";
 
-export interface IPropertyType {
-    _id?: string;
+export interface IPropertyType extends ILocalizedTitles {
     dealTypes: IDealType[];
-    titleEn: string;
-    titleRu: string;
-    titleTm: string;
     createdAt?: string;
     updatedAt?: string;
 }

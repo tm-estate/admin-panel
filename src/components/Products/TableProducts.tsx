@@ -6,7 +6,7 @@ import BaseButton from '../BaseButton'
 import BaseButtons from '../BaseButtons'
 import CardBoxModal from '../CardBoxModal'
 import CardBox from '../CardBox'
-import { fetch, deleteItem } from '../../stores/products/productsSlice'
+import { getProducts, deleteProduct } from '../../stores/thunks/products'
 import { useAppDispatch, useAppSelector } from '../../stores/hooks'
 import { useRouter } from 'next/router'
 import dataFormatter from '../../helpers/dataFormatter'
@@ -47,7 +47,7 @@ const TableSampleProducts = ({ filterItems, setFilterItems, filters }) => {
     if (request !== filterRequest) setFilterRequest(request)
 
     const query = `?page=${++page}&limit=${perPage}${request}&sort=${sort}&field=${field}`
-    dispatch(fetch({ limit: perPage, page: ++page, query }))
+    dispatch(getProducts(query))
   }
 
   useEffect(() => {
@@ -75,7 +75,7 @@ const TableSampleProducts = ({ filterItems, setFilterItems, filters }) => {
   }
   const handleDeleteAction = async () => {
     if (id) {
-      await dispatch(deleteItem(id))
+      await dispatch(deleteProduct(id))
       await loadData(0)
       setIsModalTrashActive(false)
     }

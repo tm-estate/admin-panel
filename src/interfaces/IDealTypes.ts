@@ -1,8 +1,6 @@
-export interface IDealType {
-    _id?: string;
-    titleEn: string;
-    titleRu: string;
-    titleTm: string;
+import { ILocalizedTitles } from "./ILocalizedTitles";
+
+export interface IDealType extends ILocalizedTitles{
     createdAt?: string,
     updatedAt?: string,
 }

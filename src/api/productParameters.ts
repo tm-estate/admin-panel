@@ -1,10 +1,14 @@
 import axios from 'axios';
 import { IProductParameter, IProductParameters, IProductParametersUpdatePayload, IServerResponse } from "../interfaces";
+import { getAutocompleteData } from "./autocomplete";
 
 const productParametersApi = {
     async getProductParameter(id: string | string[]) {
         const result = await axios.get<IServerResponse<IProductParameter>>(`productParameters/admin/${id}`);
         return result.data;
+    },
+    async getProductParametersAutocomplete() {
+        return getAutocompleteData<IProductParameter[]>('productParameters');
     },
     async getProductParameters(query: string){
         const result = await axios.get<IServerResponse<IProductParameters>>(`productParameters/admin${query}`);

@@ -1,21 +1,12 @@
-import { IPropertyType } from "./IPropertyTypes";
-import { IDealType } from "./IDealTypes";
+import { IPropertyType, IDealType, ILocalizedTitles } from "../interfaces";
 
-export interface IProductParameterItem {
-    _id?: string;
-    titleRu: string;
-    titleEn: string;
-    titleTm: string;
-    __v: string;
-    createdAt: string;
-    updatedAt: string;
+export interface IProductParameterItem extends ILocalizedTitles {
+    __v?: string;
+    createdAt?: string;
+    updatedAt?: string;
 }
 
-export interface IProductParameter {
-    _id?: string;
-    titleRu: string;
-    titleEn: string;
-    titleTm: string;
+export interface IProductParameter extends ILocalizedTitles {
     selectType: string;
     items: IProductParameterItem[];
     key: string;

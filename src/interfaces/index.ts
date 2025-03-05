@@ -5,6 +5,7 @@ export * from './ICities';
 export * from './ICityAreas';
 export * from './IDealTypes';
 export * from './INotify';
+export * from './ILocalizedTitles';
 export * from './IPropertyTypes';
 export * from './IProducts';
 export * from './IProductParameters';
@@ -17,6 +18,14 @@ export interface ICoordinate {
   latitude: number,
   longitude: number,
 }
+
+export interface ILocalizedTitles {
+  _id?: string;
+  titleEn: string;
+  titleRu: string;
+  titleTm: string;
+}
+
 
 export type UserPayloadObject = {
   name: string;

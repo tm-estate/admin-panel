@@ -1,13 +1,10 @@
 import { ICoordinate } from "./index";
 import { ICityArea } from "./ICityAreas";
+import { ILocalizedTitles } from "./ILocalizedTitles";
 
-export interface ICity {
-    _id?: string;
+export interface ICity extends ILocalizedTitles{
     cityAreas: ICityArea[]
     coordinate: ICoordinate
-    titleEn: string
-    titleRu: string
-    titleTm: string
 }
 
 // export interface ICities extends Omit<ICity, '_id'> {}

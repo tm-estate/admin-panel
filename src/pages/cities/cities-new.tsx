@@ -16,7 +16,7 @@ import FormField from '../../components/FormField'
 import BaseDivider from '../../components/BaseDivider'
 import BaseButtons from '../../components/BaseButtons'
 import BaseButton from '../../components/BaseButton'
-import { SelectFieldMany } from '../../components/SelectFieldMany'
+import { AsyncSelectFieldMany } from '../../components/UI/AsyncSelectFieldMany'
 
 import { useRouter } from 'next/router'
 import { ICity } from "../../interfaces";
@@ -36,7 +36,7 @@ const TablesPage = () => {
   }
 
   const handleSubmit = async (data: ICity) => {
-    await dispatch(create(data))
+    await dispatch(create(data)).then(res => console.log(res))
     await router.push('/cities/cities-list')
   }
   return (
@@ -78,7 +78,7 @@ const TablesPage = () => {
                   itemRef={'cityAreas'}
                   options={[]}
                   showField={'titleRu'}
-                  component={SelectFieldMany}
+                  component={AsyncSelectFieldMany}
                 ></Field>
               </FormField>
 

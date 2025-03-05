@@ -15,7 +15,7 @@ import FormField from '../../components/FormField'
 import BaseDivider from '../../components/BaseDivider'
 import BaseButtons from '../../components/BaseButtons'
 import BaseButton from '../../components/BaseButton'
-import { SelectFieldMany } from '../../components/SelectFieldMany'
+import { AsyncSelectFieldMany } from '../../components/UI/AsyncSelectFieldMany'
 
 import {getCity, update} from '../../stores/thunks/cities'
 import { useAppDispatch, useAppSelector } from '../../stores/hooks'
@@ -25,7 +25,7 @@ import { ICity } from "../../interfaces";
 const EditCities = () => {
   const router = useRouter()
   const dispatch = useAppDispatch()
-  const initVals: ICity = {
+  const initValues: ICity = {
     titleEn: '',
     titleRu: '',
     titleTm: '',
@@ -35,7 +35,7 @@ const EditCities = () => {
     },
     cityAreas: [],
   }
-  const [initialValues, setInitialValues] = useState(initVals)
+  const [initialValues, setInitialValues] = useState(initValues)
   const [isLoading, setIsLoading] = useState(true)
   const { city } = useAppSelector((state) => state.cities)
   const { cityId } = router.query
@@ -94,7 +94,7 @@ const EditCities = () => {
                 <Field
                   name="cityAreas"
                   id="cityAreas"
-                  component={SelectFieldMany}
+                  component={AsyncSelectFieldMany}
                   options={initialValues?.cityAreas}
                   itemRef={'cityAreas'}
                   showField={'titleRu'}

@@ -14,7 +14,7 @@ import BaseDivider from '../../components/BaseDivider'
 import BaseButtons from '../../components/BaseButtons'
 import BaseButton from '../../components/BaseButton'
 
-import { SelectFieldMany } from '../../components/SelectFieldMany'
+import { AsyncSelectFieldMany } from '../../components/UI/AsyncSelectFieldMany'
 
 import { create } from '../../stores/thunks/regions'
 import { useAppDispatch } from '../../stores/hooks'
@@ -77,7 +77,7 @@ const TablesPage = () => {
                   itemRef={'cities'}
                   showField="titleRu"
                   options={[]}
-                  component={SelectFieldMany}
+                  component={AsyncSelectFieldMany}
                 ></Field>
               </FormField>
 
