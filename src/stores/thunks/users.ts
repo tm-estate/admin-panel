@@ -1,11 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { IRegion, IRegionUpdatePayload } from "../../interfaces";
-import regionsApi from "../../api/regions";
+import { IUser, IUserUpdatePayload } from "../../interfaces";
+import usersApi from "../../api/users";
 
-export const getRegions = createAsyncThunk('regions/fetch',
+export const getUsers = createAsyncThunk('users/fetch',
     async (payload: string) => {
         try {
-            const res = await regionsApi.getRegions(payload);
+            const res = await usersApi.getUsers(payload);
             return res.data;
         } catch (e) {
             console.error(e);
@@ -13,10 +13,13 @@ export const getRegions = createAsyncThunk('regions/fetch',
         }
     });
 
-export const getRegion = createAsyncThunk('region/fetch',
+export const getUser = createAsyncThunk('propertyType/fetch',
     async (payload: string | string[]) => {
         try {
-            const res = await regionsApi.getRegion(payload);
+            console.log('girdim get user')
+            const res = await usersApi.getUser(payload);
+
+            console.log({res})
             return res.data;
         } catch (err) {
             console.error(err);
@@ -24,10 +27,10 @@ export const getRegion = createAsyncThunk('region/fetch',
         }
     });
 
-export const deleteRegion = createAsyncThunk('regions/delete',
+export const deleteUser = createAsyncThunk('users/delete',
     async (payload: string, { rejectWithValue }) => {
         try {
-            await regionsApi.delete(payload);
+            await usersApi.delete(payload);
         } catch (err) {
             if (!err.response) {
                 throw err;
@@ -37,10 +40,10 @@ export const deleteRegion = createAsyncThunk('regions/delete',
     });
 
 export const create = createAsyncThunk(
-    'regions/create',
-    async (payload: IRegion, { rejectWithValue }) => {
+    'users/create',
+    async (payload: IUser, { rejectWithValue }) => {
         try {
-            const result = await regionsApi.create(payload);
+            const result = await usersApi.create(payload);
             return result.data
         } catch (error) {
             if (!error.response) {
@@ -52,10 +55,10 @@ export const create = createAsyncThunk(
 )
 
 export const update = createAsyncThunk(
-    'regions/update',
-    async (payload: IRegionUpdatePayload, { rejectWithValue }) => {
+    'users/update',
+    async (payload: IUserUpdatePayload, { rejectWithValue }) => {
         try {
-            const result = await regionsApi.update(payload)
+            const result = await usersApi.update(payload)
             return result.data
         } catch (error) {
             if (!error.response) {

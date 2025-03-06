@@ -1,5 +1,4 @@
-import { IUser } from './User';
-import { IDealType } from './DealType';
+import { IUser, IDealType } from '../interfaces';
 
 export interface IPost {
   _id: string;
