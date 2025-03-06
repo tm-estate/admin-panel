@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { fulfilledNotify, rejectNotify, resetNotify } from '../../helpers/notifyStateHandler'
-import { IPropertyType, INotify } from "../../interfaces";
-import { create, deletePropertyType, getPropertyType, getPropertyTypes, update } from "../thunks/property-types";
+import { fulfilledNotify, rejectNotify, resetNotify } from '@/helpers/notifyStateHandler'
+import { IPropertyType, INotify } from "@/interfaces";
+import { create, deletePropertyType, getPropertyType, getPropertyTypes, update } from "@/stores/thunks/property-types";
 
 interface MainState {
   property_type: IPropertyType

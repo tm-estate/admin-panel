@@ -1,4 +1,4 @@
-import { IServerResponse } from "../interfaces";
+import { IServerResponse } from "@/interfaces";
 import axios from "axios";
 
 export const getAutocompleteData = async <T>(endpoint: string): Promise<IServerResponse<T>> => {

@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import Axios from 'axios';
-import { baseURLApi } from '../../config';
+import { baseURLApi } from '@/config';
 
 function extractExtensionFrom(filename) {
   if (!filename) {

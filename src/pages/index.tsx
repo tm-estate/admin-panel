@@ -1,19 +1,19 @@
 import React from 'react';
 import type { ReactElement } from 'react';
 import Head from 'next/head';
-import BaseButton from '../components/BaseButton';
-import CardBox from '../components/CardBox';
-import SectionFullScreen from '../components/SectionFullScreen';
-import LayoutGuest from '../layouts/Guest';
+import BaseButton from '@/components/BaseButton';
+import CardBox from '@/components/CardBox';
+import SectionFullScreen from '@/components/SectionFullScreen';
+import LayoutGuest from '@/layouts/Guest';
 import { Field, Form, Formik } from 'formik';
-import FormField from '../components/FormField';
-import FormCheckRadio from '../components/FormCheckRadio';
-import BaseDivider from '../components/BaseDivider';
-import BaseButtons from '../components/BaseButtons';
-import { getPageTitle } from '../config';
+import FormField from '@/components/FormField';
+import FormCheckRadio from '@/components/FormCheckRadio';
+import BaseDivider from '@/components/BaseDivider';
+import BaseButtons from '@/components/BaseButtons';
+import { getPageTitle } from '@/config';
 import Link from 'next/link';
-import CardBoxComponentTitle from '../components/CardBoxComponentTitle';
-import BaseIcon from '../components/BaseIcon';
+import CardBoxComponentTitle from '@/components/CardBoxComponentTitle';
+import BaseIcon from '@/components/BaseIcon';
 import { mdiInformation } from '@mdi/js';
 
 export default function Starter() {

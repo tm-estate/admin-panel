@@ -1,5 +1,5 @@
 import { Field, Form, Formik } from 'formik';
-import { useAppSelector } from '../stores/hooks';
+import { useAppSelector } from '@/stores/hooks';
 import CardBox from './CardBox';
 import FormCheckRadio from './FormCheckRadio';
 import UserAvatarCurrentUser from './UserAvatarCurrentUser';

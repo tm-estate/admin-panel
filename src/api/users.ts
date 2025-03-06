@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {IUser, IUsers, IServerResponse, IUserUpdatePayload,} from "../interfaces";
+import {IUser, IUsers, IServerResponse, IUserUpdatePayload,} from "@/interfaces";
 
 const usersApi = {
     async getUser(id: string | string[]) {

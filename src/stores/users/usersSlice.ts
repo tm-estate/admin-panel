@@ -3,9 +3,9 @@ import {
   fulfilledNotify,
   rejectNotify,
   resetNotify,
-} from '../../helpers/notifyStateHandler';
-import { INotify, IUser } from "../../interfaces";
-import {create, deleteUser, getUser, getUsers, update} from "../thunks/users";
+} from '@/helpers/notifyStateHandler';
+import { INotify, IUser } from "@/interfaces";
+import {create, deleteUser, getUser, getUsers, update} from "@/stores/thunks/users";
 
 interface MainState {
   user: IUser;

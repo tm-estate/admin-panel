@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import authApi from '../../api/auth'
-import { ISignInPayload, ISignUpPayload } from '../../interfaces'
+import authApi from '@/api/auth'
+import { ISignInPayload, ISignUpPayload } from '@/interfaces'
 
 export const getMe = createAsyncThunk('auth/getMe', async (_, thunkAPI) => {
   try {

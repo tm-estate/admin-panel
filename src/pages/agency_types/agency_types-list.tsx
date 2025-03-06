@@ -2,14 +2,14 @@ import { mdiChartTimelineVariant } from '@mdi/js'
 import Head from 'next/head'
 import { uniqueId } from 'lodash'
 import React, { ReactElement } from 'react'
-import CardBox from '../../components/CardBox'
-import LayoutAuthenticated from '../../layouts/Authenticated'
-import SectionMain from '../../components/SectionMain'
-import SectionTitleLineWithButton from '../../components/SectionTitleLineWithButton'
-import { getPageTitle } from '../../config'
-import BaseButton from '../../components/BaseButton'
+import CardBox from '@/components/CardBox'
+import LayoutAuthenticated from '@/layouts/Authenticated'
+import SectionMain from '@/components/SectionMain'
+import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton'
+import { getPageTitle } from '@/config'
+import BaseButton from '@/components/BaseButton'
 import axios from 'axios'
-import TableSampleAgency_types from "../../components/Agency_types/TableAgency_types";
+import TableSampleAgency_types from "@/components/Agency_types/TableAgency_types";
 
 const Agency_typesTablesPage = () => {
     const [filterItems, setFilterItems] = React.useState([])

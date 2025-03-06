@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { IProductParameter, IProductParametersUpdatePayload } from "../../interfaces";
-import productParametersApi from "../../api/productParameters";
+import { IProductParameter, IProductParametersUpdatePayload } from "@/interfaces";
+import productParametersApi from "@/api/productParameters";
 
 export const getProductParameters = createAsyncThunk('productParameters/fetch',
     async (payload: string) => {

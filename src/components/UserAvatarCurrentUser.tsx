@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect, useState } from 'react';
-import { useAppSelector } from '../stores/hooks';
+import { useAppSelector } from '@/stores/hooks';
 import UserAvatar from './UserAvatar';
 
 type Props = {

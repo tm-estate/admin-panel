@@ -1,4 +1,4 @@
-import { IPropertyType, IDealType, ILocalizedTitles } from "../interfaces";
+import { IPropertyType, IDealType, ILocalizedTitles } from "@/interfaces";
 
 export interface IProductParameterItem extends ILocalizedTitles {
     __v?: string;

@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { ICity, ICityAreasUpdatePayload } from "../../interfaces";
-import cityAreasApi from "../../api/cityAreas";
+import { ICity, ICityAreasUpdatePayload } from "@/interfaces";
+import cityAreasApi from "@/api/cityAreas";
 
 export const getCityAreas = createAsyncThunk('cityAreas/fetch',
     async (payload: string) => {

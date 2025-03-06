@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { IProduct, IProductUpdatePayload } from "../../interfaces";
-import productsApi from "../../api/products";
+import { IProduct, IProductUpdatePayload } from "@/interfaces";
+import productsApi from "@/api/products";
 
 export const getProducts = createAsyncThunk('products/fetch',
     async (payload: string) => {

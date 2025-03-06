@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { IProduct, IProducts, IProductUpdatePayload, IServerResponse } from "../interfaces";
+import { IProduct, IProducts, IProductUpdatePayload, IServerResponse } from "@/interfaces";
 
 const productsApi = {
     async getProduct(id: string | string[]) {

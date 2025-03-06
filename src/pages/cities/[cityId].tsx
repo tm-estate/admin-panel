@@ -4,23 +4,23 @@ import React, { ReactElement, useEffect, useState } from 'react'
 import 'react-toastify/dist/ReactToastify.min.css'
 import 'react-datepicker/dist/react-datepicker.css'
 
-import CardBox from '../../components/CardBox'
-import LayoutAuthenticated from '../../layouts/Authenticated'
-import SectionMain from '../../components/SectionMain'
-import SectionTitleLineWithButton from '../../components/SectionTitleLineWithButton'
-import { getPageTitle } from '../../config'
+import CardBox from '@/components/CardBox'
+import LayoutAuthenticated from '@/layouts/Authenticated'
+import SectionMain from '@/components/SectionMain'
+import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton'
+import { getPageTitle } from '@/config'
 
 import { Field, Form, Formik } from 'formik'
-import FormField from '../../components/FormField'
-import BaseDivider from '../../components/BaseDivider'
-import BaseButtons from '../../components/BaseButtons'
-import BaseButton from '../../components/BaseButton'
-import { AsyncSelectFieldMany } from '../../components/UI/AsyncSelectFieldMany'
+import FormField from '@/components/FormField'
+import BaseDivider from '@/components/BaseDivider'
+import BaseButtons from '@/components/BaseButtons'
+import BaseButton from '@/components/BaseButton'
+import { AsyncSelectFieldMany } from '@/components/UI/AsyncSelectFieldMany'
 
-import {getCity, update} from '../../stores/thunks/cities'
-import { useAppDispatch, useAppSelector } from '../../stores/hooks'
+import {getCity, update} from '@/stores/thunks/cities'
+import { useAppDispatch, useAppSelector } from '@/stores/hooks'
 import { useRouter } from 'next/router'
-import { ICity } from "../../interfaces";
+import { ICity } from "@/interfaces";
 
 const EditCities = () => {
   const router = useRouter()

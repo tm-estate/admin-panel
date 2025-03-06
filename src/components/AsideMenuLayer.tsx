@@ -2,8 +2,8 @@ import React from 'react';
 import { mdiLogout, mdiClose } from '@mdi/js';
 import BaseIcon from './BaseIcon';
 import AsideMenuList from './AsideMenuList';
-import { MenuAsideItem } from '../interfaces';
-import { useAppSelector } from '../stores/hooks';
+import { MenuAsideItem } from '@/interfaces';
+import { useAppSelector } from '@/stores/hooks';
 
 type Props = {
   menu: MenuAsideItem[];

@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { IUser, IUserUpdatePayload } from "../../interfaces";
-import usersApi from "../../api/users";
+import { IUser, IUserUpdatePayload } from "@/interfaces";
+import usersApi from "@/api/users";
 
 export const getUsers = createAsyncThunk('users/fetch',
     async (payload: string) => {

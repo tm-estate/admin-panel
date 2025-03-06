@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { IRegion, IRegionUpdatePayload } from "../../interfaces";
-import regionsApi from "../../api/regions";
+import { IRegion, IRegionUpdatePayload } from "@/interfaces";
+import regionsApi from "@/api/regions";
 
 export const getRegions = createAsyncThunk('regions/fetch',
     async (payload: string) => {

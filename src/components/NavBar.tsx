@@ -1,10 +1,10 @@
 import React, { ReactNode, useState } from 'react';
 import { mdiClose, mdiDotsVertical } from '@mdi/js';
-import { containerMaxW } from '../config';
+import { containerMaxW } from '@/config';
 import BaseIcon from './BaseIcon';
 import NavBarItemPlain from './NavBarItemPlain';
 import NavBarMenuList from './NavBarMenuList';
-import { MenuNavBarItem } from '../interfaces';
+import { MenuNavBarItem } from '@/interfaces';
 
 type Props = {
   menu: MenuNavBarItem[];

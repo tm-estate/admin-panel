@@ -3,11 +3,11 @@ import type { AppProps } from 'next/app';
 import type { ReactElement, ReactNode } from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import { store } from '../stores/store';
+import { store } from '@/stores/store';
 import { Provider } from 'react-redux';
-import '../css/main.css';
+import '@/css/main.css';
 import axios from 'axios';
-import { baseURLApi } from '../config';
+import { baseURLApi } from '@/config';
 
 export type NextPageWithLayout<P = Record<string, unknown>, IP = P> = NextPage<
   P,

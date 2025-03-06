@@ -3,11 +3,11 @@ import type { ReactElement } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 import Head from 'next/head';
-import CardBox from '../components/CardBox';
-import SectionFullScreen from '../components/SectionFullScreen';
-import LayoutGuest from '../layouts/Guest';
+import CardBox from '@/components/CardBox';
+import SectionFullScreen from '@/components/SectionFullScreen';
+import LayoutGuest from '@/layouts/Guest';
 import { useRouter } from 'next/router';
-import { getPageTitle } from '../config';
+import { getPageTitle } from '@/config';
 import axios from 'axios';
 
 export default function Verify() {

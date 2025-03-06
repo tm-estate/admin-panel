@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { containerMaxW } from '../config';
+import { containerMaxW } from '@/config';
 
 type Props = {
   children: ReactNode;

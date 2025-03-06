@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { IRegion, IRegions, IRegionUpdatePayload, IServerResponse } from "../interfaces";
+import { IRegion, IRegions, IRegionUpdatePayload, IServerResponse } from "@/interfaces";
 
 const regionsApi = {
     async getRegion(id: string | string[]) {

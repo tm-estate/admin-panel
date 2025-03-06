@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { fulfilledNotify, rejectNotify, resetNotify } from '../../helpers/notifyStateHandler'
-import { IRegion, INotify } from "../../interfaces";
-import {create, deleteRegion, getRegion, getRegions, update} from "../thunks/regions";
+import { fulfilledNotify, rejectNotify, resetNotify } from '@/helpers/notifyStateHandler'
+import { IRegion, INotify } from "@/interfaces";
+import {create, deleteRegion, getRegion, getRegions, update} from "@/stores/thunks/regions";
 
 interface MainState {
   region: IRegion;

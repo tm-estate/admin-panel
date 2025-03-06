@@ -2,24 +2,24 @@ import { mdiChartTimelineVariant } from '@mdi/js'
 import Head from 'next/head'
 import React, { ReactElement } from 'react'
 import 'react-toastify/dist/ReactToastify.min.css'
-import CardBox from '../../components/CardBox'
-import LayoutAuthenticated from '../../layouts/Authenticated'
-import SectionMain from '../../components/SectionMain'
-import SectionTitleLineWithButton from '../../components/SectionTitleLineWithButton'
-import { getPageTitle } from '../../config'
+import CardBox from '@/components/CardBox'
+import LayoutAuthenticated from '@/layouts/Authenticated'
+import SectionMain from '@/components/SectionMain'
+import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton'
+import { getPageTitle } from '@/config'
 
 import { Field, Form, Formik } from 'formik'
-import FormField from '../../components/FormField'
-import BaseDivider from '../../components/BaseDivider'
-import BaseButtons from '../../components/BaseButtons'
-import BaseButton from '../../components/BaseButton'
+import FormField from '@/components/FormField'
+import BaseDivider from '@/components/BaseDivider'
+import BaseButtons from '@/components/BaseButtons'
+import BaseButton from '@/components/BaseButton'
 
-import { AsyncSelectFieldMany } from '../../components/UI/AsyncSelectFieldMany'
+import { AsyncSelectFieldMany } from '@/components/UI/AsyncSelectFieldMany'
 
-import { create } from '../../stores/thunks/regions'
-import { useAppDispatch } from '../../stores/hooks'
+import { create } from '@/stores/thunks/regions'
+import { useAppDispatch } from '@/stores/hooks'
 import { useRouter } from 'next/router'
-import { IRegion } from "../../interfaces";
+import { IRegion } from "@/interfaces";
 
 const TablesPage = () => {
   const router = useRouter()

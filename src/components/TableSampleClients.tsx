@@ -1,7 +1,7 @@
 import { mdiEye, mdiTrashCan } from '@mdi/js';
 import React, { useState } from 'react';
-import { useSampleClients } from '../hooks/sampleData';
-import { Client } from '../interfaces';
+import { useSampleClients } from '@/hooks/sampleData';
+import { Client } from '@/interfaces';
 import BaseButton from './BaseButton';
 import BaseButtons from './BaseButtons';
 import CardBoxModal from './CardBoxModal';

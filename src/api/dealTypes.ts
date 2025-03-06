@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { IDealType, IDealTypes, IDealTypeUpdatePayload, IServerResponse } from "../interfaces";
+import { IDealType, IDealTypes, IDealTypeUpdatePayload, IServerResponse } from "@/interfaces";
 
 const dealTypesApi = {
     async getDealType(id: string | string[]) {

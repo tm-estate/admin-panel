@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { fulfilledNotify, rejectNotify, resetNotify } from '../../helpers/notifyStateHandler'
-import { INotify, IProductParameter } from "../../interfaces";
-import { create, deleteProductParameter, getProductParameter, getProductParameters, update } from "../thunks/product-parameters";
+import { fulfilledNotify, rejectNotify, resetNotify } from '@/helpers/notifyStateHandler'
+import { INotify, IProductParameter } from "@/interfaces";
+import { create, deleteProductParameter, getProductParameter, getProductParameters, update } from "@/stores/thunks/product-parameters";
 
 interface MainState {
   product_parameter: IProductParameter;

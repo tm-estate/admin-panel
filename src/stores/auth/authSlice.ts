@@ -96,8 +96,8 @@
 
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { IUser } from '../../interfaces'
-import { getMe, login, logout, register } from '../thunks/auth'
+import { IUser } from '@/interfaces'
+import { getMe, login, logout, register } from '@/stores/thunks/auth'
 
 interface AuthState {
   user: null | IUser

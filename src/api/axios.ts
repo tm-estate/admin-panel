@@ -5,7 +5,7 @@ import axios, {
     AxiosError,
     InternalAxiosRequestConfig,
 } from 'axios';
-import { IAxiosInstance, IServerError } from '../interfaces';
+import { IAxiosInstance, IServerError } from '@/interfaces';
 
 const DEFAULT_ERROR: IServerError = {
     code: 'SERVER__ERROR',

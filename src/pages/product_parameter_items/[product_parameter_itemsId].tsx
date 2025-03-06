@@ -11,31 +11,31 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import dayjs from 'dayjs';
 
-import CardBox from '../../components/CardBox';
-import LayoutAuthenticated from '../../layouts/Authenticated';
-import SectionMain from '../../components/SectionMain';
-import SectionTitleLineWithButton from '../../components/SectionTitleLineWithButton';
-import { getPageTitle } from '../../config';
+import CardBox from '@/components/CardBox';
+import LayoutAuthenticated from '@/layouts/Authenticated';
+import SectionMain from '@/components/SectionMain';
+import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton';
+import { getPageTitle } from '@/config';
 
 import { Field, Form, Formik } from 'formik';
-import FormField from '../../components/FormField';
-import BaseDivider from '../../components/BaseDivider';
-import BaseButtons from '../../components/BaseButtons';
-import BaseButton from '../../components/BaseButton';
-import FormCheckRadio from '../../components/FormCheckRadio';
-import FormCheckRadioGroup from '../../components/FormCheckRadioGroup';
-import FormFilePicker from '../../components/FormFilePicker';
-import FormImagePicker from '../../components/FormImagePicker';
-// import { SelectField } from '../../components/SelectField';
-// import { AsyncSelectFieldMany } from '../../components/UI/AsyncSelectFieldMany';
-import { SwitchField } from '../../components/SwitchField';
-import { RichTextField } from '../../components/RichTextField';
+import FormField from '@/components/FormField';
+import BaseDivider from '@/components/BaseDivider';
+import BaseButtons from '@/components/BaseButtons';
+import BaseButton from '@/components/BaseButton';
+import FormCheckRadio from '@/components/FormCheckRadio';
+import FormCheckRadioGroup from '@/components/FormCheckRadioGroup';
+import FormFilePicker from '@/components/FormFilePicker';
+import FormImagePicker from '@/components/FormImagePicker';
+// import { SelectField } from '@/components/SelectField';
+// import { AsyncSelectFieldMany } from '@/components/UI/AsyncSelectFieldMany';
+import { SwitchField } from '@/components/SwitchField';
+import { RichTextField } from '@/components/RichTextField';
 
 import {
   update,
   fetch,
-} from '../../stores/product_parameter_items/product_parameter_itemsSlice';
-import { useAppDispatch, useAppSelector } from '../../stores/hooks';
+} from '@/stores/product_parameter_items/product_parameter_itemsSlice';
+import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { useRouter } from 'next/router';
 
 const EditProduct_parameter_items = () => {

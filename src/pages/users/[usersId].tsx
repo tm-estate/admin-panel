@@ -10,30 +10,30 @@ import 'react-toastify/dist/ReactToastify.min.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-import CardBox from '../../components/CardBox';
-import LayoutAuthenticated from '../../layouts/Authenticated';
-import SectionMain from '../../components/SectionMain';
-import SectionTitleLineWithButton from '../../components/SectionTitleLineWithButton';
-import { getPageTitle } from '../../config';
+import CardBox from '@/components/CardBox';
+import LayoutAuthenticated from '@/layouts/Authenticated';
+import SectionMain from '@/components/SectionMain';
+import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton';
+import { getPageTitle } from '@/config';
 
 import { Field, Form, Formik } from 'formik';
-import FormField from '../../components/FormField';
-import BaseDivider from '../../components/BaseDivider';
-import BaseButtons from '../../components/BaseButtons';
-import BaseButton from '../../components/BaseButton';
-import FormCheckRadio from '../../components/FormCheckRadio';
-import FormCheckRadioGroup from '../../components/FormCheckRadioGroup';
-import FormFilePicker from '../../components/FormFilePicker';
-import FormImagePicker from '../../components/FormImagePicker';
-// import { SelectField } from '../../components/SelectField';
-// import { SelectFieldMany } from '../../components/SelectFieldMany';
-import { SwitchField } from '../../components/SwitchField';
-import { RichTextField } from '../../components/RichTextField';
+import FormField from '@/components/FormField';
+import BaseDivider from '@/components/BaseDivider';
+import BaseButtons from '@/components/BaseButtons';
+import BaseButton from '@/components/BaseButton';
+import FormCheckRadio from '@/components/FormCheckRadio';
+import FormCheckRadioGroup from '@/components/FormCheckRadioGroup';
+import FormFilePicker from '@/components/FormFilePicker';
+import FormImagePicker from '@/components/FormImagePicker';
+// import { SelectField } from '@/components/SelectField';
+// import { SelectFieldMany } from '@/components/SelectFieldMany';
+import { SwitchField } from '@/components/SwitchField';
+import { RichTextField } from '@/components/RichTextField';
 
-import { update, getUser } from '../../stores/thunks/users';
-import { useAppDispatch, useAppSelector } from '../../stores/hooks';
+import { update, getUser } from '@/stores/thunks/users';
+import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { useRouter } from 'next/router';
-import { IUser } from "../../interfaces";
+import { IUser } from "@/interfaces";
 // TODO need users api put request from backend
 const EditUsers = () => {
   const router = useRouter();

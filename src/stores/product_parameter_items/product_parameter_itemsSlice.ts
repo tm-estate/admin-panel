@@ -4,7 +4,7 @@ import {
   fulfilledNotify,
   rejectNotify,
   resetNotify,
-} from '../../helpers/notifyStateHandler';
+} from '@/helpers/notifyStateHandler';
 
 interface MainState {
   product_parameter_items: any;

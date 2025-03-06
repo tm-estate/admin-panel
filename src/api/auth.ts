@@ -7,7 +7,7 @@ import {
   ISignInPayload,
   ISignUpPayload,
   IUser
-} from '../interfaces';
+} from '@/interfaces';
 
 const authApi = {
   login(data: ISignInPayload) {

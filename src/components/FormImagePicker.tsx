@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ColorButtonKey } from '../interfaces';
+import { ColorButtonKey } from '@/interfaces';
 import BaseButton from './BaseButton';
 import ImagesUploader from './Uploaders/ImagesUploader';
 import FileUploader from './Uploaders/UploadService';

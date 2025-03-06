@@ -9,29 +9,29 @@ import React, { ReactElement, useEffect, useState } from 'react';
 import 'react-toastify/dist/ReactToastify.min.css';
 import 'react-datepicker/dist/react-datepicker.css';
 
-import CardBox from '../../components/CardBox';
-import LayoutAuthenticated from '../../layouts/Authenticated';
-import SectionMain from '../../components/SectionMain';
-import SectionTitleLineWithButton from '../../components/SectionTitleLineWithButton';
-import { getPageTitle } from '../../config';
+import CardBox from '@/components/CardBox';
+import LayoutAuthenticated from '@/layouts/Authenticated';
+import SectionMain from '@/components/SectionMain';
+import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton';
+import { getPageTitle } from '@/config';
 
 import { Field, Form, Formik } from 'formik';
-import FormField from '../../components/FormField';
-import BaseDivider from '../../components/BaseDivider';
-import BaseButtons from '../../components/BaseButtons';
-import BaseButton from '../../components/BaseButton';
+import FormField from '@/components/FormField';
+import BaseDivider from '@/components/BaseDivider';
+import BaseButtons from '@/components/BaseButtons';
+import BaseButton from '@/components/BaseButton';
 
-import { update, getProduct } from '../../stores/thunks/products';
-import { useAppDispatch, useAppSelector } from '../../stores/hooks';
+import { update, getProduct } from '@/stores/thunks/products';
+import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { useRouter } from 'next/router';
-import { SelectField } from "../../components/UI/SelectField";
-import FormImagePicker from '../../components/FormImagePicker'
-import {ILocalizedTitles, IProduct, IProductParameter} from "../../interfaces";
-import productParametersApi from "../../api/productParameters";
-import { AsyncSelectField } from "../../components/UI/AsyncSelectField";
-import FormCheckRadio from "../../components/FormCheckRadio";
-import { SwitchField } from "../../components/SwitchField";
-import { SelectFieldMany } from "../../components/UI/SelectFieldMany";
+import { SelectField } from "@/components/UI/SelectField";
+import FormImagePicker from '@/components/FormImagePicker'
+import {ILocalizedTitles, IProduct, IProductParameter} from "@/interfaces";
+import productParametersApi from "@/api/productParameters";
+import { AsyncSelectField } from "@/components/UI/AsyncSelectField";
+import FormCheckRadio from "@/components/FormCheckRadio";
+import { SwitchField } from "@/components/SwitchField";
+import { SelectFieldMany } from "@/components/UI/SelectFieldMany";
 
 const EditProduct = () => {
     const router = useRouter();

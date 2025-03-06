@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fulfilledNotify, rejectNotify, resetNotify } from '../../helpers/notifyStateHandler';
-import { create, deleteCity, update, getCities, getCity } from '../thunks/cities';
-import { ICity, INotify } from "../../interfaces";
+import { fulfilledNotify, rejectNotify, resetNotify } from '@/helpers/notifyStateHandler';
+import { create, deleteCity, update, getCities, getCity } from '@/stores/thunks/cities';
+import { ICity, INotify } from "@/interfaces";
 
 interface MainState {
   city: ICity;

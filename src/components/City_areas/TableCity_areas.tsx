@@ -2,15 +2,15 @@ import { mdiEye, mdiTrashCan } from '@mdi/js'
 import React, { useEffect, useState, useMemo } from 'react'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.min.css'
-import BaseButton from '../BaseButton'
-import BaseButtons from '../BaseButtons'
-import CardBoxModal from '../CardBoxModal'
-import CardBox from '../CardBox'
-import { useAppDispatch, useAppSelector } from '../../stores/hooks'
+import BaseButton from '@/components/BaseButton'
+import BaseButtons from '@/components/BaseButtons'
+import CardBoxModal from '@/components/CardBoxModal'
+import CardBox from '@/components/CardBox'
+import { useAppDispatch, useAppSelector } from '@/stores/hooks'
 import { useRouter } from 'next/router'
 import { Field, Form, Formik } from 'formik'
-import { Pagination } from '../Pagination'
-import {deleteCityArea, getCityAreas} from "../../stores/thunks/city-areas";
+import { Pagination } from '@/components/Pagination'
+import {deleteCityArea, getCityAreas} from "@/stores/thunks/city-areas";
 
 const perPage = 5
 

@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { fulfilledNotify, rejectNotify, resetNotify } from '../../helpers/notifyStateHandler'
-import { IDealType, INotify } from "../../interfaces";
-import { create, deleteDealType, getDealType, getDealTypes, update } from "../thunks/deal-types";
+import { fulfilledNotify, rejectNotify, resetNotify } from '@/helpers/notifyStateHandler'
+import { IDealType, INotify } from "@/interfaces";
+import { create, deleteDealType, getDealType, getDealTypes, update } from "@/stores/thunks/deal-types";
 
 interface MainState {
   deal_type: IDealType;
