@@ -1,12 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import authApi from '../../api/auth'
-import { ISignInPayload, ISignUpPayload } from '../../types/Auth'
+import { ISignInPayload, ISignUpPayload } from '../../interfaces'
 
 export const getMe = createAsyncThunk('auth/getMe', async (_, thunkAPI) => {
   try {
-    const res = await authApi.getMe()
-
-    return res
+    return await authApi.getMe()
   } catch (error: any) {
     const message = error?.response?.data?.message || error.message || error.toString()
 
@@ -48,6 +46,4 @@ export const register = createAsyncThunk(
   }
 )
 
-export const logout = createAsyncThunk('auth/logout', () => {
-  authApi.logout()
-})
+export const logout = createAsyncThunk('auth/logout', () => authApi.logout())

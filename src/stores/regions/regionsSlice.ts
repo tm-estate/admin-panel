@@ -1,19 +1,18 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import axios from 'axios'
+import { createSlice } from '@reduxjs/toolkit'
 import { fulfilledNotify, rejectNotify, resetNotify } from '../../helpers/notifyStateHandler'
+import { IRegion, INotify } from "../../interfaces";
+import {create, deleteRegion, getRegion, getRegions, update} from "../thunks/regions";
 
 interface MainState {
-  regions: any
-  loading: boolean
-  count: number
-  notify: {
-    showNotification: boolean
-    textNotification: string
-    typeNotification: string
-  }
+  region: IRegion;
+  regions: IRegion[];
+  loading: boolean;
+  count: number;
+  notify: INotify
 }
 
 const initialState: MainState = {
+  region: null,
   regions: [],
   loading: false,
   count: 0,
@@ -24,124 +23,81 @@ const initialState: MainState = {
   },
 }
 
-export const fetch = createAsyncThunk('regions/fetch', async (data: any) => {
-  const { id, query } = data
-  const result = await axios.get(`regions/admin${query || (id ? `/${id}` : '')}`)
-  return id ? result.data.data : { rows: result.data.data.rows, count: result.data.data.count }
-})
-
-export const deleteItem = createAsyncThunk(
-  'regions/deleteRegions',
-  async (id: string, { rejectWithValue }) => {
-    try {
-      await axios.delete(`regions/${id}`)
-    } catch (error) {
-      if (!error.response) {
-        throw error
-      }
-
-      return rejectWithValue(error.response.data)
-    }
-  }
-)
-
-export const create = createAsyncThunk(
-  'regions/createRegions',
-  async (data: any, { rejectWithValue }) => {
-    try {
-      const result = await axios.post('regions', data)
-      return result.data.data
-    } catch (error) {
-      if (!error.response) {
-        throw error
-      }
-
-      return rejectWithValue(error.response.data)
-    }
-  }
-)
-
-export const update = createAsyncThunk(
-  'regions/updateRegions',
-  async (payload: any, { rejectWithValue }) => {
-    try {
-      const result = await axios.put(`regions/${payload.id}`, payload.data)
-      return result.data.data
-    } catch (error) {
-      if (!error.response) {
-        throw error
-      }
-
-      return rejectWithValue(error.response.data)
-    }
-  }
-)
-
 export const regionsSlice = createSlice({
   name: 'regions',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetch.pending, (state) => {
-      state.loading = true
-      resetNotify(state)
-    })
-    builder.addCase(fetch.rejected, (state, action) => {
-      state.loading = false
-      rejectNotify(state, action)
-    })
+    builder
+        .addCase(getRegions.rejected, (state, action) => {
+          state.loading = false;
+          rejectNotify(state, action);
+        })
+        .addCase(getRegions.pending, (state) => {
+          state.loading = true;
+          resetNotify(state);
+        })
+        .addCase(getRegions.fulfilled, (state, action) => {
+          if (action.payload) {
+            state.regions = action.payload.rows;
+            state.count = action.payload.count;
+          }
+          state.loading = false;
+        })
 
-    builder.addCase(fetch.fulfilled, (state, action) => {
-      if (action.payload.count >= 0) {
-        state.regions = action.payload.rows
-        state.count = action.payload.count
-      } else {
-        state.regions = action.payload
-      }
-      state.loading = false
-    })
+        .addCase(getRegion.rejected, (state, action) => {
+          state.loading = false;
+          rejectNotify(state, action);
+        })
+        .addCase(getRegion.pending, (state) => {
+          state.loading = true;
+          resetNotify(state);
+        })
+        .addCase(getRegion.fulfilled, (state, action) => {
+          if (action.payload) {
+            state.region = action.payload;
+          }
+          state.loading = false;
+        })
 
-    builder.addCase(deleteItem.pending, (state) => {
-      state.loading = true
-      resetNotify(state)
-    })
+        .addCase(deleteRegion.rejected, (state, action) => {
+          state.loading = false;
+          rejectNotify(state, action);
+        })
+        .addCase(deleteRegion.pending, (state) => {
+          state.loading = true;
+          resetNotify(state);
+        })
+        .addCase(deleteRegion.fulfilled, (state) => {
+          state.loading = false;
+          fulfilledNotify(state, 'Region has been deleted');
+        })
 
-    builder.addCase(deleteItem.fulfilled, (state) => {
-      state.loading = false
-      fulfilledNotify(state, `${'Regions'.slice(0, -1)} has been deleted`)
-    })
+        .addCase(create.rejected, (state, action) => {
+          state.loading = false;
+          rejectNotify(state, action);
+        })
+        .addCase(create.pending, (state) => {
+          state.loading = true;
+          resetNotify(state);
+        })
+        .addCase(create.fulfilled, (state) => {
+          state.loading = false;
+          fulfilledNotify(state, 'Region has been created');
+        })
 
-    builder.addCase(deleteItem.rejected, (state, action) => {
-      state.loading = false
-      rejectNotify(state, action)
-    })
-
-    builder.addCase(create.pending, (state) => {
-      state.loading = true
-      resetNotify(state)
-    })
-    builder.addCase(create.rejected, (state, action) => {
-      state.loading = false
-      rejectNotify(state, action)
-    })
-
-    builder.addCase(create.fulfilled, (state) => {
-      state.loading = false
-      fulfilledNotify(state, `${'Regions'.slice(0, -1)} has been created`)
-    })
-
-    builder.addCase(update.pending, (state) => {
-      state.loading = true
-      resetNotify(state)
-    })
-    builder.addCase(update.fulfilled, (state) => {
-      state.loading = false
-      fulfilledNotify(state, `${'Regions'.slice(0, -1)} has been updated`)
-    })
-    builder.addCase(update.rejected, (state, action) => {
-      state.loading = false
-      rejectNotify(state, action)
-    })
+        .addCase(update.rejected, (state, action) => {
+          state.loading = false
+          rejectNotify(state, action)
+        })
+        .addCase(update.pending, (state) => {
+          state.loading = true
+          resetNotify(state)
+        })
+        .addCase(update.fulfilled, (state) => {
+          state.loading = false;
+          fulfilledNotify(state, 'Region has been updated');
+        })
   },
 })
 

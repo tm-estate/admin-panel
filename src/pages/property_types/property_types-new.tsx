@@ -14,16 +14,23 @@ import BaseDivider from '../../components/BaseDivider'
 import BaseButtons from '../../components/BaseButtons'
 import BaseButton from '../../components/BaseButton'
 
-import { create } from '../../stores/property_types/property_typesSlice'
+import { create } from '../../stores/thunks/property-types'
 import { useAppDispatch } from '../../stores/hooks'
 import { useRouter } from 'next/router'
-import { SelectFieldMany } from '../../components/SelectFieldMany'
+import { AsyncSelectFieldMany } from '../../components/UI/AsyncSelectFieldMany'
+import { IPropertyType } from "../../interfaces";
 
 const TablesPage = () => {
   const router = useRouter()
   const dispatch = useAppDispatch()
+  const initValues: IPropertyType = {
+    titleRu: '',
+    titleEn: '',
+    titleTm: '',
+    dealTypes: [],
+  }
 
-  const handleSubmit = async (data) => {
+  const handleSubmit = async (data: IPropertyType) => {
     await dispatch(create(data))
     await router.push('/property_types/property_types-list')
   }
@@ -38,15 +45,7 @@ const TablesPage = () => {
         </SectionTitleLineWithButton>
         <CardBox>
           <Formik
-            initialValues={{
-              titleRu: '',
-
-              titleEn: '',
-
-              titleTm: '',
-
-              dealTypes: [],
-            }}
+            initialValues={initValues}
             onSubmit={(values) => handleSubmit(values)}
           >
             <Form>
@@ -69,7 +68,7 @@ const TablesPage = () => {
                   itemRef={'dealTypes'}
                   showField={'titleRu'}
                   options={[]}
-                  component={SelectFieldMany}
+                  component={AsyncSelectFieldMany}
                 ></Field>
               </FormField>
 

@@ -16,48 +16,36 @@ import BaseDivider from '../../components/BaseDivider'
 import BaseButtons from '../../components/BaseButtons'
 import BaseButton from '../../components/BaseButton'
 
-import { update, fetch } from '../../stores/property_types/property_typesSlice'
+import { update, getPropertyType } from '../../stores/thunks/property-types'
 import { useAppDispatch, useAppSelector } from '../../stores/hooks'
 import { useRouter } from 'next/router'
-import { SelectFieldMany } from '../../components/SelectFieldMany'
+import { AsyncSelectFieldMany } from '../../components/UI/AsyncSelectFieldMany'
+import { IPropertyType } from "../../interfaces";
 
 const EditProperty_types = () => {
   const router = useRouter()
   const dispatch = useAppDispatch()
-  const initVals = {
-    ['titleRu']: '',
-
-    ['titleEn']: '',
-
-    ['titleTm']: '',
-
+  const initValues: IPropertyType = {
+    titleRu: '',
+    titleEn: '',
+    titleTm: '',
     dealTypes: [],
   }
-  const [initialValues, setInitialValues] = useState(initVals)
-
-  const { property_types } = useAppSelector((state) => state.property_types)
-
+  const [initialValues, setInitialValues] = useState(initValues)
+  const [isLoading, setIsLoading] = useState(true);
+  const { property_type } = useAppSelector((state) => state.property_types)
   const { property_typesId } = router.query
 
   useEffect(() => {
-    dispatch(fetch({ id: property_typesId }))
+    if(property_typesId) dispatch(getPropertyType(property_typesId))
   }, [property_typesId])
 
   useEffect(() => {
-    if (typeof property_types === 'object') {
-      setInitialValues(property_types)
+    if (typeof property_type === 'object') {
+      setInitialValues(property_type)
+      setIsLoading(false)
     }
-  }, [property_types])
-
-  useEffect(() => {
-    if (typeof property_types === 'object') {
-      const newInitialVal = { ...initVals }
-
-      Object.keys(initVals).forEach((el) => (newInitialVal[el] = property_types[el]))
-
-      setInitialValues(newInitialVal)
-    }
-  }, [property_types])
+  }, [property_type])
 
   const handleSubmit = async (data) => {
     await dispatch(update({ id: property_typesId, data }))
@@ -74,50 +62,52 @@ const EditProperty_types = () => {
           Breadcrumbs
         </SectionTitleLineWithButton>
         <CardBox>
-          <Formik
-            enableReinitialize
-            initialValues={initialValues}
-            onSubmit={(values) => handleSubmit(values)}
-          >
-            <Form>
-              <FormField label="Title Ru">
-                <Field name="titleRu" placeholder="Your Title Ru" />
-              </FormField>
+          { !isLoading && initialValues &&
+            <Formik
+                enableReinitialize
+                initialValues={initialValues}
+                onSubmit={(values) => handleSubmit(values)}
+            >
+              <Form>
+                <FormField label="Title Ru">
+                  <Field name="titleRu" placeholder="Your Title Ru"/>
+                </FormField>
 
-              <FormField label="Title En">
-                <Field name="titleEn" placeholder="Your Title En" />
-              </FormField>
+                <FormField label="Title En">
+                  <Field name="titleEn" placeholder="Your Title En"/>
+                </FormField>
 
-              <FormField label="Title Tm">
-                <Field name="titleTm" placeholder="Your Title Tm" />
-              </FormField>
+                <FormField label="Title Tm">
+                  <Field name="titleTm" placeholder="Your Title Tm"/>
+                </FormField>
 
-              <FormField label="Deal Types" labelFor="dealTypes">
-                <Field
-                  name="dealTypes"
-                  id="dealTypes"
-                  component={SelectFieldMany}
-                  options={initialValues.dealTypes}
-                  itemRef={'dealTypes'}
-                  showField={'titleRu'}
-                ></Field>
-              </FormField>
+                <FormField label="Deal Types" labelFor="dealTypes">
+                  <Field
+                      name="dealTypes"
+                      id="dealTypes"
+                      component={AsyncSelectFieldMany}
+                      options={initialValues.dealTypes}
+                      itemRef={'dealTypes'}
+                      showField={'titleRu'}
+                  ></Field>
+                </FormField>
 
-              <BaseDivider />
+                <BaseDivider/>
 
-              <BaseButtons>
-                <BaseButton type="submit" color="info" label="Submit" />
-                <BaseButton type="reset" color="info" outline label="Reset" />
-                <BaseButton
-                  type="reset"
-                  color="danger"
-                  outline
-                  label="Cancel"
-                  onClick={() => router.push('/property_types/property_types-list')}
-                />
-              </BaseButtons>
-            </Form>
-          </Formik>
+                <BaseButtons>
+                  <BaseButton type="submit" color="info" label="Submit"/>
+                  <BaseButton type="reset" color="info" outline label="Reset"/>
+                  <BaseButton
+                      type="reset"
+                      color="danger"
+                      outline
+                      label="Cancel"
+                      onClick={() => router.push('/property_types/property_types-list')}
+                  />
+                </BaseButtons>
+              </Form>
+            </Formik>
+          }
         </CardBox>
       </SectionMain>
     </>

@@ -1,40 +1,39 @@
-import {
-  mdiAccount,
-  mdiChartTimelineVariant,
-  mdiMail,
-  mdiUpload,
-} from '@mdi/js';
+import React, { ReactElement, useState } from 'react';
 import Head from 'next/head';
-import React, { ReactElement } from 'react';
+import { useRouter } from 'next/router';
+
+import { mdiChartTimelineVariant} from '@mdi/js';
 import 'react-toastify/dist/ReactToastify.min.css';
+
+import { useAppDispatch } from '../../stores/hooks';
+import { create } from '../../stores/thunks/city-areas';
+import { getPageTitle } from '../../config';
+
 import CardBox from '../../components/CardBox';
 import LayoutAuthenticated from '../../layouts/Authenticated';
 import SectionMain from '../../components/SectionMain';
 import SectionTitleLineWithButton from '../../components/SectionTitleLineWithButton';
-import { getPageTitle } from '../../config';
 
 import { Field, Form, Formik } from 'formik';
 import FormField from '../../components/FormField';
 import BaseDivider from '../../components/BaseDivider';
 import BaseButtons from '../../components/BaseButtons';
 import BaseButton from '../../components/BaseButton';
-import FormCheckRadio from '../../components/FormCheckRadio';
-import FormCheckRadioGroup from '../../components/FormCheckRadioGroup';
-import FormFilePicker from '../../components/FormFilePicker';
-import FormImagePicker from '../../components/FormImagePicker';
-import { SwitchField } from '../../components/SwitchField';
 
-import { SelectField } from '../../components/SelectField';
-import { SelectFieldMany } from '../../components/SelectFieldMany';
-import { RichTextField } from '../../components/RichTextField';
-
-import { create } from '../../stores/city_areas/city_areasSlice';
-import { useAppDispatch } from '../../stores/hooks';
-import { useRouter } from 'next/router';
+import { ICityArea } from "../../interfaces";
 
 const TablesPage = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const initValues: ICityArea = {
+    titleEn: '',
+    titleRu: '',
+    titleTm: '',
+    coordinate: {
+      latitude: null,
+      longitude: null,
+    },
+  }
 
   const handleSubmit = async (data) => {
     await dispatch(create(data));
@@ -55,18 +54,7 @@ const TablesPage = () => {
         </SectionTitleLineWithButton>
         <CardBox>
           <Formik
-            initialValues={{
-              titleEn: '',
-
-              titleRu: '',
-
-              titleTm: '',
-
-              coordinate: {
-                latitude: null,
-                longitude: null,
-              },
-            }}
+            initialValues={initValues}
             onSubmit={(values) => handleSubmit(values)}
           >
             <Form>

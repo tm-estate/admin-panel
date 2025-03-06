@@ -24,11 +24,11 @@ import FormFilePicker from '../../components/FormFilePicker';
 import FormImagePicker from '../../components/FormImagePicker';
 import { SwitchField } from '../../components/SwitchField';
 
-import { SelectField } from '../../components/SelectField';
-import { SelectFieldMany } from '../../components/SelectFieldMany';
+// import { SelectField } from '../../components/SelectField';
+// import { SelectFieldMany } from '../../components/SelectFieldMany';
 import { RichTextField } from '../../components/RichTextField';
 
-import { create } from '../../stores/users/usersSlice';
+import { create } from '../../stores/thunks/users';
 import { useAppDispatch } from '../../stores/hooks';
 import { useRouter } from 'next/router';
 

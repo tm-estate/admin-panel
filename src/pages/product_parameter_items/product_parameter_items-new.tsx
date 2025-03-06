@@ -24,8 +24,8 @@ import FormFilePicker from '../../components/FormFilePicker';
 import FormImagePicker from '../../components/FormImagePicker';
 import { SwitchField } from '../../components/SwitchField';
 
-import { SelectField } from '../../components/SelectField';
-import { SelectFieldMany } from '../../components/SelectFieldMany';
+// import { SelectField } from '../../components/SelectField';
+// import { SelectFieldMany } from '../../components/SelectFieldMany';
 import { RichTextField } from '../../components/RichTextField';
 
 import { create } from '../../stores/product_parameter_items/product_parameter_itemsSlice';

@@ -2,26 +2,27 @@ import React, { useEffect, useId, useState } from 'react';
 import AsyncSelect from 'react-select/async';
 import axios from 'axios';
 
-export const SelectField = ({ options, field, form, itemRef, showField }) => {
+export const AsyncSelectField = ({ options, field, form, itemRef, showField }) => {
   const [value, setValue] = useState(null);
 
   useEffect(() => {
+    // console.log({ itemRef })
     if (options?._id) {
       setValue({ value: options._id, label: options[showField] })
       // setValue(options.map((el) => ({ value: el._id, label: el[showField] })))
       form.setFieldValue(
-          field.name,
-          field.value?.id
+        field.name,
+        field.value?.id
       )
     }
   }, [options])
 
-  // useEffect(() => {
-  //   if (options?.id && field?.value?.id) {
-  //     setValue({ value: field.value?.id, label: field.value[showField] });
-  //     form.setFieldValue(field.name, field.value?.id);
-  //   }
-  // }, [options?.id, field?.value?.id]);
+  useEffect(() => {
+    if (options?.id && field?.value?.id) {
+      setValue({ value: field.value?.id, label: field.value[showField] });
+      form.setFieldValue(field.name, field.value?.id);
+    }
+  }, [options?.id, field?.value?.id]);
 
   const mapResponseToValuesAndLabels = (data) => ({
     value: data._id,
@@ -33,18 +34,16 @@ export const SelectField = ({ options, field, form, itemRef, showField }) => {
   };
 
   async function callApi() {
-    console.log(3333)
-    const {data} = await axios(`/${itemRef}/autocomplete?limit=100`);
-    const test = data.data.map(mapResponseToValuesAndLabels);
-
-    return test
+    // console.log(3333)
+    const { data } = await axios(`/${itemRef}/autocomplete?limit=100`);
+    return data.data.map(mapResponseToValuesAndLabels);
   }
   return (
     <AsyncSelect
       classNames={{
         control: () => 'px-1 py-2',
       }}
-      instanceId={useId()}
+      instanceId={field.name || useId()}
       value={value}
       loadOptions={callApi}
       onChange={handleChange}

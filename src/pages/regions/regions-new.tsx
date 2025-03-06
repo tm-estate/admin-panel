@@ -14,17 +14,27 @@ import BaseDivider from '../../components/BaseDivider'
 import BaseButtons from '../../components/BaseButtons'
 import BaseButton from '../../components/BaseButton'
 
-import { SelectFieldMany } from '../../components/SelectFieldMany'
+import { AsyncSelectFieldMany } from '../../components/UI/AsyncSelectFieldMany'
 
-import { create } from '../../stores/regions/regionsSlice'
+import { create } from '../../stores/thunks/regions'
 import { useAppDispatch } from '../../stores/hooks'
 import { useRouter } from 'next/router'
+import { IRegion } from "../../interfaces";
 
 const TablesPage = () => {
   const router = useRouter()
   const dispatch = useAppDispatch()
-
-  const handleSubmit = async (data) => {
+  const initValues: IRegion = {
+    titleEn: '',
+    titleRu: '',
+    titleTm: '',
+    coordinate: {
+      latitude: null,
+      longitude: null,
+    },
+    cities: [],
+  }
+  const handleSubmit = async (data: IRegion) => {
     await dispatch(create(data))
     await router.push('/regions/regions-list')
   }
@@ -39,20 +49,7 @@ const TablesPage = () => {
         </SectionTitleLineWithButton>
         <CardBox>
           <Formik
-            initialValues={{
-              titleEn: '',
-
-              titleRu: '',
-
-              titleTm: '',
-
-              coordinate: {
-                latitude: null,
-                longitude: null,
-              },
-
-              cities: [],
-            }}
+            initialValues={initValues}
             onSubmit={(values) => handleSubmit(values)}
           >
             <Form>
@@ -80,7 +77,7 @@ const TablesPage = () => {
                   itemRef={'cities'}
                   showField="titleRu"
                   options={[]}
-                  component={SelectFieldMany}
+                  component={AsyncSelectFieldMany}
                 ></Field>
               </FormField>
 

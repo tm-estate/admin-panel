@@ -9,7 +9,6 @@ import React, { ReactElement, useEffect, useState } from 'react';
 import 'react-toastify/dist/ReactToastify.min.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import dayjs from 'dayjs';
 
 import CardBox from '../../components/CardBox';
 import LayoutAuthenticated from '../../layouts/Authenticated';
@@ -26,60 +25,46 @@ import FormCheckRadio from '../../components/FormCheckRadio';
 import FormCheckRadioGroup from '../../components/FormCheckRadioGroup';
 import FormFilePicker from '../../components/FormFilePicker';
 import FormImagePicker from '../../components/FormImagePicker';
-import { SelectField } from '../../components/SelectField';
-import { SelectFieldMany } from '../../components/SelectFieldMany';
+// import { SelectField } from '../../components/SelectField';
+// import { SelectFieldMany } from '../../components/SelectFieldMany';
 import { SwitchField } from '../../components/SwitchField';
 import { RichTextField } from '../../components/RichTextField';
 
-import { update, fetch } from '../../stores/users/usersSlice';
+import { update, getUser } from '../../stores/thunks/users';
 import { useAppDispatch, useAppSelector } from '../../stores/hooks';
 import { useRouter } from 'next/router';
-
+import { IUser } from "../../interfaces";
+// TODO need users api put request from backend
 const EditUsers = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const initVals = {
-    ['firstName']: '',
-
-    ['lastName']: '',
-
-    ['phoneNumber']: '',
-
-    ['email']: '',
-
-    role: '',
-
+  const initValues: IUser = {
+    name: '',
+    phone: '',
+    email: '',
+    isPhoneNumberConfirmed: false,
+    savedProducts: [],
     disabled: false,
-
-    avatar: [],
-
-    password: '',
   };
-  const [initialValues, setInitialValues] = useState(initVals);
+  const [initialValues, setInitialValues] = useState(initValues);
 
-  const { users } = useAppSelector((state) => state.users);
+  const { user } = useAppSelector((state) => state.users);
 
   const { usersId } = router.query;
 
   useEffect(() => {
-    dispatch(fetch({ id: usersId }));
+    console.log(usersId)
+    if(usersId) dispatch(getUser(usersId));
   }, [usersId]);
 
   useEffect(() => {
-    if (typeof users === 'object') {
-      setInitialValues(users);
+    if (typeof user === 'object') {
+      setInitialValues(user);
     }
-  }, [users]);
 
-  useEffect(() => {
-    if (typeof users === 'object') {
-      const newInitialVal = { ...initVals };
+    console.log(user)
+  }, [user]);
 
-      Object.keys(initVals).forEach((el) => (newInitialVal[el] = users[el]));
-
-      setInitialValues(newInitialVal);
-    }
-  }, [users]);
 
   const handleSubmit = async (data) => {
     await dispatch(update({ id: usersId, data }));

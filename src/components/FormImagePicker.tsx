@@ -27,7 +27,7 @@ const FormImagePicker = ({
   form,
   field,
 }: Props) => {
-  console.log(33333, {path, form, field})
+  // console.log(33333, {path, form, field})
   const [file, setFile] = useState(null);
 
   useEffect(() => {

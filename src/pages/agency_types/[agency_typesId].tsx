@@ -16,47 +16,35 @@ import BaseDivider from '../../components/BaseDivider'
 import BaseButtons from '../../components/BaseButtons'
 import BaseButton from '../../components/BaseButton'
 
-import { update, fetch } from '../../stores/agency_types/agency_typesSlice'
+import { update, getAgencyType } from '../../stores/thunks/agency-types'
 import { useAppDispatch, useAppSelector } from '../../stores/hooks'
 import { useRouter } from 'next/router'
+import { IAgencyType } from "../../interfaces";
 
 const EditAgency_types = () => {
   const router = useRouter()
   const dispatch = useAppDispatch()
-  const initVals = {
-    ['titleRu']: '',
-
-    ['titleEn']: '',
-
-    ['titleTm']: '',
-
-    dealTypes: [],
+  const initValues: IAgencyType = {
+    titleRu: '',
+    titleEn: '',
+    titleTm: '',
   }
-  const [initialValues, setInitialValues] = useState(initVals)
-
-  const { agency_types } = useAppSelector((state) => state.agency_types)
-
+  const [initialValues, setInitialValues] = useState(initValues)
+  const [isLoading, setIsLoading] = useState(true);
+  const { agency_type } = useAppSelector((state) => state.agency_types)
   const { agency_typesId } = router.query
 
+
   useEffect(() => {
-    dispatch(fetch({ id: agency_typesId }))
+    if(agency_typesId) dispatch(getAgencyType(agency_typesId))
   }, [agency_typesId])
 
   useEffect(() => {
-    if (typeof agency_types === 'object') {
-      setInitialValues(agency_types)
+    if (typeof agency_type === 'object') {
+      setInitialValues(agency_type)
+      setIsLoading(false)
     }
-  }, [agency_types])
-
-  useEffect(() => {
-    if (typeof agency_types === 'object') {
-      const newInitialVal = { ...initVals }
-
-      Object.keys(initVals).forEach((el) => (newInitialVal[el] = agency_types[el]))
-
-      setInitialValues(newInitialVal)
-    }
-  }, [agency_types])
+  }, [agency_type])
 
   const handleSubmit = async (data) => {
     await dispatch(update({ id: agency_typesId, data }))
@@ -73,39 +61,41 @@ const EditAgency_types = () => {
           Breadcrumbs
         </SectionTitleLineWithButton>
         <CardBox>
-          <Formik
-            enableReinitialize
-            initialValues={initialValues}
-            onSubmit={(values) => handleSubmit(values)}
-          >
-            <Form>
-              <FormField label="Title Ru">
-                <Field name="titleRu" placeholder="Your Title Ru" />
-              </FormField>
+          { !isLoading && initialValues &&
+            <Formik
+                enableReinitialize
+                initialValues={initialValues}
+                onSubmit={(values) => handleSubmit(values)}
+            >
+              <Form>
+                <FormField label="Title Ru">
+                  <Field name="titleRu" placeholder="Your Title Ru"/>
+                </FormField>
 
-              <FormField label="Title En">
-                <Field name="titleEn" placeholder="Your Title En" />
-              </FormField>
+                <FormField label="Title En">
+                  <Field name="titleEn" placeholder="Your Title En"/>
+                </FormField>
 
-              <FormField label="Title Tm">
-                <Field name="titleTm" placeholder="Your Title Tm" />
-              </FormField>
+                <FormField label="Title Tm">
+                  <Field name="titleTm" placeholder="Your Title Tm"/>
+                </FormField>
 
-              <BaseDivider />
+                <BaseDivider/>
 
-              <BaseButtons>
-                <BaseButton type="submit" color="info" label="Submit" />
-                <BaseButton type="reset" color="info" outline label="Reset" />
-                <BaseButton
-                  type="reset"
-                  color="danger"
-                  outline
-                  label="Cancel"
-                  onClick={() => router.push('/agency_types/agency_types-list')}
-                />
-              </BaseButtons>
-            </Form>
-          </Formik>
+                <BaseButtons>
+                  <BaseButton type="submit" color="info" label="Submit"/>
+                  <BaseButton type="reset" color="info" outline label="Reset"/>
+                  <BaseButton
+                      type="reset"
+                      color="danger"
+                      outline
+                      label="Cancel"
+                      onClick={() => router.push('/agency_types/agency_types-list')}
+                  />
+                </BaseButtons>
+              </Form>
+            </Formik>
+          }
         </CardBox>
       </SectionMain>
     </>

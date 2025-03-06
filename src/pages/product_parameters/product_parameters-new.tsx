@@ -19,18 +19,29 @@ import FormFilePicker from '../../components/FormFilePicker'
 import FormImagePicker from '../../components/FormImagePicker'
 import { SwitchField } from '../../components/SwitchField'
 
-import { SelectField } from '../../components/SelectField'
-import { SelectFieldMany } from '../../components/SelectFieldMany'
+// import { SelectField } from '../../components/SelectField'
+import { AsyncSelectFieldMany } from '../../components/UI/AsyncSelectFieldMany'
 import { RichTextField } from '../../components/RichTextField'
 
-import { create } from '../../stores/product_parameters/product_parametersSlice'
+import { create } from '../../stores/thunks/product-parameters'
 import { useAppDispatch } from '../../stores/hooks'
 import { useRouter } from 'next/router'
+import { IProductParameter } from "../../interfaces";
 
 const TablesPage = () => {
   const router = useRouter()
   const dispatch = useAppDispatch()
-
+  const initValues: IProductParameter = {
+    titleEn: '',
+    titleRu: '',
+    titleTm: '',
+    selectType: '',
+    isRequired: false,
+    dealTypes: [],
+    propertyTypes: [],
+    key: '',
+    items: [],
+  }
   const handleSubmit = async (data) => {
     await dispatch(create(data))
     await router.push('/product_parameters/product_parameters-list')
@@ -46,25 +57,7 @@ const TablesPage = () => {
         </SectionTitleLineWithButton>
         <CardBox>
           <Formik
-            initialValues={{
-              titleEn: '',
-
-              titleRu: '',
-
-              titleTm: '',
-
-              selectType: '',
-
-              isRequired: false,
-
-              dealTypes: [],
-
-              propertyTypes: [],
-
-              key: '',
-
-              items: [],
-            }}
+            initialValues={initValues}
             onSubmit={(values) => handleSubmit(values)}
           >
             <Form>
@@ -115,7 +108,7 @@ const TablesPage = () => {
                   itemRef={'dealTypes'}
                   showField={'titleRu'}
                   options={[]}
-                  component={SelectFieldMany}
+                  component={AsyncSelectFieldMany}
                 ></Field>
               </FormField>
 
@@ -126,7 +119,7 @@ const TablesPage = () => {
                   itemRef={'propertyTypes'}
                   showField={'titleRu'}
                   options={[]}
-                  component={SelectFieldMany}
+                  component={AsyncSelectFieldMany}
                 ></Field>
               </FormField>
 
@@ -141,7 +134,7 @@ const TablesPage = () => {
                   itemRef={'productParameterItems'}
                   showField={'titleRu'}
                   options={[]}
-                  component={SelectFieldMany}
+                  component={AsyncSelectFieldMany}
                 ></Field>
               </FormField>
 

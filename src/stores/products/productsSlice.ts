@@ -1,19 +1,18 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import axios from 'axios'
+import { createSlice } from '@reduxjs/toolkit'
 import { fulfilledNotify, rejectNotify, resetNotify } from '../../helpers/notifyStateHandler'
+import { create, deleteProduct, getProduct, getProducts, update } from "../thunks/products";
+import { INotify, IProduct } from "../../interfaces";
 
 interface MainState {
-  products: any
-  loading: boolean
-  count: number
-  notify: {
-    showNotification: boolean
-    textNotification: string
-    typeNotification: string
-  }
+  product: IProduct;
+  products: IProduct[];
+  loading: boolean;
+  count: number;
+  notify: INotify
 }
 
 const initialState: MainState = {
+  product: null,
   products: [],
   loading: false,
   count: 0,
@@ -24,124 +23,81 @@ const initialState: MainState = {
   },
 }
 
-export const fetch = createAsyncThunk('products/fetch', async (data: any) => {
-  const { id, query } = data
-  const result = await axios.get(`products/admin${query || (id ? `/${id}` : '')}`)
-  return id ? result.data.data : { rows: result.data.data.rows, count: result.data.data.count }
-})
-
-export const deleteItem = createAsyncThunk(
-  'products/deleteProduct',
-  async (id: string, { rejectWithValue }) => {
-    try {
-      await axios.delete(`products/${id}`)
-    } catch (error) {
-      if (!error.response) {
-        throw error
-      }
-
-      return rejectWithValue(error.response.data)
-    }
-  }
-)
-
-export const create = createAsyncThunk(
-  'products/createProduct',
-  async (data: any, { rejectWithValue }) => {
-    try {
-      const result = await axios.post('products', { data })
-      return result.data
-    } catch (error) {
-      if (!error.response) {
-        throw error
-      }
-
-      return rejectWithValue(error.response.data)
-    }
-  }
-)
-
-export const update = createAsyncThunk(
-  'products/updateProduct',
-  async (payload: any, { rejectWithValue }) => {
-    try {
-      const result = await axios.put(`products/${payload.id}`, payload.data)
-      return result.data.data
-    } catch (error) {
-      if (!error.response) {
-        throw error
-      }
-
-      return rejectWithValue(error.response.data)
-    }
-  }
-)
-
 export const productsSlice = createSlice({
   name: 'products',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetch.pending, (state) => {
-      state.loading = true
-      resetNotify(state)
-    })
-    builder.addCase(fetch.rejected, (state, action) => {
-      state.loading = false
-      rejectNotify(state, action)
-    })
+    builder
+        .addCase(getProducts.rejected, (state, action) => {
+          state.loading = false;
+          rejectNotify(state, action);
+        })
+        .addCase(getProducts.pending, (state) => {
+          state.loading = true;
+          resetNotify(state);
+        })
+        .addCase(getProducts.fulfilled, (state, action) => {
+          if (action.payload) {
+            state.products = action.payload.rows;
+            state.count = action.payload.count;
+          }
+          state.loading = false;
+        })
 
-    builder.addCase(fetch.fulfilled, (state, action) => {
-      if (action.payload.count >= 0) {
-        state.products = action.payload.rows
-        state.count = action.payload.count
-      } else {
-        state.products = action.payload
-      }
-      state.loading = false
-    })
+        .addCase(getProduct.rejected, (state, action) => {
+          state.loading = false;
+          rejectNotify(state, action);
+        })
+        .addCase(getProduct.pending, (state) => {
+          state.loading = true;
+          resetNotify(state);
+        })
+        .addCase(getProduct.fulfilled, (state, action) => {
+          if (action.payload) {
+            state.product = action.payload;
+          }
+          state.loading = false;
+        })
 
-    builder.addCase(deleteItem.pending, (state) => {
-      state.loading = true
-      resetNotify(state)
-    })
+        .addCase(deleteProduct.rejected, (state, action) => {
+          state.loading = false;
+          rejectNotify(state, action);
+        })
+        .addCase(deleteProduct.pending, (state) => {
+          state.loading = true;
+          resetNotify(state);
+        })
+        .addCase(deleteProduct.fulfilled, (state) => {
+          state.loading = false;
+          fulfilledNotify(state, 'Product has been deleted');
+        })
 
-    builder.addCase(deleteItem.fulfilled, (state) => {
-      state.loading = false
-      fulfilledNotify(state, `${'Products'.slice(0, -1)} has been deleted`)
-    })
+        .addCase(create.rejected, (state, action) => {
+          state.loading = false;
+          rejectNotify(state, action);
+        })
+        .addCase(create.pending, (state) => {
+          state.loading = true;
+          resetNotify(state);
+        })
+        .addCase(create.fulfilled, (state) => {
+          state.loading = false;
+          fulfilledNotify(state, 'Product has been created');
+        })
 
-    builder.addCase(deleteItem.rejected, (state, action) => {
-      state.loading = false
-      rejectNotify(state, action)
-    })
-
-    builder.addCase(create.pending, (state) => {
-      state.loading = true
-      resetNotify(state)
-    })
-    builder.addCase(create.rejected, (state, action) => {
-      state.loading = false
-      rejectNotify(state, action)
-    })
-
-    builder.addCase(create.fulfilled, (state) => {
-      state.loading = false
-      fulfilledNotify(state, `${'Products'.slice(0, -1)} has been created`)
-    })
-
-    builder.addCase(update.pending, (state) => {
-      state.loading = true
-      resetNotify(state)
-    })
-    builder.addCase(update.fulfilled, (state) => {
-      state.loading = false
-      fulfilledNotify(state, `${'Products'.slice(0, -1)} has been updated`)
-    })
-    builder.addCase(update.rejected, (state, action) => {
-      state.loading = false
-      rejectNotify(state, action)
-    })
+        .addCase(update.rejected, (state, action) => {
+          state.loading = false
+          rejectNotify(state, action)
+        })
+        .addCase(update.pending, (state) => {
+          state.loading = true
+          resetNotify(state)
+        })
+        .addCase(update.fulfilled, (state) => {
+          state.loading = false;
+          fulfilledNotify(state, 'Product has been updated');
+        })
   },
 })
 

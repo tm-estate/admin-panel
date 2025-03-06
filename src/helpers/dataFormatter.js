@@ -1,6 +1,9 @@
 import dayjs from 'dayjs'
 
 export default {
+  capitalize(str) {
+    return String(str).charAt(0).toUpperCase() + String(str).slice(1);
+  },
   filesFormatter(arr) {
     if (!arr || !arr.length) return []
     return arr.map((item) => item)
@@ -122,4 +125,15 @@ export default {
     if (!val) return ''
     return { label: val.id, id: val.id }
   },
+  phoneFormatter(str) {
+    const regex = /^993(\d{2})(\d{6})$/;
+    console.log({str})
+    const match = str.match(regex);
+
+    console.log({match})
+    const operatorCode = match[1];
+    const subscriberNumber = match[2];
+
+    return `+993 (${operatorCode}) ${subscriberNumber}`;
+  }
 }

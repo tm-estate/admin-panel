@@ -6,7 +6,7 @@ import BaseButton from '../BaseButton'
 import BaseButtons from '../BaseButtons'
 import CardBoxModal from '../CardBoxModal'
 import CardBox from '../CardBox'
-import { fetch, deleteItem } from '../../stores/cities/citiesSlice'
+import { deleteCity, getCities } from '../../stores/thunks/cities'
 import { useAppDispatch, useAppSelector } from '../../stores/hooks'
 import { useRouter } from 'next/router'
 import dataFormatter from '../../helpers/dataFormatter'
@@ -38,7 +38,7 @@ const TableSampleCities = ({ filterItems, setFilterItems, filters }) => {
     if (request !== filterRequest) setFilterRequest(request)
 
     const query = `?page=${++page}&limit=${perPage}${request}&sort=${sort}&field=${field}`
-    dispatch(fetch({ limit: perPage, page: ++page, query }))
+    dispatch(getCities(query))
   }
 
   useEffect(() => {
@@ -50,6 +50,8 @@ const TableSampleCities = ({ filterItems, setFilterItems, filters }) => {
   useEffect(() => {
     loadData()
   }, [dispatch, sort, field])
+
+  //TODO set external modal function logic everywhere
 
   const [isModalInfoActive, setIsModalInfoActive] = useState(false)
   const [isModalTrashActive, setIsModalTrashActive] = useState(false)
@@ -66,7 +68,7 @@ const TableSampleCities = ({ filterItems, setFilterItems, filters }) => {
   }
   const handleDeleteAction = async () => {
     if (id) {
-      await dispatch(deleteItem(id))
+      await dispatch(deleteCity(id))
       await loadData(0)
       setIsModalTrashActive(false)
     }
@@ -306,17 +308,13 @@ const TableSampleCities = ({ filterItems, setFilterItems, filters }) => {
               cities.map((item: any) => (
                 <tr key={item._id} onClick={() => router.push(`/cities/${item._id}`)}>
                   <td data-label="titleEn">{item.titleEn}</td>
-
                   <td data-label="titleRu">{item.titleRu}</td>
-
                   <td data-label="titleTm">{item.titleTm}</td>
-
                   <td data-label="cityAreas">
                     {dataFormatter
                       .city_areasManyListFormatter(item.cityAreas, 'titleRu')
                       .join(', ')}
                   </td>
-
                   <td className="before:hidden lg:w-1 whitespace-nowrap">
                     <BaseButtons type="justify-start lg:justify-end" noWrap>
                       <BaseButton
@@ -342,8 +340,8 @@ const TableSampleCities = ({ filterItems, setFilterItems, filters }) => {
         <div className="flex flex-col md:flex-row items-center justify-between py-3 md:py-0">
           <div className="flex items-center mr-4">
             <p className={'text-[#8491A0]'}>
-              Displaying {cities.length === 0 ? '0' : currentPage * perPage + 1} to{' '}
-              {cities.length < perPage
+              Displaying {cities?.length === 0 ? '0' : currentPage * perPage + 1} to{' '}
+              {cities?.length < perPage
                 ? cities?.length + perPage * currentPage
                 : perPage * (currentPage + 1) > count
                 ? perPage * (currentPage + 1) - count + currentPage * perPage

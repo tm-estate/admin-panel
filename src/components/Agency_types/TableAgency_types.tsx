@@ -6,7 +6,7 @@ import BaseButton from '../BaseButton'
 import BaseButtons from '../BaseButtons'
 import CardBoxModal from '../CardBoxModal'
 import CardBox from '../CardBox'
-import { fetch, deleteItem } from '../../stores/agency_types/agency_typesSlice'
+import { getAgencyTypes, deleteAgencyType } from '../../stores/thunks/agency-types'
 import { useAppDispatch, useAppSelector } from '../../stores/hooks'
 import { useRouter } from 'next/router'
 import { Field, Form, Formik } from 'formik'
@@ -42,7 +42,7 @@ const TableSampleAgency_types = ({ filterItems, setFilterItems, filters }) => {
     if (request !== filterRequest) setFilterRequest(request)
 
     const query = `?page=${++page}&limit=${perPage}${request}&sort=${sort}&field=${field}`
-    dispatch(fetch({ limit: perPage, page: ++page, query }))
+    dispatch(getAgencyTypes(query))
   }
 
   useEffect(() => {
@@ -70,7 +70,7 @@ const TableSampleAgency_types = ({ filterItems, setFilterItems, filters }) => {
   }
   const handleDeleteAction = async () => {
     if (id) {
-      await dispatch(deleteItem(id))
+      await dispatch(deleteAgencyType(id))
       await loadData(0)
       setIsModalTrashActive(false)
     }
@@ -151,7 +151,7 @@ const TableSampleAgency_types = ({ filterItems, setFilterItems, filters }) => {
 
   return (
     <>
-      {filterItems && Array.isArray(filterItems) && filterItems.length ? (
+      { filterItems && Array.isArray(filterItems) && filterItems.length ? (
         <CardBox>
           <Formik
             initialValues={{

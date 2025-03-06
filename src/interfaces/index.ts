@@ -1,3 +1,32 @@
+export * from './IAgencyTypes';
+export * from './IAuth';
+export * from './IAxiosInstance';
+export * from './ICities';
+export * from './ICityAreas';
+export * from './IDealTypes';
+export * from './INotify';
+export * from './ILocalizedTitles';
+export * from './IPropertyTypes';
+export * from './IProducts';
+export * from './IProductParameters';
+export * from './IRegions';
+export * from './IServer';
+export * from './IUsers';
+
+export interface ICoordinate {
+  _id?: string
+  latitude: number,
+  longitude: number,
+}
+
+export interface ILocalizedTitles {
+  _id?: string;
+  titleEn: string;
+  titleRu: string;
+  titleTm: string;
+}
+
+
 export type UserPayloadObject = {
   name: string;
   email: string;

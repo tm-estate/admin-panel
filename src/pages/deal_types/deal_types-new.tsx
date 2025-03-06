@@ -19,13 +19,19 @@ import BaseDivider from '../../components/BaseDivider';
 import BaseButtons from '../../components/BaseButtons';
 import BaseButton from '../../components/BaseButton';
 
-import { create } from '../../stores/deal_types/deal_typesSlice';
+import { create } from '../../stores/thunks/deal-types';
 import { useAppDispatch } from '../../stores/hooks';
 import { useRouter } from 'next/router';
+import { IDealType } from "../../interfaces";
 
 const TablesPage = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const initValues: IDealType = {
+    titleRu: '',
+    titleEn: '',
+    titleTm: '',
+  }
 
   const handleSubmit = async (data) => {
     await dispatch(create(data));
@@ -46,13 +52,7 @@ const TablesPage = () => {
         </SectionTitleLineWithButton>
         <CardBox>
           <Formik
-            initialValues={{
-              titleRu: '',
-
-              titleEn: '',
-
-              titleTm: '',
-            }}
+            initialValues={initValues}
             onSubmit={(values) => handleSubmit(values)}
           >
             <Form>

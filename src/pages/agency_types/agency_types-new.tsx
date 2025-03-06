@@ -14,15 +14,21 @@ import BaseDivider from '../../components/BaseDivider'
 import BaseButtons from '../../components/BaseButtons'
 import BaseButton from '../../components/BaseButton'
 
-import { create } from '../../stores/agency_types/agency_typesSlice'
+import { create } from '../../stores/thunks/agency-types'
 import { useAppDispatch } from '../../stores/hooks'
 import { useRouter } from 'next/router'
+import { IAgencyType } from "../../interfaces";
 
 const TablesPage = () => {
   const router = useRouter()
   const dispatch = useAppDispatch()
+  const initValues: IAgencyType = {
+    titleRu: '',
+    titleEn: '',
+    titleTm: '',
+  }
 
-  const handleSubmit = async (data) => {
+  const handleSubmit = async (data: IAgencyType) => {
     await dispatch(create(data))
     await router.push('/agency_types/agency_types-list')
   }
@@ -37,13 +43,7 @@ const TablesPage = () => {
         </SectionTitleLineWithButton>
         <CardBox>
           <Formik
-            initialValues={{
-              titleRu: '',
-
-              titleEn: '',
-
-              titleTm: '',
-            }}
+            initialValues={initValues}
             onSubmit={(values) => handleSubmit(values)}
           >
             <Form>

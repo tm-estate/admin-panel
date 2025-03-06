@@ -1,11 +1,14 @@
 import { mdiChartTimelineVariant } from '@mdi/js'
 import Head from 'next/head'
-import React, { ReactElement } from 'react'
+import React, {ReactElement, useState} from 'react'
 import 'react-toastify/dist/ReactToastify.min.css'
 import CardBox from '../../components/CardBox'
 import LayoutAuthenticated from '../../layouts/Authenticated'
 import SectionMain from '../../components/SectionMain'
 import SectionTitleLineWithButton from '../../components/SectionTitleLineWithButton'
+
+import { useAppDispatch } from '../../stores/hooks'
+import { create } from '../../stores/thunks/cities'
 import { getPageTitle } from '../../config'
 
 import { Field, Form, Formik } from 'formik'
@@ -13,18 +16,27 @@ import FormField from '../../components/FormField'
 import BaseDivider from '../../components/BaseDivider'
 import BaseButtons from '../../components/BaseButtons'
 import BaseButton from '../../components/BaseButton'
-import { SelectFieldMany } from '../../components/SelectFieldMany'
+import { AsyncSelectFieldMany } from '../../components/UI/AsyncSelectFieldMany'
 
-import { create } from '../../stores/cities/citiesSlice'
-import { useAppDispatch } from '../../stores/hooks'
 import { useRouter } from 'next/router'
+import { ICity } from "../../interfaces";
 
 const TablesPage = () => {
   const router = useRouter()
   const dispatch = useAppDispatch()
+  const initValues: ICity = {
+    titleEn: '',
+    titleRu: '',
+    titleTm: '',
+    coordinate: {
+      latitude: null,
+      longitude: null,
+    },
+    cityAreas: [],
+  }
 
-  const handleSubmit = async (data) => {
-    await dispatch(create(data))
+  const handleSubmit = async (data: ICity) => {
+    await dispatch(create(data)).then(res => console.log(res))
     await router.push('/cities/cities-list')
   }
   return (
@@ -38,20 +50,7 @@ const TablesPage = () => {
         </SectionTitleLineWithButton>
         <CardBox>
           <Formik
-            initialValues={{
-              titleEn: '',
-
-              titleRu: '',
-
-              titleTm: '',
-
-              coordinate: {
-                latitude: null,
-                longitude: null,
-              },
-
-              cityAreas: [],
-            }}
+            initialValues={initValues}
             onSubmit={(values) => handleSubmit(values)}
           >
             <Form>
@@ -79,7 +78,7 @@ const TablesPage = () => {
                   itemRef={'cityAreas'}
                   options={[]}
                   showField={'titleRu'}
-                  component={SelectFieldMany}
+                  component={AsyncSelectFieldMany}
                 ></Field>
               </FormField>
 

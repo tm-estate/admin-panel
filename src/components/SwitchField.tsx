@@ -19,6 +19,7 @@ export const SwitchField = ({ field, form }) => {
 
   return (
     <Switch
+      onColor={'#2563EB'}
       checkedIcon={false}
       uncheckedIcon={false}
       className={'check'}

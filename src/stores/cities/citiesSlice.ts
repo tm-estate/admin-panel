@@ -1,19 +1,18 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import axios from 'axios'
-import { fulfilledNotify, rejectNotify, resetNotify } from '../../helpers/notifyStateHandler'
+import { createSlice } from '@reduxjs/toolkit';
+import { fulfilledNotify, rejectNotify, resetNotify } from '../../helpers/notifyStateHandler';
+import { create, deleteCity, update, getCities, getCity } from '../thunks/cities';
+import { ICity, INotify } from "../../interfaces";
 
 interface MainState {
-  cities: any
-  loading: boolean
-  count: number
-  notify: {
-    showNotification: boolean
-    textNotification: string
-    typeNotification: string
-  }
+  city: ICity;
+  cities: ICity[];
+  loading: boolean;
+  count: number;
+  notify: INotify
 }
 
 const initialState: MainState = {
+  city: null,
   cities: [],
   loading: false,
   count: 0,
@@ -24,130 +23,82 @@ const initialState: MainState = {
   },
 }
 
-export const fetch = createAsyncThunk('cities/fetch', async (data: any) => {
-  const { id, query } = data
-  const result = await axios.get(`cities${query || (id ? `/${id}` : '')}`)
-  return id ? result.data.data : { rows: result.data.data.rows, count: result.data.data.count }
-})
-
-export const deleteItem = createAsyncThunk(
-  'cities/deleteCities',
-  async (id: string, { rejectWithValue }) => {
-    try {
-      await axios.delete(`cities/${id}`)
-    } catch (error) {
-      if (!error.response) {
-        throw error
-      }
-
-      return rejectWithValue(error.response.data)
-    }
-  }
-)
-
-export const create = createAsyncThunk(
-  'cities/createCities',
-  async (data: any, { rejectWithValue }) => {
-    try {
-      const result = await axios.post('cities', data)
-      console.log({ result })
-      return result.data.data
-    } catch (error) {
-      if (!error.response) {
-        throw error
-      }
-
-      return rejectWithValue(error.response.data)
-    }
-  }
-)
-
-export const update = createAsyncThunk(
-  'cities/updateCities',
-  async (payload: any, { rejectWithValue }) => {
-    try {
-      const result = await axios.put(`cities/${payload.id}`, payload.data)
-      console.log({ result })
-      return result.data
-    } catch (error) {
-      if (!error.response) {
-        throw error
-      }
-
-      return rejectWithValue(error.response.data)
-    }
-  }
-)
-
 export const citiesSlice = createSlice({
   name: 'cities',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetch.pending, (state) => {
-      state.loading = true
-      resetNotify(state)
-    })
-    builder.addCase(fetch.rejected, (state, action) => {
-      state.loading = false
-      rejectNotify(state, action)
-    })
+    builder
+      .addCase(getCities.rejected, (state, action) => {
+    state.loading = false;
+    rejectNotify(state, action);
+  })
+      .addCase(getCities.pending, (state) => {
+    state.loading = true;
+    resetNotify(state);
+  })
+      .addCase(getCities.fulfilled, (state, action) => {
+    if (action.payload) {
+      state.cities = action.payload.rows;
+      state.count = action.payload.count;
+    }
+    state.loading = false;
+  })
 
-    builder.addCase(fetch.fulfilled, (state, action) => {
-      if (action.payload.count >= 0) {
-        state.cities = action.payload.rows
-        state.count = action.payload.count
-      } else {
-        state.cities = action.payload
-      }
-      state.loading = false
-    })
+      .addCase(getCity.rejected, (state, action) => {
+    state.loading = false;
+    rejectNotify(state, action);
+  })
+      .addCase(getCity.pending, (state) => {
+        state.loading = true;
+        resetNotify(state);
+      })
+      .addCase(getCity.fulfilled, (state, action) => {
+        if (action.payload) {
+          state.city = action.payload;
+        }
+        state.loading = false;
+      })
 
-    builder.addCase(deleteItem.pending, (state) => {
-      state.loading = true
-      resetNotify(state)
-    })
+      .addCase(deleteCity.rejected, (state, action) => {
+        state.loading = false;
+        rejectNotify(state, action);
+      })
+      .addCase(deleteCity.pending, (state) => {
+        state.loading = true;
+        resetNotify(state);
+      })
+      .addCase(deleteCity.fulfilled, (state) => {
+        state.loading = false;
+        fulfilledNotify(state, 'City has been deleted');
+      })
 
-    builder.addCase(deleteItem.fulfilled, (state) => {
-      state.loading = false
-      fulfilledNotify(state, `${'Cities'.slice(0, -1)} has been deleted`)
-    })
+      .addCase(create.rejected, (state, action) => {
+        state.loading = false;
+        rejectNotify(state, action);
+      })
+      .addCase(create.pending, (state) => {
+        state.loading = true;
+        resetNotify(state);
+      })
+      .addCase(create.fulfilled, (state) => {
+        state.loading = false;
+        fulfilledNotify(state, 'City has been created');
+      })
 
-    builder.addCase(deleteItem.rejected, (state, action) => {
-      state.loading = false
-      rejectNotify(state, action)
-    })
-
-    builder.addCase(create.pending, (state) => {
-      state.loading = true
-      resetNotify(state)
-    })
-    builder.addCase(create.rejected, (state, action) => {
-      state.loading = false
-      rejectNotify(state, action)
-    })
-
-    builder.addCase(create.fulfilled, (state) => {
-      state.loading = false
-      fulfilledNotify(state, `${'Cities'.slice(0, -1)} has been created`)
-    })
-
-    builder.addCase(update.pending, (state) => {
-      state.loading = true
-      resetNotify(state)
-    })
-    builder.addCase(update.fulfilled, (state) => {
-      state.loading = false
-      fulfilledNotify(state, `${'Cities'.slice(0, -1)} has been updated`)
-    })
-    builder.addCase(update.rejected, (state, action) => {
-      state.loading = false
-      rejectNotify(state, action)
+      .addCase(update.rejected, (state, action) => {
+        state.loading = false
+        rejectNotify(state, action)
+      })
+      .addCase(update.pending, (state) => {
+        state.loading = true
+        resetNotify(state)
+      })
+      .addCase(update.fulfilled, (state) => {
+      state.loading = false;
+      fulfilledNotify(state, 'City has been updated');
     })
   },
 })
-
-// Action creators are generated for each case reducer function
-// export const {  } = usersSlice.actions
 
 export default citiesSlice.reducer

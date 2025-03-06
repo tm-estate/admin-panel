@@ -15,57 +15,44 @@ import FormField from '../../components/FormField'
 import BaseDivider from '../../components/BaseDivider'
 import BaseButtons from '../../components/BaseButtons'
 import BaseButton from '../../components/BaseButton'
-import { SelectFieldMany } from '../../components/SelectFieldMany'
+import { AsyncSelectFieldMany } from '../../components/UI/AsyncSelectFieldMany'
 
-import { update, fetch } from '../../stores/cities/citiesSlice'
+import {getCity, update} from '../../stores/thunks/cities'
 import { useAppDispatch, useAppSelector } from '../../stores/hooks'
 import { useRouter } from 'next/router'
+import { ICity } from "../../interfaces";
 
 const EditCities = () => {
   const router = useRouter()
   const dispatch = useAppDispatch()
-  const initVals = {
-    ['titleEn']: '',
-
-    ['titleRu']: '',
-
-    ['titleTm']: '',
-
+  const initValues: ICity = {
+    titleEn: '',
+    titleRu: '',
+    titleTm: '',
     coordinate: {
       latitude: null,
       longitude: null,
     },
-
     cityAreas: [],
   }
-  const [initialValues, setInitialValues] = useState(initVals)
-
-  const { cities } = useAppSelector((state) => state.cities)
-
-  const { citiesId } = router.query
-
-  useEffect(() => {
-    dispatch(fetch({ id: citiesId }))
-  }, [citiesId])
+  const [initialValues, setInitialValues] = useState(initValues)
+  const [isLoading, setIsLoading] = useState(true)
+  const { city } = useAppSelector((state) => state.cities)
+  const { cityId } = router.query
 
   useEffect(() => {
-    if (typeof cities === 'object') {
-      setInitialValues(cities)
+    if(cityId) dispatch(getCity(cityId))
+  }, [cityId])
+
+  useEffect(() => {
+    if (typeof city === 'object') {
+      setInitialValues(city);
+      setIsLoading(false);
     }
-  }, [cities])
+  }, [city])
 
-  useEffect(() => {
-    if (typeof cities === 'object') {
-      const newInitialVal = { ...initVals }
-
-      Object.keys(initVals).forEach((el) => (newInitialVal[el] = cities[el]))
-
-      setInitialValues(newInitialVal)
-    }
-  }, [cities])
-
-  const handleSubmit = async (data) => {
-    await dispatch(update({ id: citiesId, data }))
+  const handleSubmit = async (data: ICity) => {
+    await dispatch(update({ id: cityId, data }))
     await router.push('/cities/cities-list')
   }
 
@@ -79,7 +66,8 @@ const EditCities = () => {
           Breadcrumbs
         </SectionTitleLineWithButton>
         <CardBox>
-          <Formik
+          { !isLoading && initialValues &&
+            <Formik
             enableReinitialize
             initialValues={initialValues}
             onSubmit={(values) => handleSubmit(values)}
@@ -106,8 +94,8 @@ const EditCities = () => {
                 <Field
                   name="cityAreas"
                   id="cityAreas"
-                  component={SelectFieldMany}
-                  options={initialValues.cityAreas}
+                  component={AsyncSelectFieldMany}
+                  options={initialValues?.cityAreas}
                   itemRef={'cityAreas'}
                   showField={'titleRu'}
                 ></Field>
@@ -128,6 +116,7 @@ const EditCities = () => {
               </BaseButtons>
             </Form>
           </Formik>
+          }
         </CardBox>
       </SectionMain>
     </>

@@ -50,7 +50,7 @@ export default function Login() {
         <CardBox className="w-11/12 md:w-7/12 lg:w-6/12 xl:w-4/12">
           <Formik
             initialValues={{
-              email: 'test99@gmail.com',
+              login: 'admin@gmail.com',
               password: '1111',
               remember: true,
             }}
@@ -58,7 +58,7 @@ export default function Login() {
           >
             <Form>
               <FormField label="Login" help="Please enter your login">
-                <Field name="email" />
+                <Field name="login" />
               </FormField>
 
               <FormField label="Password" help="Please enter your password">

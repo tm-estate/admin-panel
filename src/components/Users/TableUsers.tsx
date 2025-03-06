@@ -7,7 +7,7 @@ import BaseButtons from '../BaseButtons'
 import CardBoxModal from '../CardBoxModal'
 import CardBox from '../CardBox'
 import ImageField from '../ImageField'
-import { fetch, deleteItem } from '../../stores/users/usersSlice'
+import { getUsers, deleteUser } from '../../stores/thunks/users'
 import { useAppDispatch, useAppSelector } from '../../stores/hooks'
 import { useRouter } from 'next/router'
 import dataFormatter from '../../helpers/dataFormatter'
@@ -39,7 +39,7 @@ const TableSampleUsers = ({ filterItems, setFilterItems, filters }) => {
     if (request !== filterRequest) setFilterRequest(request)
 
     const query = `?page=${++page}&limit=${perPage}${request}&sort=${sort}&field=${field}`
-    dispatch(fetch({ limit: perPage, page: ++page, query }))
+    dispatch(getUsers(query))
   }
 
   useEffect(() => {
@@ -67,7 +67,7 @@ const TableSampleUsers = ({ filterItems, setFilterItems, filters }) => {
   }
   const handleDeleteAction = async () => {
     if (id) {
-      await dispatch(deleteItem(id))
+      await dispatch(deleteUser(id))
       await loadData(0)
       setIsModalTrashActive(false)
     }
@@ -290,9 +290,7 @@ const TableSampleUsers = ({ filterItems, setFilterItems, filters }) => {
         <table>
           <thead>
             <tr onClick={(e) => handleSort(e)}>
-              <th className="sortable">First Name</th>
-
-              <th className="sortable">Last Name</th>
+              <th className="sortable">Name</th>
 
               <th className="sortable">Phone Number</th>
 
@@ -300,9 +298,13 @@ const TableSampleUsers = ({ filterItems, setFilterItems, filters }) => {
 
               <th>Role</th>
 
-              <th>Disabled</th>
+              <th>Agent</th>
 
-              <th>Avatar</th>
+              <th>Confirmed</th>
+
+              {/*<th>Disabled</th>*/}
+
+              <th>Created Date</th>
 
               <th>Actions</th>
               <th />
@@ -312,26 +314,30 @@ const TableSampleUsers = ({ filterItems, setFilterItems, filters }) => {
             {users &&
               Array.isArray(users) &&
               users.map((item: any) => (
-                <tr key={item.id} onClick={() => router.push(`/users/${item.id}`)}>
-                  <td data-label="firstName">{item.firstName}</td>
+                <tr key={item.id} onClick={() => router.push(`/users/${item._id}`)}>
+                  <td data-label="name">{dataFormatter.capitalize(item.name)}</td>
 
-                  <td data-label="lastName">{item.lastName}</td>
-
-                  <td data-label="phoneNumber">{item.phoneNumber}</td>
+                  <td data-label="phone">{dataFormatter.phoneFormatter(item.phone)}</td>
 
                   <td data-label="email">{item.email}</td>
 
                   <td data-label="role">{item.role}</td>
 
-                  <td data-label="disabled">{dataFormatter.booleanFormatter(item.disabled)}</td>
+                  <td data-label="isAgent">{dataFormatter.booleanFormatter(item.isAgent)}</td>
 
-                  <td className="border-b-0 lg:w-6 before:hidden">
-                    <ImageField
-                      name={'Avatar'}
-                      image={item.avatar}
-                      className="w-24 h-24 mx-auto lg:w-6 lg:h-6"
-                    />
-                  </td>
+                  <td data-label="isPhoneNumberConfirmed">{dataFormatter.booleanFormatter(item.isPhoneNumberConfirmed)}</td>
+
+                  <td data-label="createdDate">{dataFormatter.dateFormatter(item.createdAt)}</td>
+
+                  {/*<td data-label="disabled">{dataFormatter.booleanFormatter(item.disabled)}</td>*/}
+
+                  {/*<td className="border-b-0 lg:w-6 before:hidden">*/}
+                  {/*  <ImageField*/}
+                  {/*    name={'Avatar'}*/}
+                  {/*    image={item.avatar}*/}
+                  {/*    className="w-24 h-24 mx-auto lg:w-6 lg:h-6"*/}
+                  {/*  />*/}
+                  {/*</td>*/}
 
                   <td className="before:hidden lg:w-1 whitespace-nowrap">
                     <BaseButtons type="justify-start lg:justify-end" noWrap>
