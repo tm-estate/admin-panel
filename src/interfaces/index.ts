@@ -4,6 +4,7 @@ export * from './IAxiosInstance';
 export * from './ICities';
 export * from './ICityAreas';
 export * from './IDealTypes';
+export * from './IFilters';
 export * from './INotify';
 export * from './ILocalizedTitles';
 export * from './IPropertyTypes';
