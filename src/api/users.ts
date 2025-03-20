@@ -4,11 +4,10 @@ import {IUser, IUsers, IServerResponse, IUserUpdatePayload,} from "@/interfaces"
 const usersApi = {
     async getUser(id: string | string[]) {
         const result = await axios.get<IServerResponse<IUser>>(`users/${id}`);
-        console.log({result})
         return result.data;
     },
-    async getUsers(query: string){
-        const result = await axios.get<IServerResponse<IUsers>>(`users/admin${query}`);
+    async getUsers(query: string, data){
+        const result = await axios.post<IServerResponse<IUsers>>(`users/admin${query}`, data);
         return result.data;
     },
     async create(data: IUser) {

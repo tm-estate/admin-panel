@@ -1,7 +1,6 @@
-import { mdiChartTimelineVariant } from '@mdi/js';
+import { mdiChartTimelineVariant, mdiFilterVariant, mdiPlus, mdiDownload } from '@mdi/js';
 import Head from 'next/head';
-import { uniqueId } from 'lodash';
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useState } from 'react';
 import CardBox from '@/components/CardBox';
 import LayoutAuthenticated from '@/layouts/Authenticated';
 import SectionMain from '@/components/SectionMain';
@@ -10,87 +9,113 @@ import { getPageTitle } from '@/config';
 import TableUsers from '@/components/Users/TableUsers';
 import BaseButton from '@/components/BaseButton';
 import axios from 'axios';
+import { addFilter } from '@/components/Filters';
+import { IFilterConfig, IFilterItem } from '@/interfaces';
+import BreadcrumbsBar from "@/components/BreadcrumbsBar";
 
-const UsersTablesPage = () => {
-  const [filterItems, setFilterItems] = React.useState([]);
+const UsersPage = () => {
+  const [filterItems, setFilterItems] = useState<IFilterItem[]>([]);
 
-  const [filters] = React.useState([
-    { label: 'First Name', title: 'firstName' },
-    { label: 'Last Name', title: 'lastName' },
-    { label: 'Phone Number', title: 'phoneNumber' },
-    { label: 'E-Mail', title: 'email' },
+  const [filters] = useState<IFilterConfig[]>([
+    { label: 'Name', key: 'name', selectType: 'search' },
+    { label: 'Phone', key: 'phone', selectType: 'search' },
+    { label: 'Email', key: 'email', selectType: 'search' },
+    {
+      label: 'Role',
+      key: 'role',
+      selectType: 'multi',
+      options: [
+        { key: 'admin', label: 'Admin' },
+        { key: 'user', label: 'User' }
+      ]
+    },
+    { label: 'Is Agent', key: 'isAgent', selectType: 'boolean' },
+    { label: 'Is Confirmed', key: 'isPhoneNumberConfirmed', selectType: 'boolean' },
+    { label: 'Created At', key: 'createdAt', selectType: 'date' },
+    { label: 'Updated At', key: 'updatedAt', selectType: 'date' }
   ]);
 
-  const addFilter = () => {
-    const newItem = {
-      id: uniqueId(),
-      fields: {
-        filterValue: '',
-        filterValueFrom: '',
-        filterValueTo: '',
-        selectedField: '',
-      },
-    };
-    newItem.fields.selectedField = filters[0].title;
-    setFilterItems([...filterItems, newItem]);
+  const handleAddFilter = () => {
+    addFilter(filters, setFilterItems, filterItems);
   };
 
   const getUsersCSV = async () => {
-    const response = await axios({
-      url: '/users?filetype=csv',
-      method: 'GET',
-      responseType: 'blob',
-    });
-    const type = response.headers['content-type'];
-    const blob = new Blob([response.data], { type: type });
-    const link = document.createElement('a');
-    link.href = window.URL.createObjectURL(blob);
-    link.download = 'usersCSV.csv';
-    link.click();
+    try {
+      const response = await axios({
+        url: '/users?filetype=csv',
+        method: 'GET',
+        responseType: 'blob',
+      });
+
+      const type = response.headers['content-type'];
+      const blob = new Blob([response.data], { type: type });
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = 'users_export.csv';
+      link.click();
+
+      window.URL.revokeObjectURL(link.href);
+    } catch (error) {
+      console.error('Error downloading CSV:', error);
+    }
   };
 
   return (
-    <>
-      <Head>
-        <title>{getPageTitle('Users')}</title>
-      </Head>
-      <SectionMain>
-        <SectionTitleLineWithButton
-          icon={mdiChartTimelineVariant}
-          title='Users Table'
-          main
-        >
-          Breadcrumbs
-        </SectionTitleLineWithButton>
-        <CardBox className='mb-6'>
-          <BaseButton
-            className={'mr-3'}
-            href={'/users/users-new'}
-            color='info'
-            label='New Item'
-          />
-          <BaseButton
-            className={'mr-3'}
-            color='info'
-            label='Add Filter'
-            onClick={addFilter}
-          />
-          <BaseButton color='info' label='Download CSV' onClick={getUsersCSV} />
-        </CardBox>
-        <CardBox className='mb-6' hasTable>
-          <TableUsers
-            filterItems={filterItems}
-            setFilterItems={setFilterItems}
-            filters={filters}
-          />
-        </CardBox>
-      </SectionMain>
-    </>
+      <>
+        <Head>
+          <title>{getPageTitle('Users')}</title>
+        </Head>
+        <SectionMain>
+          <SectionTitleLineWithButton
+              icon={mdiChartTimelineVariant}
+              title='Users Management'
+              main
+          >
+            <BreadcrumbsBar items={[
+              { label: 'Dashboard', href: '/dashboard' },
+              { label: 'Users', href: '/users/users-list' },
+            ]} />
+          </SectionTitleLineWithButton>
+
+          {/* Action Buttons */}
+          <CardBox className='mb-6 flex flex-wrap gap-4'>
+            <BaseButton
+                className='mr-2'
+                href='/users/users-new'
+                color='success'
+                label='Add New User'
+                icon={mdiPlus}
+            />
+            <BaseButton
+                color='info'
+                className='mr-2'
+                label='Add Filter'
+                icon={mdiFilterVariant}
+                onClick={handleAddFilter}
+            />
+            <BaseButton
+                color='warning'
+                label='Export CSV'
+                icon={mdiDownload}
+                onClick={getUsersCSV}
+            />
+          </CardBox>
+
+          {/* Users Table with Filters */}
+          <CardBox className='mb-6' hasTable>
+            <TableUsers
+                filterItems={filterItems}
+                setFilterItems={setFilterItems}
+                filters={filters}
+            />
+          </CardBox>
+        </SectionMain>
+      </>
   );
 };
 
-UsersTablesPage.getLayout = function getLayout(page: ReactElement) {
+UsersPage.getLayout = function getLayout(page: ReactElement) {
   return <LayoutAuthenticated>{page}</LayoutAuthenticated>;
 };
 
-export default UsersTablesPage;
+export default UsersPage;

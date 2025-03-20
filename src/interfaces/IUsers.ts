@@ -5,6 +5,7 @@ export interface IUser {
     email: string;
     isPhoneNumberConfirmed: boolean;
     imgUri?: string;
+    avatar?: string;
     products?: string[];
     role?: 'admin' | 'user' | 'moderator' | '';
     isAgent?: boolean;
