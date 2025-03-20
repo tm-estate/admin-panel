@@ -1,76 +1,76 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { fulfilledNotify, rejectNotify, resetNotify } from '@/helpers/notifyStateHandler'
-import { create, deleteProduct, getProduct, getProducts, update } from "@/stores/thunks/products";
-import { INotify, IProduct } from "@/interfaces";
+import { IPropertyType, INotify } from "@/interfaces";
+import { create, deletePropertyType, getPropertyType, getPropertyTypes, update } from "@/stores/thunks/property-types";
 
 interface MainState {
-  product: IProduct;
-  products: IProduct[];
-  loading: boolean;
-  count: number;
+  property_type: IPropertyType
+  property_types: IPropertyType[]
+  loading: boolean
+  count: number
   notify: INotify
 }
 
 const initialState: MainState = {
-  product: null,
-  products: [],
+  property_type: null,
+  property_types: [],
   loading: false,
   count: 0,
   notify: {
     showNotification: false,
     textNotification: '',
-    typeNotification: 'warn',
+    typeNotification: 'warning',
   },
 }
 
-export const productsSlice = createSlice({
-  name: 'products',
+export const property_typesSlice = createSlice({
+  name: 'property_types',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-        .addCase(getProducts.rejected, (state, action) => {
+        .addCase(getPropertyTypes.rejected, (state, action) => {
           state.loading = false;
           rejectNotify(state, action);
         })
-        .addCase(getProducts.pending, (state) => {
+        .addCase(getPropertyTypes.pending, (state) => {
           state.loading = true;
           resetNotify(state);
         })
-        .addCase(getProducts.fulfilled, (state, action) => {
+        .addCase(getPropertyTypes.fulfilled, (state, action) => {
           if (action.payload) {
-            state.products = action.payload.rows;
+            state.property_types = action.payload.rows;
             state.count = action.payload.count;
           }
           state.loading = false;
         })
 
-        .addCase(getProduct.rejected, (state, action) => {
+        .addCase(getPropertyType.rejected, (state, action) => {
           state.loading = false;
           rejectNotify(state, action);
         })
-        .addCase(getProduct.pending, (state) => {
+        .addCase(getPropertyType.pending, (state) => {
           state.loading = true;
           resetNotify(state);
         })
-        .addCase(getProduct.fulfilled, (state, action) => {
+        .addCase(getPropertyType.fulfilled, (state, action) => {
           if (action.payload) {
-            state.product = action.payload;
+            state.property_type = action.payload;
           }
           state.loading = false;
         })
 
-        .addCase(deleteProduct.rejected, (state, action) => {
+        .addCase(deletePropertyType.rejected, (state, action) => {
           state.loading = false;
           rejectNotify(state, action);
         })
-        .addCase(deleteProduct.pending, (state) => {
+        .addCase(deletePropertyType.pending, (state) => {
           state.loading = true;
           resetNotify(state);
         })
-        .addCase(deleteProduct.fulfilled, (state) => {
+        .addCase(deletePropertyType.fulfilled, (state) => {
           state.loading = false;
-          fulfilledNotify(state, 'Product has been deleted');
+          fulfilledNotify(state, 'Property Type has been deleted');
         })
 
         .addCase(create.rejected, (state, action) => {
@@ -83,7 +83,7 @@ export const productsSlice = createSlice({
         })
         .addCase(create.fulfilled, (state) => {
           state.loading = false;
-          fulfilledNotify(state, 'Product has been created');
+          fulfilledNotify(state, 'Property Type has been created');
         })
 
         .addCase(update.rejected, (state, action) => {
@@ -96,12 +96,9 @@ export const productsSlice = createSlice({
         })
         .addCase(update.fulfilled, (state) => {
           state.loading = false;
-          fulfilledNotify(state, 'Product has been updated');
+          fulfilledNotify(state, 'Property Type has been updated');
         })
   },
 })
 
-// Action creators are generated for each case reducer function
-// export const {  } = usersSlice.actions
-
-export default productsSlice.reducer
+export default property_typesSlice.reducer

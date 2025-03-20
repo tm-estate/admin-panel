@@ -19,7 +19,7 @@ const initialState: MainState = {
   notify: {
     showNotification: false,
     textNotification: '',
-    typeNotification: 'warn',
+    typeNotification: 'warning',
   },
 }
 

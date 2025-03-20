@@ -1,76 +1,76 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { fulfilledNotify, rejectNotify, resetNotify } from '@/helpers/notifyStateHandler'
-import { IDealType, INotify } from "@/interfaces";
-import { create, deleteDealType, getDealType, getDealTypes, update } from "@/stores/thunks/deal-types";
+import { create, deleteProduct, getProduct, getProducts, update } from "@/stores/thunks/products";
+import { INotify, IProduct } from "@/interfaces";
 
 interface MainState {
-  deal_type: IDealType;
-  deal_types: IDealType[];
+  product: IProduct;
+  products: IProduct[];
   loading: boolean;
   count: number;
   notify: INotify
 }
 
 const initialState: MainState = {
-  deal_type: null,
-  deal_types: [],
+  product: null,
+  products: [],
   loading: false,
   count: 0,
   notify: {
     showNotification: false,
     textNotification: '',
-    typeNotification: 'warn',
+    typeNotification: 'warning',
   },
 }
 
-export const deal_typesSlice = createSlice({
-  name: 'deal_types',
+export const productsSlice = createSlice({
+  name: 'products',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-        .addCase(getDealTypes.rejected, (state, action) => {
+        .addCase(getProducts.rejected, (state, action) => {
           state.loading = false;
           rejectNotify(state, action);
         })
-        .addCase(getDealTypes.pending, (state) => {
+        .addCase(getProducts.pending, (state) => {
           state.loading = true;
           resetNotify(state);
         })
-        .addCase(getDealTypes.fulfilled, (state, action) => {
+        .addCase(getProducts.fulfilled, (state, action) => {
           if (action.payload) {
-            state.deal_types = action.payload.rows;
+            state.products = action.payload.rows;
             state.count = action.payload.count;
           }
           state.loading = false;
         })
 
-        .addCase(getDealType.rejected, (state, action) => {
+        .addCase(getProduct.rejected, (state, action) => {
           state.loading = false;
           rejectNotify(state, action);
         })
-        .addCase(getDealType.pending, (state) => {
+        .addCase(getProduct.pending, (state) => {
           state.loading = true;
           resetNotify(state);
         })
-        .addCase(getDealType.fulfilled, (state, action) => {
+        .addCase(getProduct.fulfilled, (state, action) => {
           if (action.payload) {
-            state.deal_type = action.payload;
+            state.product = action.payload;
           }
           state.loading = false;
         })
 
-        .addCase(deleteDealType.rejected, (state, action) => {
+        .addCase(deleteProduct.rejected, (state, action) => {
           state.loading = false;
           rejectNotify(state, action);
         })
-        .addCase(deleteDealType.pending, (state) => {
+        .addCase(deleteProduct.pending, (state) => {
           state.loading = true;
           resetNotify(state);
         })
-        .addCase(deleteDealType.fulfilled, (state) => {
+        .addCase(deleteProduct.fulfilled, (state) => {
           state.loading = false;
-          fulfilledNotify(state, 'Deal Type has been deleted');
+          fulfilledNotify(state, 'Product has been deleted');
         })
 
         .addCase(create.rejected, (state, action) => {
@@ -83,7 +83,7 @@ export const deal_typesSlice = createSlice({
         })
         .addCase(create.fulfilled, (state) => {
           state.loading = false;
-          fulfilledNotify(state, 'Deal Type has been created');
+          fulfilledNotify(state, 'Product has been created');
         })
 
         .addCase(update.rejected, (state, action) => {
@@ -96,7 +96,7 @@ export const deal_typesSlice = createSlice({
         })
         .addCase(update.fulfilled, (state) => {
           state.loading = false;
-          fulfilledNotify(state, 'Deal Type has been updated');
+          fulfilledNotify(state, 'Product has been updated');
         })
   },
 })
@@ -104,4 +104,4 @@ export const deal_typesSlice = createSlice({
 // Action creators are generated for each case reducer function
 // export const {  } = usersSlice.actions
 
-export default deal_typesSlice.reducer
+export default productsSlice.reducer

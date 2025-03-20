@@ -19,7 +19,7 @@
 //   notify: {
 //     showNotification: false,
 //     textNotification: '',
-//     typeNotification: 'warn',
+//     typeNotification: 'warning',
 //   },
 // };
 //

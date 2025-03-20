@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { ICity, ICityAreasUpdatePayload } from "@/interfaces";
+import { ICityArea, ICityAreasUpdatePayload } from "@/interfaces";
 import cityAreasApi from "@/api/cityAreas";
 
 export const getCityAreas = createAsyncThunk('cityAreas/fetch',
@@ -38,7 +38,7 @@ export const deleteCityArea = createAsyncThunk('cityArea/delete',
 
 export const create = createAsyncThunk(
     'cityArea/create',
-    async (payload: ICity, { rejectWithValue }) => {
+    async (payload: ICityArea, { rejectWithValue }) => {
         try {
             const result = await cityAreasApi.create(payload);
             return result.data

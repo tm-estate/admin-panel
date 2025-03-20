@@ -1,76 +1,78 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { fulfilledNotify, rejectNotify, resetNotify } from '@/helpers/notifyStateHandler'
-import { ICityArea, INotify } from "@/interfaces";
-import { getCityArea, getCityAreas, deleteCityArea, create, update } from "@/stores/thunks/city-areas";
+import { INotify, IProductParameter } from "@/interfaces";
+import { create, deleteProductParameter, getProductParameter, getProductParameters, update } from "@/stores/thunks/product-parameters";
 
 interface MainState {
-  city_area: ICityArea;
-  city_areas: ICityArea[];
-  loading: boolean
-  count: number
+  product_parameter: IProductParameter;
+  product_parameters: IProductParameter[];
+  loading: boolean;
+  count: number;
   notify: INotify
 }
 
 const initialState: MainState = {
-  city_area: null,
-  city_areas: [],
+  product_parameter: null,
+  product_parameters: [],
   loading: false,
   count: 0,
   notify: {
     showNotification: false,
     textNotification: '',
-    typeNotification: 'warn',
+    typeNotification: 'warning',
   },
 }
 
-export const city_areasSlice = createSlice({
-  name: 'city_areas',
+export const product_parametersSlice = createSlice({
+  name: 'product_parameters',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-        .addCase(getCityAreas.rejected, (state, action) => {
+        .addCase(getProductParameters.rejected, (state, action) => {
           state.loading = false;
           rejectNotify(state, action);
         })
-        .addCase(getCityAreas.pending, (state) => {
+        .addCase(getProductParameters.pending, (state) => {
           state.loading = true;
           resetNotify(state);
         })
-        .addCase(getCityAreas.fulfilled, (state, action) => {
+        .addCase(getProductParameters.fulfilled, (state, action) => {
           if (action.payload) {
-            state.city_areas = action.payload.rows;
+              console.log({ action: action.payload })
+            state.product_parameters = action.payload.rows;
+              console.log(state.product_parameters)
             state.count = action.payload.count;
           }
           state.loading = false;
         })
 
-        .addCase(getCityArea.rejected, (state, action) => {
+        .addCase(getProductParameter.rejected, (state, action) => {
           state.loading = false;
           rejectNotify(state, action);
         })
-        .addCase(getCityArea.pending, (state) => {
+        .addCase(getProductParameter.pending, (state) => {
           state.loading = true;
           resetNotify(state);
         })
-        .addCase(getCityArea.fulfilled, (state, action) => {
+        .addCase(getProductParameter.fulfilled, (state, action) => {
           if (action.payload) {
-            state.city_area = action.payload;
+            state.product_parameter = action.payload;
           }
           state.loading = false;
         })
 
-        .addCase(deleteCityArea.rejected, (state, action) => {
+        .addCase(deleteProductParameter.rejected, (state, action) => {
           state.loading = false;
           rejectNotify(state, action);
         })
-        .addCase(deleteCityArea.pending, (state) => {
+        .addCase(deleteProductParameter.pending, (state) => {
           state.loading = true;
           resetNotify(state);
         })
-        .addCase(deleteCityArea.fulfilled, (state) => {
+        .addCase(deleteProductParameter.fulfilled, (state) => {
           state.loading = false;
-          fulfilledNotify(state, 'City Area has been deleted');
+          fulfilledNotify(state, 'Product Parameter has been deleted');
         })
 
         .addCase(create.rejected, (state, action) => {
@@ -83,7 +85,7 @@ export const city_areasSlice = createSlice({
         })
         .addCase(create.fulfilled, (state) => {
           state.loading = false;
-          fulfilledNotify(state, 'City Area has been created');
+          fulfilledNotify(state, 'Product Parameter has been created');
         })
 
         .addCase(update.rejected, (state, action) => {
@@ -96,7 +98,7 @@ export const city_areasSlice = createSlice({
         })
         .addCase(update.fulfilled, (state) => {
           state.loading = false;
-          fulfilledNotify(state, 'City Area has been updated');
+          fulfilledNotify(state, 'Product Parameter has been updated');
         })
   },
 })
@@ -104,4 +106,4 @@ export const city_areasSlice = createSlice({
 // Action creators are generated for each case reducer function
 // export const {  } = usersSlice.actions
 
-export default city_areasSlice.reducer
+export default product_parametersSlice.reducer

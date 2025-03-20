@@ -1,76 +1,76 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { fulfilledNotify, rejectNotify, resetNotify } from '@/helpers/notifyStateHandler'
-import { IPropertyType, INotify } from "@/interfaces";
-import { create, deletePropertyType, getPropertyType, getPropertyTypes, update } from "@/stores/thunks/property-types";
+import { ICityArea, INotify } from "@/interfaces";
+import { getCityArea, getCityAreas, deleteCityArea, create, update } from "@/stores/thunks/city-areas";
 
 interface MainState {
-  property_type: IPropertyType
-  property_types: IPropertyType[]
+  city_area: ICityArea;
+  city_areas: ICityArea[];
   loading: boolean
   count: number
   notify: INotify
 }
 
 const initialState: MainState = {
-  property_type: null,
-  property_types: [],
+  city_area: null,
+  city_areas: [],
   loading: false,
   count: 0,
   notify: {
     showNotification: false,
     textNotification: '',
-    typeNotification: 'warn',
+    typeNotification: 'warning',
   },
 }
 
-export const property_typesSlice = createSlice({
-  name: 'property_types',
+export const city_areasSlice = createSlice({
+  name: 'city_areas',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-        .addCase(getPropertyTypes.rejected, (state, action) => {
+        .addCase(getCityAreas.rejected, (state, action) => {
           state.loading = false;
           rejectNotify(state, action);
         })
-        .addCase(getPropertyTypes.pending, (state) => {
+        .addCase(getCityAreas.pending, (state) => {
           state.loading = true;
           resetNotify(state);
         })
-        .addCase(getPropertyTypes.fulfilled, (state, action) => {
+        .addCase(getCityAreas.fulfilled, (state, action) => {
           if (action.payload) {
-            state.property_types = action.payload.rows;
+            state.city_areas = action.payload.rows;
             state.count = action.payload.count;
           }
           state.loading = false;
         })
 
-        .addCase(getPropertyType.rejected, (state, action) => {
+        .addCase(getCityArea.rejected, (state, action) => {
           state.loading = false;
           rejectNotify(state, action);
         })
-        .addCase(getPropertyType.pending, (state) => {
+        .addCase(getCityArea.pending, (state) => {
           state.loading = true;
           resetNotify(state);
         })
-        .addCase(getPropertyType.fulfilled, (state, action) => {
+        .addCase(getCityArea.fulfilled, (state, action) => {
           if (action.payload) {
-            state.property_type = action.payload;
+            state.city_area = action.payload;
           }
           state.loading = false;
         })
 
-        .addCase(deletePropertyType.rejected, (state, action) => {
+        .addCase(deleteCityArea.rejected, (state, action) => {
           state.loading = false;
           rejectNotify(state, action);
         })
-        .addCase(deletePropertyType.pending, (state) => {
+        .addCase(deleteCityArea.pending, (state) => {
           state.loading = true;
           resetNotify(state);
         })
-        .addCase(deletePropertyType.fulfilled, (state) => {
+        .addCase(deleteCityArea.fulfilled, (state) => {
           state.loading = false;
-          fulfilledNotify(state, 'Property Type has been deleted');
+          fulfilledNotify(state, 'City Area has been deleted');
         })
 
         .addCase(create.rejected, (state, action) => {
@@ -83,7 +83,7 @@ export const property_typesSlice = createSlice({
         })
         .addCase(create.fulfilled, (state) => {
           state.loading = false;
-          fulfilledNotify(state, 'Property Type has been created');
+          fulfilledNotify(state, 'City Area has been created');
         })
 
         .addCase(update.rejected, (state, action) => {
@@ -96,9 +96,12 @@ export const property_typesSlice = createSlice({
         })
         .addCase(update.fulfilled, (state) => {
           state.loading = false;
-          fulfilledNotify(state, 'Property Type has been updated');
+          fulfilledNotify(state, 'City Area has been updated');
         })
   },
 })
 
-export default property_typesSlice.reducer
+// Action creators are generated for each case reducer function
+// export const {  } = usersSlice.actions
+
+export default city_areasSlice.reducer

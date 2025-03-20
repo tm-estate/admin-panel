@@ -1,78 +1,80 @@
-import { createSlice } from '@reduxjs/toolkit'
-import { fulfilledNotify, rejectNotify, resetNotify } from '@/helpers/notifyStateHandler'
-import { INotify, IProductParameter } from "@/interfaces";
-import { create, deleteProductParameter, getProductParameter, getProductParameters, update } from "@/stores/thunks/product-parameters";
+import { createSlice } from '@reduxjs/toolkit';
+import {
+  fulfilledNotify,
+  rejectNotify,
+  resetNotify,
+} from '@/helpers/notifyStateHandler';
+import { INotify, IUser } from "@/interfaces";
+import { create, deleteUser, getUser, getUsers, update } from "@/stores/thunks/users";
 
 interface MainState {
-  product_parameter: IProductParameter;
-  product_parameters: IProductParameter[];
+  user: IUser;
+  users: IUser[];
   loading: boolean;
   count: number;
   notify: INotify
 }
 
 const initialState: MainState = {
-  product_parameter: null,
-  product_parameters: [],
+  user: null,
+  users: [],
   loading: false,
   count: 0,
   notify: {
     showNotification: false,
     textNotification: '',
-    typeNotification: 'warn',
+    typeNotification: 'warning',
   },
-}
+};
 
-export const product_parametersSlice = createSlice({
-  name: 'product_parameters',
+export const usersSlice = createSlice({
+  name: 'users',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-        .addCase(getProductParameters.rejected, (state, action) => {
+        .addCase(getUsers.rejected, (state, action) => {
           state.loading = false;
           rejectNotify(state, action);
         })
-        .addCase(getProductParameters.pending, (state) => {
+        .addCase(getUsers.pending, (state) => {
           state.loading = true;
           resetNotify(state);
         })
-        .addCase(getProductParameters.fulfilled, (state, action) => {
+        .addCase(getUsers.fulfilled, (state, action) => {
           if (action.payload) {
-              console.log({ action: action.payload })
-            state.product_parameters = action.payload.rows;
-              console.log(state.product_parameters)
+            state.users = action.payload.rows;
             state.count = action.payload.count;
           }
           state.loading = false;
         })
 
-        .addCase(getProductParameter.rejected, (state, action) => {
+        .addCase(getUser.rejected, (state, action) => {
           state.loading = false;
           rejectNotify(state, action);
         })
-        .addCase(getProductParameter.pending, (state) => {
+        .addCase(getUser.pending, (state) => {
           state.loading = true;
           resetNotify(state);
         })
-        .addCase(getProductParameter.fulfilled, (state, action) => {
+        .addCase(getUser.fulfilled, (state, action) => {
           if (action.payload) {
-            state.product_parameter = action.payload;
+            state.user = action.payload;
           }
           state.loading = false;
         })
 
-        .addCase(deleteProductParameter.rejected, (state, action) => {
+        .addCase(deleteUser.rejected, (state, action) => {
           state.loading = false;
           rejectNotify(state, action);
         })
-        .addCase(deleteProductParameter.pending, (state) => {
+        .addCase(deleteUser.pending, (state) => {
           state.loading = true;
           resetNotify(state);
         })
-        .addCase(deleteProductParameter.fulfilled, (state) => {
+        .addCase(deleteUser.fulfilled, (state) => {
           state.loading = false;
-          fulfilledNotify(state, 'Product Parameter has been deleted');
+          fulfilledNotify(state, 'Deal Type has been deleted');
         })
 
         .addCase(create.rejected, (state, action) => {
@@ -85,7 +87,7 @@ export const product_parametersSlice = createSlice({
         })
         .addCase(create.fulfilled, (state) => {
           state.loading = false;
-          fulfilledNotify(state, 'Product Parameter has been created');
+          fulfilledNotify(state, 'Deal Type has been created');
         })
 
         .addCase(update.rejected, (state, action) => {
@@ -98,7 +100,7 @@ export const product_parametersSlice = createSlice({
         })
         .addCase(update.fulfilled, (state) => {
           state.loading = false;
-          fulfilledNotify(state, 'Product Parameter has been updated');
+          fulfilledNotify(state, 'Deal Type has been updated');
         })
   },
 })
@@ -106,4 +108,4 @@ export const product_parametersSlice = createSlice({
 // Action creators are generated for each case reducer function
 // export const {  } = usersSlice.actions
 
-export default product_parametersSlice.reducer
+export default usersSlice.reducer;
