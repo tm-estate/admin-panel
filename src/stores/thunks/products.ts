@@ -2,16 +2,20 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { IProduct, IProductUpdatePayload } from "@/interfaces";
 import productsApi from "@/api/products";
 
-export const getProducts = createAsyncThunk('products/fetch',
-    async (payload: string) => {
+export const getProducts = createAsyncThunk(
+    'products/fetch',
+    async (payload: { query: string, data: any }, { rejectWithValue }) => {
         try {
-            const res = await productsApi.getProducts(payload);
+            const { query, data } = payload;
+
+            const res = await productsApi.getProducts(query, data);
             return res.data;
-        } catch (e) {
-            console.error(e);
-            throw e;
+        } catch (e: any) {
+            console.error('Error fetching products:', e);
+            return rejectWithValue(e.response?.data || 'Unknown error occurred');
         }
-    });
+    }
+);
 
 export const getProduct = createAsyncThunk('product/fetch',
     async (payload: string | string[]) => {
@@ -22,7 +26,8 @@ export const getProduct = createAsyncThunk('product/fetch',
             console.error(err);
             throw err;
         }
-    });
+    }
+);
 
 export const deleteProduct = createAsyncThunk('products/delete',
     async (payload: string, { rejectWithValue }) => {
@@ -34,7 +39,8 @@ export const deleteProduct = createAsyncThunk('products/delete',
             }
             return rejectWithValue(err.response.data)
         }
-    });
+    }
+);
 
 export const create = createAsyncThunk(
     'products/create',

@@ -6,8 +6,8 @@ const productsApi = {
         const result = await axios.get<IServerResponse<IProduct>>(`products/admin/${id}`);
         return result.data;
     },
-    async getProducts(query: string){
-        const result = await axios.get<IServerResponse<IProducts>>(`products/admin${query}`);
+    async getProducts(query: string, data){
+        const result = await axios.post<IServerResponse<IProducts>>(`products/admin${query}`, data);
         return result.data;
     },
     async create(data: IProduct) {
