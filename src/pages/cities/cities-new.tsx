@@ -1,30 +1,24 @@
 import { mdiChartTimelineVariant } from '@mdi/js'
 import Head from 'next/head'
-import React, {ReactElement, useState} from 'react'
+import React, { ReactElement } from 'react'
 import 'react-toastify/dist/ReactToastify.min.css'
 import CardBox from '@/components/CardBox'
 import LayoutAuthenticated from '@/layouts/Authenticated'
 import SectionMain from '@/components/SectionMain'
 import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton'
-
-import { useAppDispatch } from '@/stores/hooks'
-import { create } from '@/stores/thunks/cities'
 import { getPageTitle } from '@/config'
-
-import { Field, Form, Formik } from 'formik'
-import FormField from '@/components/FormField'
-import BaseDivider from '@/components/BaseDivider'
-import BaseButtons from '@/components/BaseButtons'
-import BaseButton from '@/components/BaseButton'
-import { AsyncSelectFieldMany } from '@/components/UI/AsyncSelectFieldMany'
-
-import { useRouter } from 'next/router'
+import { create } from '@/stores/thunks/cities'
+import { useAppDispatch, useAppSelector } from '@/stores/hooks'
 import { ICity } from "@/interfaces";
+import CityForm from '@/components/Cities/CityForm'
+import BreadcrumbsBar from "@/components/BreadcrumbsBar";
 
-const TablesPage = () => {
-  const router = useRouter()
+const NewCityPage = () => {
   const dispatch = useAppDispatch()
-  const initValues: ICity = {
+  const { loading } = useAppSelector((state) => state.cities)
+
+  // Initial values
+  const initialValues: ICity = {
     titleEn: '',
     titleRu: '',
     titleTm: '',
@@ -35,75 +29,42 @@ const TablesPage = () => {
     cityAreas: [],
   }
 
+  // Handle form submission
   const handleSubmit = async (data: ICity) => {
-    await dispatch(create(data)).then(res => console.log(res))
-    await router.push('/cities/cities-list')
+    await dispatch(create(data))
   }
+
   return (
-    <>
-      <Head>
-        <title>{getPageTitle('New Item')}</title>
-      </Head>
-      <SectionMain>
-        <SectionTitleLineWithButton icon={mdiChartTimelineVariant} title="New Item" main>
-          Breadcrumbs
-        </SectionTitleLineWithButton>
-        <CardBox>
-          <Formik
-            initialValues={initValues}
-            onSubmit={(values) => handleSubmit(values)}
+      <>
+        <Head>
+          <title>{getPageTitle('New City')}</title>
+        </Head>
+        <SectionMain>
+          <SectionTitleLineWithButton
+              icon={mdiChartTimelineVariant}
+              title="New City"
+              main
           >
-            <Form>
-              <FormField label="Title En">
-                <Field name="titleEn" placeholder="Your Title En" />
-              </FormField>
-
-              <FormField label="Title Ru">
-                <Field name="titleRu" placeholder="Your Title Ru" />
-              </FormField>
-
-              <FormField label="Title Tm">
-                <Field name="titleTm" placeholder="Your Title Tm" />
-              </FormField>
-
-              <FormField label="Coordinate">
-                <Field name="coordinate.latitude" placeholder="latitude" />
-                <Field name="coordinate.longitude" placeholder="longitude" />
-              </FormField>
-
-              <FormField label="City Areas" labelFor="cityAreas">
-                <Field
-                  name="cityAreas"
-                  id="cityAreas"
-                  itemRef={'cityAreas'}
-                  options={[]}
-                  showField={'titleRu'}
-                  component={AsyncSelectFieldMany}
-                ></Field>
-              </FormField>
-
-              <BaseDivider />
-              <BaseButtons>
-                <BaseButton type="submit" color="info" label="Submit" />
-                <BaseButton type="reset" color="info" outline label="Reset" />
-                <BaseButton
-                  type="reset"
-                  color="danger"
-                  outline
-                  label="Cancel"
-                  onClick={() => router.push('/cities/cities-list')}
-                />
-              </BaseButtons>
-            </Form>
-          </Formik>
-        </CardBox>
-      </SectionMain>
-    </>
+            <BreadcrumbsBar items={[
+              { label: 'Dashboard', href: '/dashboard' },
+              { label: 'Cities', href: '/cities/cities-list' },
+              { label: 'New City', href: '/cities/cities-new' }
+            ]} />
+          </SectionTitleLineWithButton>
+          <CardBox>
+            <CityForm
+                initialValues={initialValues}
+                onSubmit={handleSubmit}
+                isLoading={loading}
+            />
+          </CardBox>
+        </SectionMain>
+      </>
   )
 }
 
-TablesPage.getLayout = function getLayout(page: ReactElement) {
+NewCityPage.getLayout = function getLayout(page: ReactElement) {
   return <LayoutAuthenticated>{page}</LayoutAuthenticated>
 }
 
-export default TablesPage
+export default NewCityPage

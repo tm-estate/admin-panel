@@ -2,108 +2,92 @@ import { mdiChartTimelineVariant } from '@mdi/js'
 import Head from 'next/head'
 import React, { ReactElement, useEffect, useState } from 'react'
 import 'react-toastify/dist/ReactToastify.min.css'
-import 'react-datepicker/dist/react-datepicker.css'
-
 import CardBox from '@/components/CardBox'
 import LayoutAuthenticated from '@/layouts/Authenticated'
 import SectionMain from '@/components/SectionMain'
 import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton'
 import { getPageTitle } from '@/config'
-
-import { Field, Form, Formik } from 'formik'
-import FormField from '@/components/FormField'
-import BaseDivider from '@/components/BaseDivider'
-import BaseButtons from '@/components/BaseButtons'
-import BaseButton from '@/components/BaseButton'
-
 import { update, getAgencyType } from '@/stores/thunks/agency-types'
 import { useAppDispatch, useAppSelector } from '@/stores/hooks'
 import { useRouter } from 'next/router'
 import { IAgencyType } from "@/interfaces";
+import AgencyTypeForm from '@/components/Agency_types/AgencyTypeForm'
+import BreadcrumbsBar from "@/components/BreadcrumbsBar";
 
-const EditAgency_types = () => {
+const EditAgencyType = () => {
   const router = useRouter()
   const dispatch = useAppDispatch()
-  const initValues: IAgencyType = {
+  const { agency_typesId } = router.query
+  const { agency_type, loading } = useAppSelector((state) => state.agency_types)
+  const [isLoading, setIsLoading] = useState(true)
+  const [initialValues, setInitialValues] = useState<IAgencyType | null>(null)
+
+  // Initial empty state
+  const emptyAgencyType: IAgencyType = {
     titleRu: '',
     titleEn: '',
     titleTm: '',
   }
-  const [initialValues, setInitialValues] = useState(initValues)
-  const [isLoading, setIsLoading] = useState(true);
-  const { agency_type } = useAppSelector((state) => state.agency_types)
-  const { agency_typesId } = router.query
 
-
+  // Fetch agency type data when component mounts
   useEffect(() => {
-    if(agency_typesId) dispatch(getAgencyType(agency_typesId))
-  }, [agency_typesId])
+    if (agency_typesId) {
+      setIsLoading(true)
+      dispatch(getAgencyType(agency_typesId))
+    }
+  }, [agency_typesId, dispatch])
 
+  // Update form when agency type data is loaded
   useEffect(() => {
-    if (typeof agency_type === 'object') {
+    if (agency_type && typeof agency_type === 'object') {
       setInitialValues(agency_type)
       setIsLoading(false)
     }
   }, [agency_type])
 
-  const handleSubmit = async (data) => {
+  // Handle form submission
+  const handleSubmit = async (data: IAgencyType) => {
     await dispatch(update({ id: agency_typesId, data }))
-    await router.push('/agency_types/agency_types-list')
   }
 
   return (
-    <>
-      <Head>
-        <title>{getPageTitle('Edit agency_types')}</title>
-      </Head>
-      <SectionMain>
-        <SectionTitleLineWithButton icon={mdiChartTimelineVariant} title="Edit agency_types" main>
-          Breadcrumbs
-        </SectionTitleLineWithButton>
-        <CardBox>
-          { !isLoading && initialValues &&
-            <Formik
-                enableReinitialize
-                initialValues={initialValues}
-                onSubmit={(values) => handleSubmit(values)}
-            >
-              <Form>
-                <FormField label="Title Ru">
-                  <Field name="titleRu" placeholder="Your Title Ru"/>
-                </FormField>
-
-                <FormField label="Title En">
-                  <Field name="titleEn" placeholder="Your Title En"/>
-                </FormField>
-
-                <FormField label="Title Tm">
-                  <Field name="titleTm" placeholder="Your Title Tm"/>
-                </FormField>
-
-                <BaseDivider/>
-
-                <BaseButtons>
-                  <BaseButton type="submit" color="info" label="Submit"/>
-                  <BaseButton type="reset" color="info" outline label="Reset"/>
-                  <BaseButton
-                      type="reset"
-                      color="danger"
-                      outline
-                      label="Cancel"
-                      onClick={() => router.push('/agency_types/agency_types-list')}
-                  />
-                </BaseButtons>
-              </Form>
-            </Formik>
-          }
-        </CardBox>
-      </SectionMain>
-    </>
+      <>
+        <Head>
+          <title>{getPageTitle('Edit Agency Type')}</title>
+        </Head>
+        <SectionMain>
+          <SectionTitleLineWithButton
+              icon={mdiChartTimelineVariant}
+              title="Edit Agency Type"
+              main
+          >
+            <BreadcrumbsBar items={[
+              { label: 'Dashboard', href: '/dashboard' },
+              { label: 'Agency Types', href: '/agency_types/agency_types-list' },
+              { label: `Edit Agency Type ${agency_typesId}`, href: `/agency_types/${agency_typesId}` }
+            ]} />
+          </SectionTitleLineWithButton>
+          <CardBox>
+            {!isLoading && initialValues ? (
+                <AgencyTypeForm
+                    initialValues={initialValues}
+                    onSubmit={handleSubmit}
+                    isLoading={loading}
+                    isEdit={true}
+                />
+            ) : (
+                <div className="flex justify-center items-center h-64">
+                  <p className="text-lg text-gray-500">Loading agency type information...</p>
+                </div>
+            )}
+          </CardBox>
+        </SectionMain>
+      </>
   )
 }
 
-EditAgency_types.getLayout = function getLayout(page: ReactElement) {
+EditAgencyType.getLayout = function getLayout(page: ReactElement) {
   return <LayoutAuthenticated>{page}</LayoutAuthenticated>
 }
 
-export default EditAgency_types
+export default EditAgencyType

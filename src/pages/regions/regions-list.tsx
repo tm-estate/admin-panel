@@ -1,6 +1,5 @@
-import { mdiChartTimelineVariant } from '@mdi/js';
+import { mdiChartTimelineVariant, mdiPlus, mdiDownload } from '@mdi/js';
 import Head from 'next/head';
-import { uniqueId } from 'lodash';
 import React, { ReactElement } from 'react';
 import CardBox from '@/components/CardBox';
 import LayoutAuthenticated from '@/layouts/Authenticated';
@@ -10,30 +9,10 @@ import { getPageTitle } from '@/config';
 import TableRegions from '@/components/Regions/TableRegions';
 import BaseButton from '@/components/BaseButton';
 import axios from 'axios';
+import BreadcrumbsBar from "@/components/BreadcrumbsBar";
 
-const RegionsTablesPage = () => {
-  const [filterItems, setFilterItems] = React.useState([]);
-
-  const [filters] = React.useState([
-    { label: 'Title En', title: 'titleEn' },
-    { label: 'Title Ru', title: 'titleRu' },
-    { label: 'Title Tm', title: 'titleTm' },
-  ]);
-
-  const addFilter = () => {
-    const newItem = {
-      id: uniqueId(),
-      fields: {
-        filterValue: '',
-        filterValueFrom: '',
-        filterValueTo: '',
-        selectedField: '',
-      },
-    };
-    newItem.fields.selectedField = filters[0].title;
-    setFilterItems([...filterItems, newItem]);
-  };
-
+const RegionsPage = () => {
+  // Download CSV of regions
   const getRegionsCSV = async () => {
     const response = await axios({
       url: '/regions?filetype=csv',
@@ -44,56 +23,55 @@ const RegionsTablesPage = () => {
     const blob = new Blob([response.data], { type: type });
     const link = document.createElement('a');
     link.href = window.URL.createObjectURL(blob);
-    link.download = 'regionsCSV.csv';
+    link.download = 'regions_export.csv';
     link.click();
   };
 
   return (
-    <>
-      <Head>
-        <title>{getPageTitle('Regions')}</title>
-      </Head>
-      <SectionMain>
-        <SectionTitleLineWithButton
-          icon={mdiChartTimelineVariant}
-          title='Regions Table'
-          main
-        >
-          Breadcrumbs
-        </SectionTitleLineWithButton>
-        <CardBox className='mb-6'>
-          <BaseButton
-            className={'mr-3'}
-            href={'/regions/regions-new'}
-            color='info'
-            label='New Item'
-          />
-          <BaseButton
-            className={'mr-3'}
-            color='info'
-            label='Add Filter'
-            onClick={addFilter}
-          />
-          <BaseButton
-            color='info'
-            label='Download CSV'
-            onClick={getRegionsCSV}
-          />
-        </CardBox>
-        <CardBox className='mb-6' hasTable>
-          <TableRegions
-            filterItems={filterItems}
-            setFilterItems={setFilterItems}
-            filters={filters}
-          />
-        </CardBox>
-      </SectionMain>
-    </>
+      <>
+        <Head>
+          <title>{getPageTitle('Regions')}</title>
+        </Head>
+        <SectionMain>
+          <SectionTitleLineWithButton
+              icon={mdiChartTimelineVariant}
+              title='Regions Management'
+              main
+          >
+            <BreadcrumbsBar items={[
+              { label: 'Dashboard', href: '/dashboard' },
+              { label: 'Regions', href: '/regions/regions-list' },
+            ]} />
+          </SectionTitleLineWithButton>
+
+          {/* Action Buttons */}
+          <CardBox className='mb-6 flex flex-wrap gap-4'>
+            <BaseButton
+                className='mr-2'
+                href='/regions/regions-new'
+                color='success'
+                label='Add New Region'
+                icon={mdiPlus}
+            />
+            <BaseButton
+                color='warning'
+                label='Export CSV'
+                icon={mdiDownload}
+                onClick={getRegionsCSV}
+            />
+          </CardBox>
+
+          {/* Regions Table */}
+          <CardBox className='mb-6' hasTable>
+            <TableRegions />
+          </CardBox>
+        </SectionMain>
+      </>
   );
 };
 
-RegionsTablesPage.getLayout = function getLayout(page: ReactElement) {
+RegionsPage.getLayout = function getLayout(page: ReactElement) {
   return <LayoutAuthenticated>{page}</LayoutAuthenticated>;
 };
 
-export default RegionsTablesPage;
+export default RegionsPage;

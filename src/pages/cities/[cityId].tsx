@@ -2,30 +2,28 @@ import { mdiChartTimelineVariant } from '@mdi/js'
 import Head from 'next/head'
 import React, { ReactElement, useEffect, useState } from 'react'
 import 'react-toastify/dist/ReactToastify.min.css'
-import 'react-datepicker/dist/react-datepicker.css'
-
 import CardBox from '@/components/CardBox'
 import LayoutAuthenticated from '@/layouts/Authenticated'
 import SectionMain from '@/components/SectionMain'
 import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton'
 import { getPageTitle } from '@/config'
-
-import { Field, Form, Formik } from 'formik'
-import FormField from '@/components/FormField'
-import BaseDivider from '@/components/BaseDivider'
-import BaseButtons from '@/components/BaseButtons'
-import BaseButton from '@/components/BaseButton'
-import { AsyncSelectFieldMany } from '@/components/UI/AsyncSelectFieldMany'
-
-import {getCity, update} from '@/stores/thunks/cities'
+import { update, getCity } from '@/stores/thunks/cities'
 import { useAppDispatch, useAppSelector } from '@/stores/hooks'
 import { useRouter } from 'next/router'
 import { ICity } from "@/interfaces";
+import CityForm from '@/components/Cities/CityForm'
+import BreadcrumbsBar from "@/components/BreadcrumbsBar";
 
-const EditCities = () => {
+const EditCity = () => {
   const router = useRouter()
   const dispatch = useAppDispatch()
-  const initValues: ICity = {
+  const { cityId } = router.query
+  const { city, loading } = useAppSelector((state) => state.cities)
+  const [isLoading, setIsLoading] = useState(true)
+  const [initialValues, setInitialValues] = useState<ICity | null>(null)
+
+  // Initial empty state
+  const emptyCity: ICity = {
     titleEn: '',
     titleRu: '',
     titleTm: '',
@@ -35,96 +33,66 @@ const EditCities = () => {
     },
     cityAreas: [],
   }
-  const [initialValues, setInitialValues] = useState(initValues)
-  const [isLoading, setIsLoading] = useState(true)
-  const { city } = useAppSelector((state) => state.cities)
-  const { cityId } = router.query
 
+  // Fetch city data when component mounts
   useEffect(() => {
-    if(cityId) dispatch(getCity(cityId))
-  }, [cityId])
+    if (cityId) {
+      setIsLoading(true)
+      dispatch(getCity(cityId))
+    }
+  }, [cityId, dispatch])
 
+  // Update form when city data is loaded
   useEffect(() => {
-    if (typeof city === 'object') {
-      setInitialValues(city);
-      setIsLoading(false);
+    if (city && typeof city === 'object') {
+      setInitialValues(city)
+      setIsLoading(false)
     }
   }, [city])
 
+  // Handle form submission
   const handleSubmit = async (data: ICity) => {
     await dispatch(update({ id: cityId, data }))
-    await router.push('/cities/cities-list')
   }
 
   return (
-    <>
-      <Head>
-        <title>{getPageTitle('Edit cities')}</title>
-      </Head>
-      <SectionMain>
-        <SectionTitleLineWithButton icon={mdiChartTimelineVariant} title="Edit cities" main>
-          Breadcrumbs
-        </SectionTitleLineWithButton>
-        <CardBox>
-          { !isLoading && initialValues &&
-            <Formik
-            enableReinitialize
-            initialValues={initialValues}
-            onSubmit={(values) => handleSubmit(values)}
+      <>
+        <Head>
+          <title>{getPageTitle('Edit City')}</title>
+        </Head>
+        <SectionMain>
+          <SectionTitleLineWithButton
+              icon={mdiChartTimelineVariant}
+              title="Edit City"
+              main
           >
-            <Form>
-              <FormField label="Title En">
-                <Field name="titleEn" placeholder="Your Title En" />
-              </FormField>
-
-              <FormField label="Title Ru">
-                <Field name="titleRu" placeholder="Your Title Ru" />
-              </FormField>
-
-              <FormField label="Title Tm">
-                <Field name="titleTm" placeholder="Your Title Tm" />
-              </FormField>
-
-              <FormField label="Coordinate">
-                <Field name="coordinate.latitude" placeholder="latitude" />
-                <Field name="coordinate.longitude" placeholder="longitude" />
-              </FormField>
-
-              <FormField label="City Areas" labelFor="cityAreas">
-                <Field
-                  name="cityAreas"
-                  id="cityAreas"
-                  component={AsyncSelectFieldMany}
-                  options={initialValues?.cityAreas}
-                  itemRef={'cityAreas'}
-                  showField={'titleRu'}
-                ></Field>
-              </FormField>
-
-              <BaseDivider />
-
-              <BaseButtons>
-                <BaseButton type="submit" color="info" label="Submit" />
-                <BaseButton type="reset" color="info" outline label="Reset" />
-                <BaseButton
-                  type="reset"
-                  color="danger"
-                  outline
-                  label="Cancel"
-                  onClick={() => router.push('/cities/cities-list')}
+            <BreadcrumbsBar items={[
+              { label: 'Dashboard', href: '/dashboard' },
+              { label: 'Cities', href: '/cities/cities-list' },
+              { label: `Edit City ${cityId}`, href: `/cities/${cityId}` }
+            ]} />
+          </SectionTitleLineWithButton>
+          <CardBox>
+            {!isLoading && initialValues ? (
+                <CityForm
+                    initialValues={initialValues}
+                    onSubmit={handleSubmit}
+                    isLoading={loading}
+                    isEdit={true}
                 />
-              </BaseButtons>
-            </Form>
-          </Formik>
-          }
-        </CardBox>
-      </SectionMain>
-    </>
+            ) : (
+                <div className="flex justify-center items-center h-64">
+                  <p className="text-lg text-gray-500">Loading city information...</p>
+                </div>
+            )}
+          </CardBox>
+        </SectionMain>
+      </>
   )
 }
 
-EditCities.getLayout = function getLayout(page: ReactElement) {
+EditCity.getLayout = function getLayout(page: ReactElement) {
   return <LayoutAuthenticated>{page}</LayoutAuthenticated>
 }
 
-export default EditCities
+export default EditCity

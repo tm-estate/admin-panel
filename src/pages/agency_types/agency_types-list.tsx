@@ -1,6 +1,5 @@
-import { mdiChartTimelineVariant } from '@mdi/js'
+import { mdiChartTimelineVariant, mdiPlus, mdiDownload } from '@mdi/js'
 import Head from 'next/head'
-import { uniqueId } from 'lodash'
 import React, { ReactElement } from 'react'
 import CardBox from '@/components/CardBox'
 import LayoutAuthenticated from '@/layouts/Authenticated'
@@ -9,78 +8,78 @@ import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton'
 import { getPageTitle } from '@/config'
 import BaseButton from '@/components/BaseButton'
 import axios from 'axios'
-import TableSampleAgency_types from "@/components/Agency_types/TableAgency_types";
+import TableAgencyTypes from "@/components/Agency_types/TableAgencyTypes";
+import BreadcrumbsBar from "@/components/BreadcrumbsBar";
 
-const Agency_typesTablesPage = () => {
-    const [filterItems, setFilterItems] = React.useState([])
+const AgencyTypesPage = () => {
+    // Download CSV of agency types
+    const downloadAgencyTypesCSV = async () => {
+        try {
+            const response = await axios({
+                url: '/agencyType?filetype=csv',
+                method: 'GET',
+                responseType: 'blob',
+            });
 
-    const [filters] = React.useState([
-        { label: 'Title Ru', title: 'titleRu' },
-        { label: 'Title En', title: 'titleEn' },
-        { label: 'Title Tm', title: 'titleTm' },
-    ])
+            const type = response.headers['content-type'];
+            const blob = new Blob([response.data], { type: type });
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = 'agency_types_export.csv';
+            link.click();
 
-    const addFilter = () => {
-        const newItem = {
-            id: uniqueId(),
-            fields: {
-                filterValue: '',
-                filterValueFrom: '',
-                filterValueTo: '',
-                selectedField: '',
-            },
+            // Clean up
+            window.URL.revokeObjectURL(link.href);
+        } catch (error) {
+            console.error('Error downloading CSV:', error);
         }
-        newItem.fields.selectedField = filters[0].title
-        setFilterItems([...filterItems, newItem])
-    }
-
-    const getAgency_typesCSV = async () => {
-        const response = await axios({
-            url: '/agencyType?filetype=csv',
-            method: 'GET',
-            responseType: 'blob',
-        })
-        const type = response.headers['content-type']
-        const blob = new Blob([response.data], { type: type })
-        const link = document.createElement('a')
-        link.href = window.URL.createObjectURL(blob)
-        link.download = 'agencyTypesCSV.csv'
-        link.click()
-    }
+    };
 
     return (
         <>
             <Head>
-                <title>{getPageTitle('Agency_types')}</title>
+                <title>{getPageTitle('Agency Types')}</title>
             </Head>
             <SectionMain>
-                <SectionTitleLineWithButton icon={mdiChartTimelineVariant} title="Agency Types" main>
-                    Breadcrumbs
+                <SectionTitleLineWithButton
+                    icon={mdiChartTimelineVariant}
+                    title='Agency Types Management'
+                    main
+                >
+                    <BreadcrumbsBar items={[
+                        { label: 'Dashboard', href: '/dashboard' },
+                        { label: 'Agency Types', href: '/agency_types/agency_types-list' },
+                    ]} />
                 </SectionTitleLineWithButton>
-                <CardBox className="mb-6">
+
+                {/* Action Buttons */}
+                <CardBox className='mb-6 flex flex-wrap gap-4'>
                     <BaseButton
-                        className={'mr-3'}
-                        href={'/agency_types/agency_types-new'}
-                        color="info"
-                        label="New Item"
+                        className='mr-2'
+                        href='/agency_types/agency_types-new'
+                        color='success'
+                        label='Add New Agency Type'
+                        icon={mdiPlus}
                     />
-                    <BaseButton className={'mr-3'} color="info" label="Add Filter" onClick={addFilter} />
-                    <BaseButton color="info" label="Download CSV" onClick={getAgency_typesCSV} />
+                    <BaseButton
+                        color='warning'
+                        label='Export CSV'
+                        icon={mdiDownload}
+                        onClick={downloadAgencyTypesCSV}
+                    />
                 </CardBox>
-                <CardBox className="mb-6" hasTable>
-                    <TableSampleAgency_types
-                        filterItems={filterItems}
-                        setFilterItems={setFilterItems}
-                        filters={filters}
-                    />
+
+                {/* Agency Types Table */}
+                <CardBox className='mb-6' hasTable>
+                    <TableAgencyTypes />
                 </CardBox>
             </SectionMain>
         </>
     )
 }
 
-Agency_typesTablesPage.getLayout = function getLayout(page: ReactElement) {
+AgencyTypesPage.getLayout = function getLayout(page: ReactElement) {
     return <LayoutAuthenticated>{page}</LayoutAuthenticated>
 }
 
-export default Agency_typesTablesPage
+export default AgencyTypesPage

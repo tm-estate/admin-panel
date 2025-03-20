@@ -25,9 +25,9 @@ import BaseButton from '@/components/BaseButton';
 import FormCheckRadio from '@/components/FormCheckRadio';
 import FormCheckRadioGroup from '@/components/FormCheckRadioGroup';
 import FormImagePicker from '@/components/FormImagePicker';
-import { SwitchField } from '@/components/SwitchField';
+import SwitchField from '@/components/UI/SwitchField';
 
-import { update, fetch } from '@/stores/users/usersSlice';
+import { update, getUser } from '@/stores/thunks/users';
 import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { useRouter } from 'next/router';
 

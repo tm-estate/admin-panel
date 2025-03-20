@@ -1,9 +1,4 @@
-import {
-  mdiAccount,
-  mdiChartTimelineVariant,
-  mdiMail,
-  mdiUpload,
-} from '@mdi/js';
+import { mdiChartTimelineVariant } from '@mdi/js';
 import Head from 'next/head';
 import React, { ReactElement } from 'react';
 import 'react-toastify/dist/ReactToastify.min.css';
@@ -12,84 +7,59 @@ import LayoutAuthenticated from '@/layouts/Authenticated';
 import SectionMain from '@/components/SectionMain';
 import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton';
 import { getPageTitle } from '@/config';
-
-import { Field, Form, Formik } from 'formik';
-import FormField from '@/components/FormField';
-import BaseDivider from '@/components/BaseDivider';
-import BaseButtons from '@/components/BaseButtons';
-import BaseButton from '@/components/BaseButton';
-
 import { create } from '@/stores/thunks/deal-types';
-import { useAppDispatch } from '@/stores/hooks';
-import { useRouter } from 'next/router';
+import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { IDealType } from "@/interfaces";
+import DealTypeForm from '@/components/Deal_types/DealTypeForm';
+import BreadcrumbsBar from "@/components/BreadcrumbsBar";
 
-const TablesPage = () => {
-  const router = useRouter();
+const NewDealTypePage = () => {
   const dispatch = useAppDispatch();
-  const initValues: IDealType = {
+  const { loading } = useAppSelector((state) => state.deal_types);
+
+  // Initial values
+  const initialValues: IDealType = {
     titleRu: '',
     titleEn: '',
     titleTm: '',
-  }
-
-  const handleSubmit = async (data) => {
-    await dispatch(create(data));
-    await router.push('/deal_types/deal_types-list');
   };
+
+  // Handle form submission
+  const handleSubmit = async (data: IDealType) => {
+    await dispatch(create(data));
+  };
+
   return (
-    <>
-      <Head>
-        <title>{getPageTitle('New Item')}</title>
-      </Head>
-      <SectionMain>
-        <SectionTitleLineWithButton
-          icon={mdiChartTimelineVariant}
-          title='New Item'
-          main
-        >
-          Breadcrumbs
-        </SectionTitleLineWithButton>
-        <CardBox>
-          <Formik
-            initialValues={initValues}
-            onSubmit={(values) => handleSubmit(values)}
+      <>
+        <Head>
+          <title>{getPageTitle('New Deal Type')}</title>
+        </Head>
+        <SectionMain>
+          <SectionTitleLineWithButton
+              icon={mdiChartTimelineVariant}
+              title="New Deal Type"
+              main
           >
-            <Form>
-              <FormField label='Title Ru'>
-                <Field name='titleRu' placeholder='Title Ru' />
-              </FormField>
-
-              <FormField label='Title En'>
-                <Field name='titleEn' placeholder='Title En' />
-              </FormField>
-
-              <FormField label='Title Tm'>
-                <Field name='titleTm' placeholder='Title Tm' />
-              </FormField>
-
-              <BaseDivider />
-              <BaseButtons>
-                <BaseButton type='submit' color='info' label='Submit' />
-                <BaseButton type='reset' color='info' outline label='Reset' />
-                <BaseButton
-                  type='reset'
-                  color='danger'
-                  outline
-                  label='Cancel'
-                  onClick={() => router.push('/deal_types/deal_types-list')}
-                />
-              </BaseButtons>
-            </Form>
-          </Formik>
-        </CardBox>
-      </SectionMain>
-    </>
+            <BreadcrumbsBar items={[
+              { label: 'Dashboard', href: '/dashboard' },
+              { label: 'Deal Types', href: '/deal_types/deal_types-list' },
+              { label: 'New Deal Type', href: '/deal_types/deal_types-new' }
+            ]} />
+          </SectionTitleLineWithButton>
+          <CardBox>
+            <DealTypeForm
+                initialValues={initialValues}
+                onSubmit={handleSubmit}
+                isLoading={loading}
+            />
+          </CardBox>
+        </SectionMain>
+      </>
   );
 };
 
-TablesPage.getLayout = function getLayout(page: ReactElement) {
+NewDealTypePage.getLayout = function getLayout(page: ReactElement) {
   return <LayoutAuthenticated>{page}</LayoutAuthenticated>;
 };
 
-export default TablesPage;
+export default NewDealTypePage;

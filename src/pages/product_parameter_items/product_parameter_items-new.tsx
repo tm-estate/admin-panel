@@ -22,13 +22,13 @@ import FormCheckRadio from '@/components/FormCheckRadio';
 import FormCheckRadioGroup from '@/components/FormCheckRadioGroup';
 import FormFilePicker from '@/components/FormFilePicker';
 import FormImagePicker from '@/components/FormImagePicker';
-import { SwitchField } from '@/components/SwitchField';
+import SwitchField from '@/components/UI/SwitchField';
 
 // import { SelectField } from '@/components/SelectField';
 // import { SelectFieldMany } from '@/components/SelectFieldMany';
 import { RichTextField } from '@/components/RichTextField';
 
-import { create } from '@/stores/product_parameter_items/product_parameter_itemsSlice';
+import { create } from '@/stores/slices/product_parameter_itemsSlice';
 import { useAppDispatch } from '@/stores/hooks';
 import { useRouter } from 'next/router';
 

@@ -27,14 +27,14 @@ import FormCheckRadioGroup from '@/components/FormCheckRadioGroup';
 import FormFilePicker from '@/components/FormFilePicker';
 import FormImagePicker from '@/components/FormImagePicker';
 // import { SelectField } from '@/components/SelectField';
-// import { AsyncSelectFieldMany } from '@/components/UI/AsyncSelectFieldMany';
-import { SwitchField } from '@/components/SwitchField';
+// import AsyncSelectField from '@/components/UI/AsyncSelectField';
+import SwitchField from "@/components/UI/SwitchField";
 import { RichTextField } from '@/components/RichTextField';
 
 import {
   update,
   fetch,
-} from '@/stores/product_parameter_items/product_parameter_itemsSlice';
+} from '@/stores/slices/product_parameter_itemsSlice';
 import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { useRouter } from 'next/router';
 
@@ -51,7 +51,7 @@ const EditProduct_parameter_items = () => {
   const [initialValues, setInitialValues] = useState(initVals);
 
   const { product_parameter_items } = useAppSelector(
-    (state) => state.product_parameter_items,
+    (state) => state.product_parameters_items,
   );
 
   const { product_parameter_itemsId } = router.query;
