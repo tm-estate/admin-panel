@@ -1,384 +1,273 @@
-import { mdiEye, mdiTrashCan } from '@mdi/js'
-import React, { useEffect, useState, useMemo } from 'react'
-import { ToastContainer, toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.min.css'
-import BaseButton from '@/components/BaseButton'
-import BaseButtons from '@/components/BaseButtons'
-import CardBoxModal from '@/components/CardBoxModal'
-import CardBox from '@/components/CardBox'
-import ImageField from '@/components/ImageField'
-import { getUsers, deleteUser } from '@/stores/thunks/users'
-import { useAppDispatch, useAppSelector } from '@/stores/hooks'
-import { useRouter } from 'next/router'
-import dataFormatter from '@/helpers/dataFormatter'
-import { Field, Form, Formik } from 'formik'
-import { Pagination } from '@/components/Pagination'
+import { mdiEye, mdiTrashCan } from '@mdi/js';
+import React, { useEffect, useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.min.css';
+import BaseButton from '@/components/BaseButton';
+import BaseButtons from '@/components/BaseButtons';
+import CardBoxModal from '@/components/CardBoxModal';
+import { getUsers, deleteUser } from '@/stores/thunks/users';
+import { useAppDispatch, useAppSelector } from '@/stores/hooks';
+import { useRouter } from 'next/router';
+import dataFormatter from '@/helpers/dataFormatter';
+import { Pagination } from '@/components/Pagination';
+import Filters from '@/components/Filters/Filters';
+import { ITableProps } from "@/interfaces/ITable";
 
-const perPage = 5
+const ITEMS_PER_PAGE = 10;
 
-const TableSampleUsers = ({ filterItems, setFilterItems, filters }) => {
-  const dispatch = useAppDispatch()
-  const router = useRouter()
-  const notify = (type, msg) => toast(msg, { type, position: 'bottom-center' })
+const TableUsers: React.FC<ITableProps> = ({
+                                            filterItems,
+                                            setFilterItems,
+                                            filters
+                                          }) => {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
 
-  const pagesList = []
-  const [id, setId] = useState(null)
-  const [currentPage, setCurrentPage] = useState(0)
-  const [filterRequest, setFilterRequest] = React.useState('')
-  const [sort, setSort] = useState('desc')
-  const [field, setField] = useState('')
-  const { users, loading, count, notify: usersNotify } = useAppSelector((state) => state.users)
+  const [currentPage, setCurrentPage] = useState(0);
+  const [filterData, setFilterData] = useState({});
+  const [sortDirection, setSortDirection] = useState('desc');
+  const [sortField, setSortField] = useState('');
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  const [isDeleteModalActive, setIsDeleteModalActive] = useState(false);
+  const [isViewModalActive, setIsViewModalActive] = useState(false);
 
-  const numPages = Math.floor(count / perPage) === 0 ? 1 : Math.ceil(count / perPage)
-  for (let i = 0; i < numPages; i++) {
-    pagesList.push(i)
-  }
+  const {
+    users,
+    loading,
+    count,
+    notify: usersNotify,
+  } = useAppSelector((state) => state.users);
 
-  const loadData = async (page = currentPage, request = filterRequest) => {
-    if (page !== currentPage) setCurrentPage(page)
-    if (request !== filterRequest) setFilterRequest(request)
+  const totalPages = Math.max(1, Math.ceil(count / ITEMS_PER_PAGE));
 
-    const query = `?page=${++page}&limit=${perPage}${request}&sort=${sort}&field=${field}`
-    dispatch(getUsers(query))
-  }
+  const safeFormatter = (value) => {
+    if (value === null || value === undefined) return '';
+    if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+      return String(value);
+    }
+    if (typeof value === 'object') {
+      if (Array.isArray(value)) {
+        return value.map(item => typeof item === 'object' ? (item.name || JSON.stringify(item)) : String(item)).join(', ');
+      }
+      return JSON.stringify(value);
+    }
+    return '';
+  };
+
+  const showNotification = (type, message) => {
+    toast(message, {
+      type,
+      position: 'bottom-center',
+      autoClose: 3000
+    });
+  };
+
+  const loadUsers = async (page = currentPage, data = filterData, isManualApply = false) => {
+    if (!isManualApply && router.asPath.includes('?') && JSON.stringify(data) === '{}') {
+      return;
+    }
+
+    if (page !== currentPage) setCurrentPage(page);
+    if (data !== filterData) setFilterData(data);
+
+    const queryString = `?page=${page + 1}&limit=${ITEMS_PER_PAGE}&sort=${sortDirection}&field=${sortField}`;
+
+    dispatch(getUsers({ query: queryString, data }));
+  };
 
   useEffect(() => {
-    if (usersNotify.showNotification) {
-      notify(usersNotify.typeNotification, usersNotify.textNotification)
+    if (usersNotify?.showNotification) {
+      showNotification(
+          usersNotify.typeNotification,
+          usersNotify.textNotification
+      );
     }
-  }, [usersNotify.showNotification])
+  }, [usersNotify?.showNotification]);
 
   useEffect(() => {
-    loadData()
-  }, [dispatch, sort, field])
+    if (router.asPath.includes('?')) return;
 
-  const [isModalInfoActive, setIsModalInfoActive] = useState(false)
-  const [isModalTrashActive, setIsModalTrashActive] = useState(false)
+    loadUsers();
+  }, [dispatch, sortDirection, sortField]);
 
-  const handleModalAction = () => {
-    setIsModalInfoActive(false)
-    setIsModalTrashActive(false)
-  }
+  useEffect(() => {
+    const handleInitialLoad = async () => {
+      if (router.asPath.includes('?')) {
+        const urlParams = new URLSearchParams(router.asPath.split('?')[1] || '');
 
-  const handleDeleteModalAction = (e, id) => {
-    e.stopPropagation()
-    setId(id)
-    setIsModalTrashActive(true)
-  }
-  const handleDeleteAction = async () => {
-    if (id) {
-      await dispatch(deleteUser(id))
-      await loadData(0)
-      setIsModalTrashActive(false)
+        const filterObject = {};
+
+        await loadUsers(0, filterObject);
+      } else {
+        await loadUsers();
+      }
+    };
+
+    handleInitialLoad();
+  }, []);
+
+  const closeModals = () => {
+    setIsDeleteModalActive(false);
+    setIsViewModalActive(false);
+    setSelectedItemId(null);
+  };
+
+  const handleDeleteClick = (e, id) => {
+    e.stopPropagation();
+    setSelectedItemId(id);
+    setIsDeleteModalActive(true);
+  };
+
+  const handleViewClick = (e, id) => {
+    e.stopPropagation();
+    setSelectedItemId(id);
+    setIsViewModalActive(true);
+  };
+
+  const confirmDelete = async () => {
+    if (selectedItemId) {
+      await dispatch(deleteUser(selectedItemId));
+      await loadUsers(0);
+      closeModals();
     }
-  }
+  };
 
-  const generateFilterRequests = useMemo(() => {
-    let request = '&'
-    filterItems.forEach((item) => {
-      filters.find(
-        (filter) => filter.title === item.fields.selectedField && (filter.number || filter.date)
-      )
-        ? (request += `${item.fields.selectedField}Range=${item.fields.filterValueFrom}&${item.fields.selectedField}Range=${item.fields.filterValueTo}&`)
-        : (request += `${item.fields.selectedField}=${item.fields.filterValue}&`)
-    })
-    return request
-  }, [filterItems, filters])
-
-  const deleteFilter = (value) => {
-    const newItems = filterItems.filter((item) => item.id !== value)
-    if (newItems.length) {
-      setFilterItems(newItems)
-    } else {
-      loadData(0, '')
-      setFilterItems(newItems)
-    }
-  }
-
-  const handleSubmit = () => {
-    loadData(0, generateFilterRequests)
-  }
-
-  const handleChange = (id) => (e) => {
-    const value = e.target.value
-    const name = e.target.name
-
-    setFilterItems(
-      filterItems.map((item) =>
-        item.id === id ? { id, fields: { ...item.fields, [name]: value } } : item
-      )
-    )
-  }
-
-  const handleReset = () => {
-    setFilterItems([])
-    loadData(0, '')
-  }
-
-  const onPageChange = (page: number) => {
-    loadData(page)
-    setCurrentPage(page)
-  }
+  const handleRowClick = (id) => {
+    router.push(`/users/${id}`);
+  };
 
   const handleSort = (e) => {
-    if (e?.target?.innerHTML) {
-      const val = e.target.innerHTML
-      const key = filters.find((el) => el.label === val)?.title
-      const direction = e.target.classList.contains('asc') ? 'desc' : 'asc'
+    sortDirection  === 'asc' ? setSortDirection('desc') : setSortDirection('asc')
+    const headerElement = e.target;
+    if (headerElement?.classList?.contains('sortable')) {
+      const columnName = headerElement.getAttribute('data-field');
 
-      if (!key) {
-        return
+      if (columnName === sortField) {
+        setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
+      } else {
+        setSortField(columnName);
+        setSortDirection('desc');
       }
 
-      const headers = document.querySelectorAll('th.sortable')
-      headers.forEach((el) => el.classList.remove('asc', 'desc'))
-
-      e.target.classList.remove('asc', 'desc')
-      e.target.classList.add(direction)
-
-      setField(key)
-      setSort((prev) => (prev === 'asc' ? 'desc' : 'asc'))
+      const headers = document.querySelectorAll('th.sortable');
+      headers.forEach(el => el.classList.remove('asc', 'desc'));
+      headerElement.classList.add(sortDirection === 'asc' ? 'desc' : 'asc');
     }
-  }
+  };
 
-  const controlClasses =
-    'w-full py-2 px-2 my-2 border-gray-700 rounded dark:placeholder-gray-400 ' +
-    'focus:ring focus:ring-blue-600 focus:border-blue-600 focus:outline-none bg-white ' +
-    'dark:bg-slate-800 border'
-  console.log('users: ', users)
+  const handleApplyFilters = ({object, query}) => {
+    const isManualFilterApply = true;
+
+    loadUsers(0, object, isManualFilterApply);
+    router.replace({ query }, undefined, { shallow: true });
+  };
 
   return (
-    <>
-      {filterItems && Array.isArray(filterItems) && filterItems.length ? (
-        <CardBox>
-          <Formik
-            initialValues={{
-              checkboxes: ['lorem'],
-              switches: ['lorem'],
-              radio: 'lorem',
-            }}
-            onSubmit={() => null}
-          >
-            <Form>
-              <>
-                {filterItems &&
-                  filterItems.map((filterItem) => {
-                    return (
-                      <div key={filterItem.id} className="flex mb-4">
-                        <div className="flex flex-col w-full mr-3">
-                          <div className="text-gray-500 font-bold">Filter</div>
-                          <Field
-                            className={controlClasses}
-                            name="selectedField"
-                            id="selectedField"
-                            component="select"
-                            value={filterItem?.fields?.selectedField}
-                            onChange={handleChange(filterItem.id)}
-                          >
-                            {filters.map((selectOption) => (
-                              <option key={selectOption.title} value={`${selectOption.title}`}>
-                                {selectOption.label}
-                              </option>
-                            ))}
-                          </Field>
-                        </div>
-                        {filters.find(
-                          (filter) => filter.title === filterItem?.fields?.selectedField
-                        )?.number ? (
-                          <div className="flex flex-row w-full mr-3">
-                            <div className="flex flex-col w-full mr-3">
-                              <div className="text-gray-500 font-bold">From</div>
-                              <Field
-                                className={controlClasses}
-                                name="filterValueFrom"
-                                placeholder="From"
-                                id="filterValueFrom"
-                                onChange={handleChange(filterItem.id)}
-                              />
-                            </div>
-                            <div className="flex flex-col w-full">
-                              <div className="text-gray-500 font-bold">To</div>
-                              <Field
-                                className={controlClasses}
-                                name="filterValueTo"
-                                placeholder="to"
-                                id="filterValueTo"
-                                onChange={handleChange(filterItem.id)}
-                              />
-                            </div>
-                          </div>
-                        ) : filters.find(
-                            (filter) => filter.title === filterItem?.fields?.selectedField
-                          )?.date ? (
-                          <div className="flex flex-row w-full mr-3">
-                            <div className="flex flex-col w-full mr-3">
-                              <div className="text-gray-500 font-bold">From</div>
-                              <Field
-                                className={controlClasses}
-                                name="filterValueFrom"
-                                placeholder="From"
-                                id="filterValueFrom"
-                                type="datetime-local"
-                                onChange={handleChange(filterItem.id)}
-                              />
-                            </div>
-                            <div className="flex flex-col w-full">
-                              <div className="text-gray-500 font-bold">To</div>
-                              <Field
-                                className={controlClasses}
-                                name="filterValueTo"
-                                placeholder="to"
-                                id="filterValueTo"
-                                type="datetime-local"
-                                onChange={handleChange(filterItem.id)}
-                              />
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="flex flex-col w-full mr-3">
-                            <div className="text-gray-500 font-bold">Contains</div>
-                            <Field
-                              className={controlClasses}
-                              name="filterValue"
-                              placeholder="Contained"
-                              id="filterValue"
-                              onChange={handleChange(filterItem.id)}
-                            />
-                          </div>
-                        )}
-                        <div className="flex flex-col">
-                          <div className="text-gray-500 font-bold">Action</div>
-                          <BaseButton
-                            className="my-2"
-                            type="reset"
-                            color="danger"
-                            label="Delete"
-                            onClick={() => {
-                              deleteFilter(filterItem.id)
-                            }}
-                          />
-                        </div>
-                      </div>
-                    )
-                  })}
-                <div className="flex">
-                  <BaseButton
-                    className="my-2 mr-3"
-                    color="success"
-                    label="Apply"
-                    onClick={handleSubmit}
-                  />
-                  <BaseButton className="my-2" color="info" label="Cancel" onClick={handleReset} />
-                </div>
-              </>
-            </Form>
-          </Formik>
-        </CardBox>
-      ) : null}
-      <CardBoxModal
-        title="Please confirm"
-        buttonColor="danger"
-        buttonLabel={loading ? 'Deleting...' : 'Confirm'}
-        isActive={isModalTrashActive}
-        onConfirm={handleDeleteAction}
-        onCancel={handleModalAction}
-      >
-        <p>Are you sure you want to delete this item?</p>
-      </CardBoxModal>
+      <>
+        {filters && filterItems && setFilterItems && (
+            <Filters
+                filters={filters}
+                filterItems={filterItems}
+                setFilterItems={setFilterItems}
+                onApplyFilters={handleApplyFilters}
+                className="mb-6"
+            />
+        )}
 
-      <div className="relative overflow-x-auto">
-        <table>
-          <thead>
-            <tr onClick={(e) => handleSort(e)}>
-              <th className="sortable">Name</th>
+        {/* Delete Confirmation Modal */}
+        <CardBoxModal
+            title="Delete User"
+            buttonColor="danger"
+            buttonLabel={loading ? 'Deleting...' : 'Delete'}
+            isActive={isDeleteModalActive}
+            onConfirm={confirmDelete}
+            onCancel={closeModals}
+        >
+          <p>Are you sure you want to delete this user? This action cannot be undone.</p>
+        </CardBoxModal>
 
-              <th className="sortable">Phone Number</th>
-
-              <th className="sortable">E-Mail</th>
-
-              <th>Role</th>
-
-              <th>Agent</th>
-
-              <th>Confirmed</th>
-
-              {/*<th>Disabled</th>*/}
-
-              <th>Created Date</th>
-
-              <th>Actions</th>
-              <th />
+        {/* Users Table */}
+        <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+          <table className="w-full text-sm text-left">
+            <thead className="text-xs uppercase bg-gray-100 dark:bg-slate-700">
+            <tr onClick={handleSort}>
+              <th className={`${sortDirection === 'asc' ? 'desc' : 'asc'} p-4`} data-field="name">Name</th>
+              <th className="sortable p-4" data-field="phone">Phone Number</th>
+              <th className="sortable p-4" data-field="email">E-Mail</th>
+              <th className="p-4" data-field="role">Role</th>
+              <th className="p-4" data-field="isAgent">Agent</th>
+              <th className="p-4" data-field="isPhoneNumberConfirmed">Confirmed</th>
+              <th className="sortable p-4" data-field="createdAt">Created Date</th>
+              <th className="sortable p-4" data-field="updatedAt">Updated Date</th>
+              <th className="p-4">Actions</th>
             </tr>
-          </thead>
-          <tbody>
-            {users &&
-              Array.isArray(users) &&
-              users.map((item: any) => (
-                <tr key={item.id} onClick={() => router.push(`/users/${item._id}`)}>
-                  <td data-label="name">{dataFormatter.capitalize(item.name)}</td>
+            </thead>
+            <tbody>
+            {users && users.length > 0 ? (
+                users.map((item) => (
+                    <tr
+                        key={item._id}
+                        onClick={() => handleRowClick(item._id)}
+                        className="bg-white border-b dark:bg-slate-800 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 cursor-pointer"
+                    >
+                      <td className="p-4 font-medium">{safeFormatter(dataFormatter.capitalize(item.name))}</td>
+                      <td className="p-4">{safeFormatter(dataFormatter.phoneFormatter(item.phone))}</td>
+                      <td className="p-4">{safeFormatter(item.email)}</td>
+                      <td className="p-4">{safeFormatter(item.role)}</td>
+                      <td className="p-4">{safeFormatter(dataFormatter.booleanFormatter(item.isAgent))}</td>
+                      <td className="p-4">{safeFormatter(dataFormatter.booleanFormatter(item.isPhoneNumberConfirmed))}</td>
+                      <td className="p-4">{safeFormatter(dataFormatter.dateFormatter(item.createdAt))}</td>
+                      <td className="p-4">{safeFormatter(dataFormatter.dateFormatter(item.updatedAt))}</td>
 
-                  <td data-label="phone">{dataFormatter.phoneFormatter(item.phone)}</td>
-
-                  <td data-label="email">{item.email}</td>
-
-                  <td data-label="role">{item.role}</td>
-
-                  <td data-label="isAgent">{dataFormatter.booleanFormatter(item.isAgent)}</td>
-
-                  <td data-label="isPhoneNumberConfirmed">{dataFormatter.booleanFormatter(item.isPhoneNumberConfirmed)}</td>
-
-                  <td data-label="createdDate">{dataFormatter.dateFormatter(item.createdAt)}</td>
-
-                  {/*<td data-label="disabled">{dataFormatter.booleanFormatter(item.disabled)}</td>*/}
-
-                  {/*<td className="border-b-0 lg:w-6 before:hidden">*/}
-                  {/*  <ImageField*/}
-                  {/*    name={'Avatar'}*/}
-                  {/*    image={item.avatar}*/}
-                  {/*    className="w-24 h-24 mx-auto lg:w-6 lg:h-6"*/}
-                  {/*  />*/}
-                  {/*</td>*/}
-
-                  <td className="before:hidden lg:w-1 whitespace-nowrap">
-                    <BaseButtons type="justify-start lg:justify-end" noWrap>
-                      <BaseButton
-                        color="info"
-                        icon={mdiEye}
-                        onClick={() => setIsModalInfoActive(true)}
-                        small
-                      />
-                      <BaseButton
-                        color="danger"
-                        icon={mdiTrashCan}
-                        onClick={(e) => handleDeleteModalAction(e, item.id)}
-                        small
-                      />
-                    </BaseButtons>
+                      {/* Action buttons */}
+                      <td className="p-4 text-right">
+                        <BaseButtons type="justify-end" noWrap>
+                          <BaseButton
+                              color="info"
+                              icon={mdiEye}
+                              onClick={(e) => handleViewClick(e, item._id)}
+                              small
+                          />
+                          <BaseButton
+                              color="danger"
+                              icon={mdiTrashCan}
+                              onClick={(e) => handleDeleteClick(e, item._id)}
+                              small
+                          />
+                        </BaseButtons>
+                      </td>
+                    </tr>
+                ))
+            ) : (
+                <tr>
+                  <td colSpan={9} className="p-4 text-center">
+                    {loading ? 'Loading...' : 'No users found'}
                   </td>
                 </tr>
-              ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="p-3 lg:px-6 border-t border-gray-100 dark:border-slate-800">
-        <div className="flex flex-col md:flex-row items-center justify-between py-3 md:py-0">
-          <div className="flex items-center mr-4">
-            <p className={'text-[#8491A0]'}>
-              Displaying {users.length === 0 ? '0' : currentPage * perPage + 1} to{' '}
-              {users.length < perPage
-                ? users?.length + perPage * currentPage
-                : perPage * (currentPage + 1) > count
-                ? perPage * (currentPage + 1) - count + currentPage * perPage
-                : perPage * (currentPage + 1)}{' '}
-              of {count}
-            </p>
-          </div>
-          <Pagination currentPage={currentPage} numPages={numPages} setCurrentPage={onPageChange} />
+            )}
+            </tbody>
+          </table>
         </div>
-      </div>
-      <ToastContainer />
-    </>
-  )
-}
 
-export default TableSampleUsers
+        <div className="p-4 border-t border-gray-100 dark:border-slate-800">
+          <div className="flex flex-col md:flex-row items-center justify-between">
+            <div className="mb-4 md:mb-0">
+              <p className="text-gray-500">
+                Showing {users.length === 0 ? '0' : currentPage * ITEMS_PER_PAGE + 1} to{' '}
+                {Math.min((currentPage + 1) * ITEMS_PER_PAGE, count)} of {count} entries
+              </p>
+            </div>
+            <Pagination
+                currentPage={currentPage}
+                numPages={totalPages}
+                setCurrentPage={(page) => loadUsers(page)}
+            />
+          </div>
+        </div>
+
+        <ToastContainer />
+      </>
+  );
+};
+
+export default TableUsers;

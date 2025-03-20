@@ -10,7 +10,7 @@ import ImageField from '@/components/ImageField'
 import {
   fetch,
   deleteItem,
-} from '@/stores/product_parameter_items/product_parameter_itemsSlice'
+} from '@/stores/slices/product_parameter_itemsSlice'
 import { useAppDispatch, useAppSelector } from '@/stores/hooks'
 import { useRouter } from 'next/router'
 import dataFormatter from '@/helpers/dataFormatter'
@@ -36,7 +36,7 @@ const TableSampleProduct_parameter_items = ({ filterItems, setFilterItems, filte
     loading,
     count,
     notify: product_parameter_itemsNotify,
-  } = useAppSelector((state) => state.product_parameter_items)
+  } = useAppSelector((state) => state.product_parameters_items)
 
   const numPages = Math.floor(count / perPage) === 0 ? 1 : Math.ceil(count / perPage)
   for (let i = 0; i < numPages; i++) {
