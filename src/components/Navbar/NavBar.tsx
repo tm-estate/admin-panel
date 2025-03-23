@@ -1,7 +1,7 @@
 import React, { ReactNode, useState } from 'react';
 import { mdiClose, mdiDotsVertical } from '@mdi/js';
 import { containerMaxW } from '@/config';
-import BaseIcon from './BaseIcon';
+import BaseIcon from '../Base/BaseIcon';
 import NavBarItemPlain from './NavBarItemPlain';
 import NavBarMenuList from './NavBarMenuList';
 import { MenuNavBarItem } from '@/interfaces';
