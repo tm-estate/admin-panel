@@ -6,6 +6,7 @@ import axios, {
     InternalAxiosRequestConfig,
 } from 'axios';
 import { IAxiosInstance, IServerError } from '@/interfaces';
+import Cookies from 'js-cookie';
 
 const DEFAULT_ERROR: IServerError = {
     code: 'SERVER__ERROR',
@@ -15,17 +16,18 @@ const DEFAULT_ERROR: IServerError = {
 
 const axiosOptions: AxiosRequestConfig = {
     baseURL: `${process.env.NEXT_PUBLIC_BASE_URL}:3000/api/v1/`,
-    // withCredentials: false, // Uncomment if needed
+    // withCredentials: true, // Enable if your API is on a different domain and needs to send cookies
 };
 
 const axiosInstance: AxiosInstance = axios.create(axiosOptions);
 
 axiosInstance.interceptors.request.use(
     (reqConfig: InternalAxiosRequestConfig) => {
-        const jwt = localStorage.getItem('token');
+        // Get token from cookies instead of localStorage
+        const token = Cookies.get('token');
 
-        if (jwt && reqConfig.headers) {
-            reqConfig.headers.Authorization = jwt;
+        if (token && reqConfig.headers) {
+            reqConfig.headers.Authorization = token;
         }
 
         return reqConfig;
@@ -44,6 +46,14 @@ axiosInstance.interceptors.response.use(
         }
 
         if (headers.authorization) {
+            // If response includes a new token, update the cookie
+            Cookies.set('token', headers.authorization, {
+                expires: 7, // 7 days
+                path: '/',
+                sameSite: 'strict',
+                secure: process.env.NODE_ENV === 'production'
+            });
+
             return {
                 token: headers.authorization,
                 ...data,
@@ -54,6 +64,11 @@ axiosInstance.interceptors.response.use(
     },
     (failedResponse: AxiosError) => {
         const { response } = failedResponse;
+
+        // If unauthorized (401), clear the token cookie
+        if (response?.status === 401) {
+            Cookies.remove('token', { path: '/' });
+        }
 
         if (!response || !response.data) {
             throw DEFAULT_ERROR;

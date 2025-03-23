@@ -1,49 +1,101 @@
-import { createAsyncThunk } from '@reduxjs/toolkit'
-import authApi from '@/api/auth'
-import { ISignInPayload, ISignUpPayload } from '@/interfaces'
+// src/stores/thunks/auth.ts
+// Auth-related thunks for Redux
 
-export const getMe = createAsyncThunk('auth/getMe', async (_, thunkAPI) => {
-  try {
-    return await authApi.getMe()
-  } catch (error: any) {
-    const message = error?.response?.data?.message || error.message || error.toString()
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import { ISignInPayload, ISignUpPayload, IUser } from '@/interfaces';
+import authApi from '@/api/auth';
+import { Role } from '@/constants/roles';
+import { Permission } from '@/constants/permissions';
+import Cookies from "js-cookie";
+import { COOKIE_OPTIONS, TOKEN_COOKIE_NAME } from "@/constants/cookies";
 
-    return thunkAPI.rejectWithValue(message)
-  }
-})
 
-export const login = createAsyncThunk('auth/login', async (data: ISignInPayload, thunkAPI) => {
-  try {
-    const res = await authApi.login(data)
+export const register = createAsyncThunk<IUser, ISignUpPayload, { rejectValue: string }>(
+    'auth/register',
+    async (registerData, { rejectWithValue }) => {
+      try {
+        const response = await authApi.register(registerData);
 
-    localStorage.setItem('token', res.token)
-    thunkAPI.dispatch(getMe())
+        Cookies.set(TOKEN_COOKIE_NAME, response.token, COOKIE_OPTIONS);
 
-    return {}
-  } catch (error: any) {
-    const message = error?.response?.data?.message || error.message || error.toString()
-
-    return thunkAPI.rejectWithValue(message)
-  }
-})
-
-export const register = createAsyncThunk(
-  'auth/register',
-  async (data: ISignUpPayload, thunkAPI) => {
-    try {
-      const res = await authApi.register(data)
-
-      console.log('REGISTER TOKEN =======>', res.token)
-      // thunkAPI.dispatch(setMessage(response.data.message));
-      localStorage.setItem('token', res.token)
-
-      return res.data
-    } catch (error: any) {
-      const message = error?.response?.data?.message || error.message || error.toString()
-
-      return thunkAPI.rejectWithValue(message)
+        return response.data;
+      } catch (error) {
+        return rejectWithValue(error?.message || 'Registration failed');
+      }
     }
-  }
-)
+);
 
-export const logout = createAsyncThunk('auth/logout', () => authApi.logout())
+export const login = createAsyncThunk<void, ISignInPayload, { rejectValue: string }>(
+    'auth/login',
+    async (loginData, { rejectWithValue, dispatch }) => {
+      try {
+        const response = await authApi.login(loginData);
+
+        Cookies.set(TOKEN_COOKIE_NAME, response.token, COOKIE_OPTIONS);
+
+        // Fetch user details
+        dispatch(getMe());
+      } catch (error) {
+        return rejectWithValue(error?.message || 'Login failed');
+      }
+    }
+);
+
+export const getMe = createAsyncThunk<IUser, void, { rejectValue: string }>(
+    'auth/getMe',
+    async (_, { rejectWithValue }) => {
+      try {
+        const response = await authApi.getMe();
+        return response;
+      } catch (error) {
+        return rejectWithValue(error?.message || 'Failed to fetch user data');
+      }
+    }
+);
+
+export const logout = createAsyncThunk(
+    'auth/logout',
+    async () => {
+      await authApi.logout();
+    }
+);
+
+export const changeUserRole = createAsyncThunk(
+    'auth/changeUserRole',
+    async ({ userId, role }: { userId: string; role: Role }, { dispatch }) => {
+      try {
+        await authApi.changeUserRole(userId, role);
+        // Refresh user list or user details after role change
+        // This would depend on your application's structure
+      } catch (error) {
+        console.error('Failed to change user role:', error);
+        throw error;
+      }
+    }
+);
+
+export const assignPermission = createAsyncThunk(
+    'auth/assignPermission',
+    async ({ userId, permission }: { userId: string; permission: Permission }, { dispatch }) => {
+      try {
+        await authApi.assignPermission(userId, permission);
+        // Refresh user data if needed
+      } catch (error) {
+        console.error('Failed to assign permission:', error);
+        throw error;
+      }
+    }
+);
+
+export const removePermission = createAsyncThunk(
+    'auth/removePermission',
+    async ({ userId, permission }: { userId: string; permission: Permission }, { dispatch }) => {
+      try {
+        await authApi.removePermission(userId, permission);
+        // Refresh user data if needed
+      } catch (error) {
+        console.error('Failed to remove permission:', error);
+        throw error;
+      }
+    }
+);
