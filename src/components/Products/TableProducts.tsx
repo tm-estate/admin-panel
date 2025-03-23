@@ -70,12 +70,6 @@ const TableProducts: React.FC<ITableProps> = ({
   }, [productsNotify?.showNotification]);
 
   useEffect(() => {
-    if (router.asPath.includes('?')) return;
-
-    loadProducts();
-  }, [dispatch, sortDirection, sortField]);
-
-  useEffect(() => {
     const handleInitialLoad = async () => {
       if (router.asPath.includes('?')) {
 
@@ -88,7 +82,7 @@ const TableProducts: React.FC<ITableProps> = ({
     };
 
     handleInitialLoad();
-  }, []);
+  }, [sortDirection, sortField]);
 
   // TODO move Modal handlers in external function
   const closeModals = () => {

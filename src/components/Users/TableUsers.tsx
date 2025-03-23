@@ -85,15 +85,8 @@ const TableUsers: React.FC<ITableProps> = ({
   }, [usersNotify?.showNotification]);
 
   useEffect(() => {
-    if (router.asPath.includes('?')) return;
-
-    loadUsers();
-  }, [dispatch, sortDirection, sortField]);
-
-  useEffect(() => {
     const handleInitialLoad = async () => {
       if (router.asPath.includes('?')) {
-        const urlParams = new URLSearchParams(router.asPath.split('?')[1] || '');
 
         const filterObject = {};
 
@@ -104,7 +97,7 @@ const TableUsers: React.FC<ITableProps> = ({
     };
 
     handleInitialLoad();
-  }, []);
+  }, [dispatch, sortDirection, sortField]);
 
   const closeModals = () => {
     setIsDeleteModalActive(false);
