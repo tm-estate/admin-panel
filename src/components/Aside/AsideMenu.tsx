@@ -1,7 +1,7 @@
 import React from 'react';
 import { MenuAsideItem } from '@/interfaces';
 import AsideMenuLayer from './AsideMenuLayer';
-import OverlayLayer from './OverlayLayer';
+import OverlayLayer from '../OverlayLayer';
 
 type Props = {
   menu: MenuAsideItem[];
