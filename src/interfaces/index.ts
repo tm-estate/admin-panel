@@ -1,3 +1,5 @@
+import { Permission } from "@/constants/permissions";
+
 export * from './IAgencyTypes';
 export * from './IAuth';
 export * from './IAxiosInstance';
@@ -41,6 +43,7 @@ export type MenuAsideItem = {
   target?: string;
   color?: ColorButtonKey;
   isLogout?: boolean;
+  permission?: Permission;
   menu?: MenuAsideItem[];
 };
 

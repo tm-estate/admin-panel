@@ -2,9 +2,9 @@ import { mdiEye, mdiTrashCan } from '@mdi/js';
 import React, { useState } from 'react';
 import { useSampleClients } from '@/hooks/sampleData';
 import { Client } from '@/interfaces';
-import BaseButton from './BaseButton';
-import BaseButtons from './BaseButtons';
-import CardBoxModal from './CardBoxModal';
+import BaseButton from './Base/BaseButton';
+import BaseButtons from './Base/BaseButtons';
+import CardBoxModal from './Cardbox/CardBoxModal';
 import UserAvatar from './UserAvatar';
 
 const TableSampleClients = () => {

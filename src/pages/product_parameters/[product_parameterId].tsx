@@ -7,62 +7,62 @@ import LayoutAuthenticated from '@/layouts/Authenticated';
 import SectionMain from '@/components/Section/SectionMain';
 import SectionTitleLineWithButton from '@/components/Section/SectionTitleLineWithButton';
 import { getPageTitle } from '@/config';
-import { update, getPropertyType } from '@/stores/thunks/property-types';
+import { update, getProductParameter } from '@/stores/thunks/product-parameters';
 import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { useRouter } from 'next/router';
-import { IPropertyType } from "@/interfaces";
-import PropertyTypeForm from '@/components/Property_types/PropertyTypeForm';
+import { IProductParameter } from "@/interfaces";
+import ProductParameterForm from '@/components/Product_parameters/ProductParameterForm';
 import BreadcrumbsBar from "@/components/BreadcrumbsBar";
 
-const EditPropertyType = () => {
+const EditProductParameter = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { property_typesId } = router.query;
-  const { property_type, loading } = useAppSelector((state) => state.property_types);
+  const { product_parameterId } = router.query;
+  const { product_parameter, loading } = useAppSelector((state) => state.product_parameters);
   const [isLoading, setIsLoading] = useState(true);
-  const [initialValues, setInitialValues] = useState<IPropertyType | null>(null);
+  const [initialValues, setInitialValues] = useState<IProductParameter | null>(null);
 
-  // Fetch property type data when component mounts
+  // Fetch product parameter data when component mounts
   useEffect(() => {
-    if (property_typesId) {
+    if (product_parameterId) {
       setIsLoading(true);
-      dispatch(getPropertyType(property_typesId));
+      dispatch(getProductParameter(product_parameterId));
     }
-  }, [property_typesId, dispatch]);
+  }, [product_parameterId, dispatch]);
 
-  // Update form when property type data is loaded
+  // Update form when product parameter data is loaded
   useEffect(() => {
-    if (property_type && typeof property_type === 'object') {
-      setInitialValues(property_type);
+    if (product_parameter && typeof product_parameter === 'object') {
+      setInitialValues(product_parameter);
       setIsLoading(false);
     }
-  }, [property_type]);
+  }, [product_parameter]);
 
   // Handle form submission
-  const handleSubmit = async (data: IPropertyType) => {
-    await dispatch(update({ id: property_typesId, data }));
+  const handleSubmit = async (data: IProductParameter) => {
+    await dispatch(update({ id: product_parameterId, data }));
   };
 
   return (
       <>
         <Head>
-          <title>{getPageTitle('Edit Property Type')}</title>
+          <title>{getPageTitle('Edit Product Parameter')}</title>
         </Head>
         <SectionMain>
           <SectionTitleLineWithButton
               icon={mdiChartTimelineVariant}
-              title="Edit Property Type"
+              title="Edit Product Parameter"
               main
           >
             <BreadcrumbsBar items={[
               { label: 'Dashboard', href: '/dashboard' },
-              { label: 'Property Types', href: 'property_types/property_types-list/' },
-              { label: `Edit Property Type ${property_typesId}`, href: `/property_types/${property_typesId}` }
+              { label: 'Product Parameters', href: '/product_parameters/product_parameters-list' },
+              { label: `Edit Product Parameter ${product_parameterId}`, href: `/product_parameters/${product_parameterId}` }
             ]} />
           </SectionTitleLineWithButton>
           <CardBox>
             {!isLoading && initialValues ? (
-                <PropertyTypeForm
+                <ProductParameterForm
                     initialValues={initialValues}
                     onSubmit={handleSubmit}
                     isLoading={loading}
@@ -70,7 +70,7 @@ const EditPropertyType = () => {
                 />
             ) : (
                 <div className="flex justify-center items-center h-64">
-                  <p className="text-lg text-gray-500">Loading property type information...</p>
+                  <p className="text-lg text-gray-500">Loading product parameter information...</p>
                 </div>
             )}
           </CardBox>
@@ -79,8 +79,8 @@ const EditPropertyType = () => {
   );
 };
 
-EditPropertyType.getLayout = function getLayout(page: ReactElement) {
+EditProductParameter.getLayout = function getLayout(page: ReactElement) {
   return <LayoutAuthenticated>{page}</LayoutAuthenticated>;
 };
 
-export default EditPropertyType;
+export default EditProductParameter;

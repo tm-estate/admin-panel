@@ -1,3 +1,6 @@
+import { Permission } from "@/constants/permissions";
+import {Role} from "@/constants/roles";
+
 export interface IUser {
     _id?: string
     name: string;
@@ -7,7 +10,8 @@ export interface IUser {
     imgUri?: string;
     avatar?: string;
     products?: string[];
-    role?: 'admin' | 'user' | 'moderator' | '';
+    permissions?: Permission[];
+    role?: Role | '';
     isAgent?: boolean;
     imgAgent?: string;
     savedProducts: string[];

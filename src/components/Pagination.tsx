@@ -5,7 +5,7 @@ import {
   mdiChevronLeft,
   mdiChevronRight,
 } from '@mdi/js';
-import BaseIcon from './BaseIcon';
+import BaseIcon from './Base/BaseIcon';
 
 type Props = {
   currentPage: number;

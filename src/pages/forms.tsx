@@ -8,17 +8,17 @@ import {
 import { Field, Form, Formik } from 'formik';
 import Head from 'next/head';
 import { ReactElement } from 'react';
-import BaseButton from '@/components/BaseButton';
-import BaseButtons from '@/components/BaseButtons';
-import BaseDivider from '@/components/BaseDivider';
-import CardBox from '@/components/CardBox';
-import FormCheckRadio from '@/components/FormCheckRadio';
-import FormCheckRadioGroup from '@/components/FormCheckRadioGroup';
-import FormField from '@/components/FormField';
+import BaseButton from '@/components/Base/BaseButton';
+import BaseButtons from '@/components/Base/BaseButtons';
+import BaseDivider from '@/components/Base/BaseDivider';
+import CardBox from '@/components/Cardbox/CardBox';
+import FormCheckRadio from '@/components/Form/FormCheckRadio';
+import FormCheckRadioGroup from '@/components/Form/FormCheckRadioGroup';
+import FormField from '@/components/Form/FormField';
 import LayoutAuthenticated from '@/layouts/Authenticated';
-import SectionMain from '@/components/SectionMain';
-import SectionTitle from '@/components/SectionTitle';
-import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton';
+import SectionMain from '@/components/Section/SectionMain';
+import SectionTitle from '@/components/Section/SectionTitle';
+import SectionTitleLineWithButton from '@/components/Section/SectionTitleLineWithButton';
 import { getPageTitle } from '@/config';
 
 const FormsPage = () => {
