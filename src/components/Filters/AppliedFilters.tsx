@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react';
 import { IFilterItem } from '@/interfaces';
-import { isRangeFilter, FILTER_TYPES } from '@/utils/filter/filterTypes';
+import { isRangeFilter } from '@/utils/filter/filterTypes';
 import { useAppSelector } from '@/stores/hooks';
+import { FILTER_TYPES } from "@/constants/filterTypes";
 
 interface AppliedFilterProps {
     filterItems: IFilterItem[];

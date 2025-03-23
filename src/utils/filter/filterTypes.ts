@@ -1,12 +1,4 @@
-export const FILTER_TYPES = {
-    NUMBER: 'number',
-    DATE: 'date',
-    SELECT: 'select',
-    MULTI: 'multi',
-    BOOLEAN: 'boolean',
-    TEXT: 'text',
-    SEARCH: 'search'
-} as const;
+import { FILTER_TYPES } from "@/constants/filterTypes";
 
 export type FilterType = typeof FILTER_TYPES[keyof typeof FILTER_TYPES];
 

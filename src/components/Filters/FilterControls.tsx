@@ -1,5 +1,5 @@
 import React from 'react';
-import BaseButton from '@/components/BaseButton';
+import BaseButton from '@/components/Base/BaseButton';
 
 interface FilterControlsProps {
     handleApplyFilters: () => Promise<boolean>;
