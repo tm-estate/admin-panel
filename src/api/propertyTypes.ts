@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { IPropertyType, IPropertyTypes, IPropertyTypeUpdatePayload, IServerResponse } from "../interfaces";
+import { IPropertyType, IPropertyTypes, IPropertyTypeUpdatePayload, IServerResponse } from "@/interfaces";
 
 const propertyTypesApi = {
     async getPropertyType(id: string | string[]) {

@@ -20,11 +20,11 @@ export default {
   },
   dateFormatter(date) {
     if (!date) return ''
-    return dayjs(date).format('YYYY-MM-DD')
+    return dayjs(date).format('DD.MM.YY')
   },
   dateTimeFormatter(date) {
     if (!date) return ''
-    return dayjs(date).format('YYYY-MM-DD HH:mm')
+    return dayjs(date).format('DD.MM.YY HH:mm')
   },
   booleanFormatter(val) {
     return val ? 'Yes' : 'No'
@@ -127,13 +127,13 @@ export default {
   },
   phoneFormatter(str) {
     const regex = /^993(\d{2})(\d{6})$/;
-    console.log({str})
     const match = str.match(regex);
 
-    console.log({match})
+    if (!match) return str
+
     const operatorCode = match[1];
     const subscriberNumber = match[2];
 
-    return `+993 (${operatorCode}) ${subscriberNumber}`;
+    return `+993(${operatorCode})${subscriberNumber}`;
   }
 }

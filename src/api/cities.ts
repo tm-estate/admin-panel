@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ICities, ICity, ICityUpdatePayload, IServerResponse } from "../interfaces";
+import { ICities, ICity, ICityUpdatePayload, IServerResponse } from "@/interfaces";
 
 const citiesApi = {
     async getCity(id: string | string[]) {

@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { IAgencyType, IAgencyTypeUpdatePayload } from "../../interfaces";
-import agencyTypesApi from "../../api/agencyTypes";
+import { IAgencyType, IAgencyTypeUpdatePayload } from "@/interfaces";
+import agencyTypesApi from "@/api/agencyTypes";
 
 export const getAgencyTypes = createAsyncThunk('agencyTypes/fetch',
     async (payload: string) => {

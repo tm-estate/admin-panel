@@ -1,121 +1,86 @@
-import { mdiChartTimelineVariant } from '@mdi/js'
-import Head from 'next/head'
-import React, { ReactElement, useEffect, useState } from 'react'
-import 'react-toastify/dist/ReactToastify.min.css'
-import 'react-datepicker/dist/react-datepicker.css'
+import { mdiChartTimelineVariant } from '@mdi/js';
+import Head from 'next/head';
+import React, { ReactElement, useEffect, useState } from 'react';
+import 'react-toastify/dist/ReactToastify.min.css';
+import CardBox from '@/components/CardBox';
+import LayoutAuthenticated from '@/layouts/Authenticated';
+import SectionMain from '@/components/SectionMain';
+import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton';
+import { getPageTitle } from '@/config';
+import { update, getPropertyType } from '@/stores/thunks/property-types';
+import { useAppDispatch, useAppSelector } from '@/stores/hooks';
+import { useRouter } from 'next/router';
+import { IPropertyType } from "@/interfaces";
+import PropertyTypeForm from '@/components/Property_types/PropertyTypeForm';
+import BreadcrumbsBar from "@/components/BreadcrumbsBar";
 
-import CardBox from '../../components/CardBox'
-import LayoutAuthenticated from '../../layouts/Authenticated'
-import SectionMain from '../../components/SectionMain'
-import SectionTitleLineWithButton from '../../components/SectionTitleLineWithButton'
-import { getPageTitle } from '../../config'
-
-import { Field, Form, Formik } from 'formik'
-import FormField from '../../components/FormField'
-import BaseDivider from '../../components/BaseDivider'
-import BaseButtons from '../../components/BaseButtons'
-import BaseButton from '../../components/BaseButton'
-
-import { update, getPropertyType } from '../../stores/thunks/property-types'
-import { useAppDispatch, useAppSelector } from '../../stores/hooks'
-import { useRouter } from 'next/router'
-import { AsyncSelectFieldMany } from '../../components/UI/AsyncSelectFieldMany'
-import { IPropertyType } from "../../interfaces";
-
-const EditProperty_types = () => {
-  const router = useRouter()
-  const dispatch = useAppDispatch()
-  const initValues: IPropertyType = {
-    titleRu: '',
-    titleEn: '',
-    titleTm: '',
-    dealTypes: [],
-  }
-  const [initialValues, setInitialValues] = useState(initValues)
+const EditPropertyType = () => {
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const { property_typesId } = router.query;
+  const { property_type, loading } = useAppSelector((state) => state.property_types);
   const [isLoading, setIsLoading] = useState(true);
-  const { property_type } = useAppSelector((state) => state.property_types)
-  const { property_typesId } = router.query
+  const [initialValues, setInitialValues] = useState<IPropertyType | null>(null);
 
+  // Fetch property type data when component mounts
   useEffect(() => {
-    if(property_typesId) dispatch(getPropertyType(property_typesId))
-  }, [property_typesId])
-
-  useEffect(() => {
-    if (typeof property_type === 'object') {
-      setInitialValues(property_type)
-      setIsLoading(false)
+    if (property_typesId) {
+      setIsLoading(true);
+      dispatch(getPropertyType(property_typesId));
     }
-  }, [property_type])
+  }, [property_typesId, dispatch]);
 
-  const handleSubmit = async (data) => {
-    await dispatch(update({ id: property_typesId, data }))
-    await router.push('/property_types/property_types-list')
-  }
+  // Update form when property type data is loaded
+  useEffect(() => {
+    if (property_type && typeof property_type === 'object') {
+      setInitialValues(property_type);
+      setIsLoading(false);
+    }
+  }, [property_type]);
+
+  // Handle form submission
+  const handleSubmit = async (data: IPropertyType) => {
+    await dispatch(update({ id: property_typesId, data }));
+  };
 
   return (
-    <>
-      <Head>
-        <title>{getPageTitle('Edit property_types')}</title>
-      </Head>
-      <SectionMain>
-        <SectionTitleLineWithButton icon={mdiChartTimelineVariant} title="Edit property_types" main>
-          Breadcrumbs
-        </SectionTitleLineWithButton>
-        <CardBox>
-          { !isLoading && initialValues &&
-            <Formik
-                enableReinitialize
-                initialValues={initialValues}
-                onSubmit={(values) => handleSubmit(values)}
-            >
-              <Form>
-                <FormField label="Title Ru">
-                  <Field name="titleRu" placeholder="Your Title Ru"/>
-                </FormField>
+      <>
+        <Head>
+          <title>{getPageTitle('Edit Property Type')}</title>
+        </Head>
+        <SectionMain>
+          <SectionTitleLineWithButton
+              icon={mdiChartTimelineVariant}
+              title="Edit Property Type"
+              main
+          >
+            <BreadcrumbsBar items={[
+              { label: 'Dashboard', href: '/dashboard' },
+              { label: 'Property Types', href: 'property_types/property_types-list/' },
+              { label: `Edit Property Type ${property_typesId}`, href: `/property_types/${property_typesId}` }
+            ]} />
+          </SectionTitleLineWithButton>
+          <CardBox>
+            {!isLoading && initialValues ? (
+                <PropertyTypeForm
+                    initialValues={initialValues}
+                    onSubmit={handleSubmit}
+                    isLoading={loading}
+                    isEdit={true}
+                />
+            ) : (
+                <div className="flex justify-center items-center h-64">
+                  <p className="text-lg text-gray-500">Loading property type information...</p>
+                </div>
+            )}
+          </CardBox>
+        </SectionMain>
+      </>
+  );
+};
 
-                <FormField label="Title En">
-                  <Field name="titleEn" placeholder="Your Title En"/>
-                </FormField>
+EditPropertyType.getLayout = function getLayout(page: ReactElement) {
+  return <LayoutAuthenticated>{page}</LayoutAuthenticated>;
+};
 
-                <FormField label="Title Tm">
-                  <Field name="titleTm" placeholder="Your Title Tm"/>
-                </FormField>
-
-                <FormField label="Deal Types" labelFor="dealTypes">
-                  <Field
-                      name="dealTypes"
-                      id="dealTypes"
-                      component={AsyncSelectFieldMany}
-                      options={initialValues.dealTypes}
-                      itemRef={'dealTypes'}
-                      showField={'titleRu'}
-                  ></Field>
-                </FormField>
-
-                <BaseDivider/>
-
-                <BaseButtons>
-                  <BaseButton type="submit" color="info" label="Submit"/>
-                  <BaseButton type="reset" color="info" outline label="Reset"/>
-                  <BaseButton
-                      type="reset"
-                      color="danger"
-                      outline
-                      label="Cancel"
-                      onClick={() => router.push('/property_types/property_types-list')}
-                  />
-                </BaseButtons>
-              </Form>
-            </Formik>
-          }
-        </CardBox>
-      </SectionMain>
-    </>
-  )
-}
-
-EditProperty_types.getLayout = function getLayout(page: ReactElement) {
-  return <LayoutAuthenticated>{page}</LayoutAuthenticated>
-}
-
-export default EditProperty_types
+export default EditPropertyType;

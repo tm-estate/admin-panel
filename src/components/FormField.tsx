@@ -5,6 +5,7 @@ type Props = {
   label?: string;
   labelFor?: string;
   help?: string;
+  error?: string;
   icons?: string[] | null[];
   isBorderless?: boolean;
   isTransparent?: boolean;
@@ -31,6 +32,7 @@ const FormField = ({ icons = [], ...props }: Props) => {
     props.hasTextareaHeight ? 'h-24' : 'h-12',
     props.isBorderless ? 'border-0' : 'border',
     props.isTransparent ? 'bg-transparent' : 'bg-white dark:bg-slate-800',
+    props.error ? 'border-red-300' : 'border-gray-300'
   ].join(' ');
 
   return (
@@ -65,6 +67,11 @@ const FormField = ({ icons = [], ...props }: Props) => {
       {props.help && (
         <div className='text-xs text-gray-500 dark:text-slate-400 mt-1'>
           {props.help}
+        </div>
+      )}
+      {props.error && (
+        <div className='text-xs text-red-500 dark:text-slate-400 mt-1'>
+          {props.error}
         </div>
       )}
     </div>

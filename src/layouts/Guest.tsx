@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react'
-import { useAppSelector } from '../stores/hooks'
+import { useAppSelector } from '@/stores/hooks'
 
 type Props = {
   children: ReactNode

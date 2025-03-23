@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { IPropertyType, IPropertyTypeUpdatePayload } from "../../interfaces";
-import propertyTypesApi from "../../api/propertyTypes";
+import { IPropertyType, IPropertyTypeUpdatePayload } from "@/interfaces";
+import propertyTypesApi from "@/api/propertyTypes";
 
 export const getPropertyTypes = createAsyncThunk('propertyTypes/fetch',
     async (payload: string) => {

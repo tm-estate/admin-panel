@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { IDealType, IDealTypeUpdatePayload } from "../../interfaces";
-import dealTypesApi from "../../api/dealTypes";
+import { IDealType, IDealTypeUpdatePayload } from "@/interfaces";
+import dealTypesApi from "@/api/dealTypes";
 
 export const getDealTypes = createAsyncThunk('dealTypes/fetch',
     async (payload: string) => {

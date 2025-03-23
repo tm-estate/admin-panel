@@ -6,11 +6,11 @@ import BaseDivider from './BaseDivider';
 import BaseIcon from './BaseIcon';
 import UserAvatarCurrentUser from './UserAvatarCurrentUser';
 import NavBarMenuList from './NavBarMenuList';
-import { useAppDispatch, useAppSelector } from '../stores/hooks';
-import { MenuNavBarItem } from '../interfaces';
-import { setDarkMode } from '../stores/styleSlice';
+import { useAppDispatch, useAppSelector } from '@/stores/hooks';
+import { MenuNavBarItem } from '@/interfaces';
+import { setDarkMode } from '@/stores/slices/styleSlice';
 import { useRouter } from 'next/router';
-import {logout} from "../stores/thunks/auth";
+import {logout} from "@/stores/thunks/auth";
 
 type Props = {
   item: MenuNavBarItem;

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { IAgencyType, IAgencyTypes, IAgencyTypeUpdatePayload, IServerResponse } from "../interfaces";
+import { IAgencyType, IAgencyTypes, IAgencyTypeUpdatePayload, IServerResponse } from "@/interfaces";
 
 const agencyTypesApi = {
     async getAgencyType(id: string | string[]) {

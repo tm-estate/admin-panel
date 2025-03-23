@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect, useState } from 'react';
-import { useAppSelector } from '../stores/hooks';
+import { useAppSelector } from '@/stores/hooks';
 import UserAvatar from './UserAvatar';
 
 type Props = {
@@ -7,34 +7,16 @@ type Props = {
   children?: ReactNode;
 };
 
-export default function UserAvatarCurrentUser({
-  className = '',
-  children,
-}: Props) {
-  const userName = useAppSelector((state) => state.main.userName);
-  const userAvatar = useAppSelector((state) => state.main.userAvatar);
-  const { user, loading } = useAppSelector(
-    (state) => state.auth,
-  );
-  const { users, loading: usersLoading } = useAppSelector((state) => state.users);
-
+export default function UserAvatarCurrentUser({ className = '', children,}: Props) {
+  const { userName, userAvatar } = useAppSelector((state) => state.main);
+  const { user, loading } = useAppSelector((state) => state.auth);
   const [avatar, setAvatar] = useState(null);
 
   useEffect(() => {
-    currentUserAvatarCheck();
-  }, []);
+    if (!user) return;
 
-  useEffect(() => {
-    currentUserAvatarCheck();
-  }, [user, users]);
-
-  const currentUserAvatarCheck = () => {
-    if (user && users.length) {
-      const user = users.find((user) => user.id === user._id);
-      const image = user?.avatar;
-      setAvatar(image);
-    }
-  };
+    setAvatar(user.avatar);
+  }, [user]);
 
   return (
     <UserAvatar

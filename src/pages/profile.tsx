@@ -11,24 +11,24 @@ import 'react-toastify/dist/ReactToastify.min.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-import CardBox from '../components/CardBox';
-import LayoutAuthenticated from '../layouts/Authenticated';
-import SectionMain from '../components/SectionMain';
-import SectionTitleLineWithButton from '../components/SectionTitleLineWithButton';
-import { getPageTitle } from '../config';
+import CardBox from '@/components/CardBox';
+import LayoutAuthenticated from '@/layouts/Authenticated';
+import SectionMain from '@/components/SectionMain';
+import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton';
+import { getPageTitle } from '@/config';
 
 import { Field, Form, Formik } from 'formik';
-import FormField from '../components/FormField';
-import BaseDivider from '../components/BaseDivider';
-import BaseButtons from '../components/BaseButtons';
-import BaseButton from '../components/BaseButton';
-import FormCheckRadio from '../components/FormCheckRadio';
-import FormCheckRadioGroup from '../components/FormCheckRadioGroup';
-import FormImagePicker from '../components/FormImagePicker';
-import { SwitchField } from '../components/SwitchField';
+import FormField from '@/components/FormField';
+import BaseDivider from '@/components/BaseDivider';
+import BaseButtons from '@/components/BaseButtons';
+import BaseButton from '@/components/BaseButton';
+import FormCheckRadio from '@/components/FormCheckRadio';
+import FormCheckRadioGroup from '@/components/FormCheckRadioGroup';
+import FormImagePicker from '@/components/FormImagePicker';
+import SwitchField from '@/components/UI/SwitchField';
 
-import { update, fetch } from '../stores/users/usersSlice';
-import { useAppDispatch, useAppSelector } from '../stores/hooks';
+import { update, getUser } from '@/stores/thunks/users';
+import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { useRouter } from 'next/router';
 
 const EditUsers = () => {

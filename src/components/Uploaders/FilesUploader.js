@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import FileUploader from 'components/FormItems/uploaders/UploadService';
-import Errors from '../../../components/FormItems/error/errors';
+import Errors from '@/@/components/FormItems/error/errors';
 
 const FilesUploader = (props) => {
   const { value, onChange, schema, path, max, readonly } = props;

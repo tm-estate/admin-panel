@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { IProductParameter, IProductParameters, IProductParametersUpdatePayload, IServerResponse } from "../interfaces";
+import { IProductParameter, IProductParameters, IProductParametersUpdatePayload, IServerResponse } from "@/interfaces";
 import { getAutocompleteData } from "./autocomplete";
 
 const productParametersApi = {

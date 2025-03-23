@@ -7,7 +7,7 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Dialog from '@mui/material/Dialog';
 import FileUploader from 'components/FormItems/uploaders/UploadService';
-import Errors from '../../../components/FormItems/error/errors';
+import Errors from '@/@/components/FormItems/error/errors';
 import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles({

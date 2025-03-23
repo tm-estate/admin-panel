@@ -1,5 +1,5 @@
 export interface INotify {
     showNotification: boolean
     textNotification: string
-    typeNotification: string
+    typeNotification: 'info' | 'success' | 'warning' | 'error' | 'default'
 }

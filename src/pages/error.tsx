@@ -1,11 +1,11 @@
 import React from 'react';
 import type { ReactElement } from 'react';
 import Head from 'next/head';
-import BaseButton from '../components/BaseButton';
-import CardBox from '../components/CardBox';
-import SectionFullScreen from '../components/SectionFullScreen';
-import LayoutGuest from '../layouts/Guest';
-import { getPageTitle } from '../config';
+import BaseButton from '@/components/BaseButton';
+import CardBox from '@/components/CardBox';
+import SectionFullScreen from '@/components/SectionFullScreen';
+import LayoutGuest from '@/layouts/Guest';
+import { getPageTitle } from '@/config';
 
 export default function Error() {
   return (

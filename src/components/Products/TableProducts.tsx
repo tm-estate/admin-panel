@@ -1,417 +1,273 @@
-import { mdiEye, mdiTrashCan } from '@mdi/js'
-import React, { useEffect, useState, useMemo } from 'react'
-import { ToastContainer, toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.min.css'
-import BaseButton from '../BaseButton'
-import BaseButtons from '../BaseButtons'
-import CardBoxModal from '../CardBoxModal'
-import CardBox from '../CardBox'
-import { getProducts, deleteProduct } from '../../stores/thunks/products'
-import { useAppDispatch, useAppSelector } from '../../stores/hooks'
-import { useRouter } from 'next/router'
-import dataFormatter from '../../helpers/dataFormatter'
-import { Field, Form, Formik } from 'formik'
-import { Pagination } from '../Pagination'
-import ImageField from "../ImageField";
-import {baseImageURLApi} from "../../config";
+import { mdiEye, mdiTrashCan } from '@mdi/js';
+import React, { useEffect, useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.min.css';
+import BaseButton from '@/components/BaseButton';
+import BaseButtons from '@/components/BaseButtons';
+import CardBoxModal from '@/components/CardBoxModal';
+import { getProducts, deleteProduct } from '@/stores/thunks/products';
+import { useAppDispatch, useAppSelector } from '@/stores/hooks';
+import { useRouter } from 'next/router';
+import dataFormatter from '@/helpers/dataFormatter';
+import { Pagination } from '@/components/Pagination';
+import Filters from '@/components/Filters';
+import { ITableProps } from "@/interfaces/ITable";
 
-const perPage = 5
+const ITEMS_PER_PAGE = 10;
 
-const TableSampleProducts = ({ filterItems, setFilterItems, filters }) => {
-  const dispatch = useAppDispatch()
-  const router = useRouter()
-  const notify = (type, msg) => toast(msg, { type, position: 'bottom-center' })
+const TableProducts: React.FC<ITableProps> = ({
+                                               filterItems,
+                                               setFilterItems,
+                                               filters
+                                             }) => {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
 
-  const pagesList = []
-  const [id, setId] = useState(null)
-  const [currentPage, setCurrentPage] = useState(0)
-  const [filterRequest, setFilterRequest] = React.useState('')
-  const [sort, setSort] = useState('desc')
-  const [field, setField] = useState('')
+  const [currentPage, setCurrentPage] = useState(0);
+  const [filterData, setFilterData] = useState({});
+  const [sortDirection, setSortDirection] = useState('desc');
+  const [sortField, setSortField] = useState('');
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  const [isDeleteModalActive, setIsDeleteModalActive] = useState(false);
+  const [isViewModalActive, setIsViewModalActive] = useState(false);
+
   const {
     products,
     loading,
     count,
     notify: productsNotify,
-  } = useAppSelector((state) => state.products)
+  } = useAppSelector((state) => state.products);
 
-  console.log({products})
+  const totalPages = Math.max(1, Math.ceil(count / ITEMS_PER_PAGE));
 
-  const numPages = Math.floor(count / perPage) === 0 ? 1 : Math.ceil(count / perPage)
-  for (let i = 0; i < numPages; i++) {
-    pagesList.push(i)
-  }
+  const showNotification = (type, message) => {
+    toast(message, {
+      type,
+      position: 'bottom-center',
+      autoClose: 3000
+    });
+  };
 
-  const loadData = async (page = currentPage, request = filterRequest) => {
-    if (page !== currentPage) setCurrentPage(page)
-    if (request !== filterRequest) setFilterRequest(request)
+  const loadProducts = async (page = currentPage, data = filterData, isManualApply = false) => {
+    if (!isManualApply && router.asPath.includes('?') && JSON.stringify(data) === '{}') {
+      return;
+    }
 
-    const query = `?page=${++page}&limit=${perPage}${request}&sort=${sort}&field=${field}`
-    dispatch(getProducts(query))
-  }
+    if (page !== currentPage) setCurrentPage(page);
+    if (data !== filterData) setFilterData(data);
+
+    const queryString = `?page=${page + 1}&limit=${ITEMS_PER_PAGE}&sort=${sortDirection}&field=${sortField}`;
+    dispatch(getProducts({ query: queryString, data }));
+  };
 
   useEffect(() => {
-    if (productsNotify.showNotification) {
-      notify(productsNotify.typeNotification, productsNotify.textNotification)
+    if (productsNotify?.showNotification) {
+      showNotification(
+          productsNotify.typeNotification,
+          productsNotify.textNotification
+      );
     }
-  }, [productsNotify.showNotification])
+  }, [productsNotify?.showNotification]);
 
   useEffect(() => {
-    loadData()
-  }, [dispatch, sort, field])
+    const handleInitialLoad = async () => {
+      if (router.asPath.includes('?')) {
 
-  const [isModalInfoActive, setIsModalInfoActive] = useState(false)
-  const [isModalTrashActive, setIsModalTrashActive] = useState(false)
+        const filterObject = {};
 
-  const handleModalAction = () => {
-    setIsModalInfoActive(false)
-    setIsModalTrashActive(false)
-  }
+        await loadProducts(0, filterObject);
+      } else {
+        await loadProducts();
+      }
+    };
 
-  const handleDeleteModalAction = (e, id) => {
-    e.stopPropagation()
-    setId(id)
-    setIsModalTrashActive(true)
-  }
-  const handleDeleteAction = async () => {
-    if (id) {
-      await dispatch(deleteProduct(id))
-      await loadData(0)
-      setIsModalTrashActive(false)
+    handleInitialLoad();
+  }, [sortDirection, sortField]);
+
+  // TODO move Modal handlers in external function
+  const closeModals = () => {
+    setIsDeleteModalActive(false);
+    setIsViewModalActive(false);
+    setSelectedItemId(null);
+  };
+
+  const handleDeleteClick = (e, id) => {
+    e.stopPropagation();
+    setSelectedItemId(id);
+    setIsDeleteModalActive(true);
+  };
+
+  const handleViewClick = (e, id) => {
+    e.stopPropagation();
+    setSelectedItemId(id);
+    setIsViewModalActive(true);
+  };
+
+  const confirmDelete = async () => {
+    if (selectedItemId) {
+      await dispatch(deleteProduct(selectedItemId));
+      await loadProducts(0);
+      closeModals();
     }
-  }
+  };
 
-  const generateFilterRequests = useMemo(() => {
-    let request = '&'
-    filterItems.forEach((item) => {
-      filters.find(
-        (filter) => filter.title === item.fields.selectedField && (filter.number || filter.date)
-      )
-        ? (request += `${item.fields.selectedField}Range=${item.fields.filterValueFrom}&${item.fields.selectedField}Range=${item.fields.filterValueTo}&`)
-        : (request += `${item.fields.selectedField}=${item.fields.filterValue}&`)
-    })
-    return request
-  }, [filterItems, filters])
-
-  const deleteFilter = (value) => {
-    const newItems = filterItems.filter((item) => item.id !== value)
-    if (newItems.length) {
-      setFilterItems(newItems)
-    } else {
-      loadData(0, '')
-      setFilterItems(newItems)
-    }
-  }
-
-  const handleSubmit = () => {
-    loadData(0, generateFilterRequests)
-  }
-
-  const handleChange = (id) => (e) => {
-    const value = e.target.value
-    const name = e.target.name
-
-    setFilterItems(
-      filterItems.map((item) =>
-        item.id === id ? { id, fields: { ...item.fields, [name]: value } } : item
-      )
-    )
-  }
-
-  const handleReset = () => {
-    setFilterItems([])
-    loadData(0, '')
-  }
-
-  const onPageChange = (page: number) => {
-    loadData(page)
-    setCurrentPage(page)
-  }
-
+  const handleRowClick = (id) => {
+    router.push(`/products/${id}`);
+  };
+  //TODO move handle sort in external function
   const handleSort = (e) => {
-    if (e?.target?.innerHTML) {
-      const val = e.target.innerHTML
-      const key = filters.find((el) => el.label === val)?.title
-      const direction = e.target.classList.contains('asc') ? 'desc' : 'asc'
+    const headerElement = e.target;
+    if (headerElement?.classList?.contains('sortable')) {
+      const columnName = headerElement.getAttribute('data-field');
 
-      if (!key) {
-        return
+      if (columnName === sortField) {
+        setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
+      } else {
+        setSortField(columnName);
+        setSortDirection('desc');
       }
 
-      const headers = document.querySelectorAll('th.sortable')
-      headers.forEach((el) => el.classList.remove('asc', 'desc'))
-
-      e.target.classList.remove('asc', 'desc')
-      e.target.classList.add(direction)
-
-      setField(key)
-      setSort((prev) => (prev === 'asc' ? 'desc' : 'asc'))
+      const headers = document.querySelectorAll('th.sortable');
+      headers.forEach(el => el.classList.remove('asc', 'desc'));
+      headerElement.classList.add(sortDirection === 'asc' ? 'desc' : 'asc');
     }
-  }
+  };
 
-  const controlClasses =
-    'w-full py-2 px-2 my-2 border-gray-700 rounded dark:placeholder-gray-400 ' +
-    'focus:ring focus:ring-blue-600 focus:border-blue-600 focus:outline-none bg-white ' +
-    'dark:bg-slate-800 border'
+  const handleApplyFilters = ({object, query}) => {
+    const isManualFilterApply = true;
+
+    loadProducts(0, object, isManualFilterApply);
+    router.replace({ query }, undefined, { shallow: true });
+  };
 
   return (
-    <>
-      {filterItems && Array.isArray(filterItems) && filterItems.length ? (
-        <CardBox>
-          <Formik
-            initialValues={{
-              checkboxes: ['lorem'],
-              switches: ['lorem'],
-              radio: 'lorem',
-            }}
-            onSubmit={() => null}
-          >
-            <Form>
-              <>
-                {filterItems &&
-                  filterItems.map((filterItem) => {
-                    return (
-                      <div key={filterItem.id} className="flex mb-4">
-                        <div className="flex flex-col w-full mr-3">
-                          <div className="text-gray-500 font-bold">Filter</div>
-                          <Field
-                            className={controlClasses}
-                            name="selectedField"
-                            id="selectedField"
-                            component="select"
-                            value={filterItem?.fields?.selectedField}
-                            onChange={handleChange(filterItem.id)}
-                          >
-                            {filters.map((selectOption) => (
-                              <option key={selectOption.title} value={`${selectOption.title}`}>
-                                {selectOption.label}
-                              </option>
-                            ))}
-                          </Field>
-                        </div>
-                        {filters.find(
-                          (filter) => filter.title === filterItem?.fields?.selectedField
-                        )?.number ? (
-                          <div className="flex flex-row w-full mr-3">
-                            <div className="flex flex-col w-full mr-3">
-                              <div className="text-gray-500 font-bold">From</div>
-                              <Field
-                                className={controlClasses}
-                                name="filterValueFrom"
-                                placeholder="From"
-                                id="filterValueFrom"
-                                onChange={handleChange(filterItem.id)}
-                              />
-                            </div>
-                            <div className="flex flex-col w-full">
-                              <div className="text-gray-500 font-bold">To</div>
-                              <Field
-                                className={controlClasses}
-                                name="filterValueTo"
-                                placeholder="to"
-                                id="filterValueTo"
-                                onChange={handleChange(filterItem.id)}
-                              />
-                            </div>
-                          </div>
-                        ) : filters.find(
-                            (filter) => filter.title === filterItem?.fields?.selectedField
-                          )?.date ? (
-                          <div className="flex flex-row w-full mr-3">
-                            <div className="flex flex-col w-full mr-3">
-                              <div className="text-gray-500 font-bold">From</div>
-                              <Field
-                                className={controlClasses}
-                                name="filterValueFrom"
-                                placeholder="From"
-                                id="filterValueFrom"
-                                type="datetime-local"
-                                onChange={handleChange(filterItem.id)}
-                              />
-                            </div>
-                            <div className="flex flex-col w-full">
-                              <div className="text-gray-500 font-bold">To</div>
-                              <Field
-                                className={controlClasses}
-                                name="filterValueTo"
-                                placeholder="to"
-                                id="filterValueTo"
-                                type="datetime-local"
-                                onChange={handleChange(filterItem.id)}
-                              />
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="flex flex-col w-full mr-3">
-                            <div className="text-gray-500 font-bold">Contains</div>
-                            <Field
-                              className={controlClasses}
-                              name="filterValue"
-                              placeholder="Contained"
-                              id="filterValue"
-                              onChange={handleChange(filterItem.id)}
-                            />
-                          </div>
-                        )}
-                        <div className="flex flex-col">
-                          <div className="text-gray-500 font-bold">Action</div>
-                          <BaseButton
-                            className="my-2"
-                            type="reset"
-                            color="danger"
-                            label="Delete"
-                            onClick={() => {
-                              deleteFilter(filterItem.id)
-                            }}
-                          />
-                        </div>
-                      </div>
-                    )
-                  })}
-                <div className="flex">
-                  <BaseButton
-                    className="my-2 mr-3"
-                    color="success"
-                    label="Apply"
-                    onClick={handleSubmit}
-                  />
-                  <BaseButton className="my-2" color="info" label="Cancel" onClick={handleReset} />
-                </div>
-              </>
-            </Form>
-          </Formik>
-        </CardBox>
-      ) : null}
-      <CardBoxModal
-        title="Please confirm"
-        buttonColor="danger"
-        buttonLabel={loading ? 'Deleting...' : 'Confirm'}
-        isActive={isModalTrashActive}
-        onConfirm={handleDeleteAction}
-        onCancel={handleModalAction}
-      >
-        <p>Are you sure you want to delete this item?</p>
-      </CardBoxModal>
+      <>
+        <Filters
+            filters={filters}
+            filterItems={filterItems}
+            setFilterItems={setFilterItems}
+            onApplyFilters={handleApplyFilters}
+            className="mb-6"
+        />
 
-      <div className="relative overflow-x-auto">
-        <table>
-          <thead>
-            <tr onClick={(e) => handleSort(e)}>
-              <th className="sortable">Images</th>
+        {/* Delete Confirmation Modal */}
+        <CardBoxModal
+            title="Delete Product"
+            buttonColor="danger"
+            buttonLabel={loading ? 'Deleting...' : 'Delete'}
+            isActive={isDeleteModalActive}
+            onConfirm={confirmDelete}
+            onCancel={closeModals}
+        >
+          <p>Are you sure you want to delete this product? This action cannot be undone.</p>
+        </CardBoxModal>
 
-              <th className="sortable">Name</th>
-
-              <th className="sortable">Description</th>
-
-              <th className="sortable">Address</th>
-
-              <th>Price</th>
-
-              <th>Deal Type</th>
-
-              <th>Property Type</th>
-
-              <th>Region</th>
-
-              <th>City</th>
-
-              <th>CityArea</th>
-
-              <th>Creator</th>
-
-              <th>Actions</th>
-              <th />
+        {/* Products Table */}
+        <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+          <table className="w-full text-sm text-left">
+            <thead className="text-xs uppercase bg-gray-100 dark:bg-slate-700">
+            <tr onClick={handleSort}>
+              <th className="p-4" data-field="images">Images</th>
+              <th className="sortable p-4" data-field="name">Name</th>
+              <th className="sortable p-4" data-field="description">Description</th>
+              <th className="sortable p-4" data-field="address">Address</th>
+              <th className="sortable p-4" data-field="price">Price</th>
+              <th className="sortable p-4" data-field="dealType">Deal Type</th>
+              <th className="p-4" data-field="propertyType">Property Type</th>
+              <th className="p-4" data-field="region">Region</th>
+              <th className="sortable p-4" data-field="city">City</th>
+              <th className="p-4" data-field="cityArea">City Area</th>
+              <th className="sortable p-4" data-field="creator">Creator</th>
+              <th className="sortable p-4" data-field="createdAt">Create Date</th>
+              <th className="sortable p-4" data-field="updatedAt">Update Date</th>
+              <th className="p-4">Actions</th>
             </tr>
-          </thead>
-          <tbody>
-            {products &&
-              Array.isArray(products) &&
-                products.map((item: any) => (
-                <tr key={item._id} onClick={() => router.push(`/products/${item._id}`)}>
-                  <td data-label="Images" className={'flex items-center'}>
-                    <div className={'max-w-[60px]'}>
-                      <img
-                          src={baseImageURLApi + item.images[0]}
-                          alt={'product image'}
-                          className='block h-auto w-full max-w-full bg-gray-100 dark:bg-slate-800'
-                      />
-                    </div>
-                  </td>
+            </thead>
+            <tbody>
+            {products && products.length > 0 ? (
+                products.map((item) => (
+                    <tr
+                        key={item._id}
+                        onClick={() => handleRowClick(item._id)}
+                        className="bg-white border-b dark:bg-slate-800 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 cursor-pointer"
+                    >
+                      <td className="p-4">
+                        {item.images && item.images.length > 0 && (
+                            <div className="w-16 h-16 rounded overflow-hidden">
+                              <img
+                                  src={item.images[0]}
+                                  alt="Product"
+                                  className="w-full h-full object-cover"
+                              />
+                            </div>
+                        )}
+                      </td>
 
-                  <td data-label="Name">{item.name}</td>
+                      <td className="p-4 font-medium">{item.name}</td>
+                      <td className="p-4">
+                        {item.description && item.description.length > 10
+                            ? `${item.description.substring(0, 10)}...`
+                            : item.description}
+                      </td>
+                      <td className="p-4">{item.address}</td>
+                      <td className="p-4">{item.price}</td>
+                      <td className="p-4">{dataFormatter.deal_typesOneListFormatter(item.dealType)}</td>
+                      <td className="p-4">{dataFormatter.property_typesOneListFormatter(item.propertyType)}</td>
+                      <td className="p-4">{dataFormatter.citiesOneListFormatter(item.region)}</td>
+                      <td className="p-4">{dataFormatter.citiesOneListFormatter(item.city)}</td>
+                      <td className="p-4">{dataFormatter.citiesOneListFormatter(item.cityArea)}</td>
+                      <td className="p-4">{item.creator?.name}</td>
+                      <td className="p-4">{dataFormatter.dateFormatter(item.createdAt)}</td>
+                      <td className="p-4">{dataFormatter.dateFormatter(item.updatedAt)}</td>
 
-                  <td data-label="Description">{item.description}</td>
-
-                  <td data-label="Address">{item.address}</td>
-
-                  <td data-label="Price">{item.price}</td>
-
-                  {/*<td data-label="isRequired">{dataFormatter.booleanFormatter(item.isRequired)}</td>*/}
-
-                  <td data-label="Deal Type">
-                    {dataFormatter.deal_typesOneListFormatter(item.dealType)}
-                  </td>
-
-                  <td data-label="Property Type">
-                    {dataFormatter.property_typesOneListFormatter(item.propertyType)}
-                  </td>
-
-                  <td data-label="Region">
-                    {dataFormatter.citiesOneListFormatter(item.region)}
-                  </td>
-
-                  <td data-label="City">
-                    {dataFormatter.citiesOneListFormatter(item.city)}
-                  </td>
-
-                  <td data-label="CityArea">
-                    {dataFormatter.citiesOneListFormatter(item.cityArea)}
-                  </td>
-
-                  <td data-label="Creator">
-                    {item.creator?.name}
-                  </td>
-
-                  <td className="before:hidden lg:w-1 whitespace-nowrap">
-                    <BaseButtons type="justify-start lg:justify-end" noWrap>
-                      <BaseButton
-                        color="info"
-                        icon={mdiEye}
-                        onClick={() => setIsModalInfoActive(true)}
-                        small
-                      />
-                      <BaseButton
-                        color="danger"
-                        icon={mdiTrashCan}
-                        onClick={(e) => handleDeleteModalAction(e, item._id)}
-                        small
-                      />
-                    </BaseButtons>
+                      <td className="p-4 text-right">
+                        <BaseButtons type="justify-end" noWrap>
+                          <BaseButton
+                              color="info"
+                              icon={mdiEye}
+                              onClick={(e) => handleViewClick(e, item._id)}
+                              small
+                          />
+                          <BaseButton
+                              color="danger"
+                              icon={mdiTrashCan}
+                              onClick={(e) => handleDeleteClick(e, item._id)}
+                              small
+                          />
+                        </BaseButtons>
+                      </td>
+                    </tr>
+                ))
+            ) : (
+                <tr>
+                  <td colSpan={14} className="p-4 text-center">
+                    {loading ? 'Loading...' : 'No products found'}
                   </td>
                 </tr>
-              ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="p-3 lg:px-6 border-t border-gray-100 dark:border-slate-800">
-        <div className="flex flex-col md:flex-row items-center justify-between py-3 md:py-0">
-          <div className="flex items-center mr-4">
-            <p className={'text-[#8491A0]'}>
-              Displaying {products.length === 0 ? '0' : currentPage * perPage + 1} to{' '}
-              {products.length < perPage
-                ? products?.length + perPage * currentPage
-                : perPage * (currentPage + 1) > count
-                ? perPage * (currentPage + 1) - count + currentPage * perPage
-                : perPage * (currentPage + 1)}{' '}
-              of {count}
-            </p>
-          </div>
-          <Pagination currentPage={currentPage} numPages={numPages} setCurrentPage={onPageChange} />
+            )}
+            </tbody>
+          </table>
         </div>
-      </div>
-      <ToastContainer />
-    </>
-  )
-}
 
-export default TableSampleProducts
+        <div className="p-4 border-t border-gray-100 dark:border-slate-800">
+          <div className="flex flex-col md:flex-row items-center justify-between">
+            <div className="mb-4 md:mb-0">
+              <p className="text-gray-500">
+                Showing {products.length === 0 ? '0' : currentPage * ITEMS_PER_PAGE + 1} to{' '}
+                {Math.min((currentPage + 1) * ITEMS_PER_PAGE, count)} of {count} entries
+              </p>
+            </div>
+            <Pagination
+                currentPage={currentPage}
+                numPages={totalPages}
+                setCurrentPage={(page) => loadProducts(page)}
+            />
+          </div>
+        </div>
+
+        <ToastContainer />
+      </>
+  );
+};
+
+export default TableProducts;

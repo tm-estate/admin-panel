@@ -2,85 +2,64 @@ import { mdiChartTimelineVariant } from '@mdi/js'
 import Head from 'next/head'
 import React, { ReactElement } from 'react'
 import 'react-toastify/dist/ReactToastify.min.css'
-import CardBox from '../../components/CardBox'
-import LayoutAuthenticated from '../../layouts/Authenticated'
-import SectionMain from '../../components/SectionMain'
-import SectionTitleLineWithButton from '../../components/SectionTitleLineWithButton'
-import { getPageTitle } from '../../config'
+import CardBox from '@/components/CardBox'
+import LayoutAuthenticated from '@/layouts/Authenticated'
+import SectionMain from '@/components/SectionMain'
+import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton'
+import { getPageTitle } from '@/config'
+import { create } from '@/stores/thunks/agency-types'
+import { useAppDispatch, useAppSelector } from '@/stores/hooks'
+import { IAgencyType } from "@/interfaces";
+import AgencyTypeForm from '@/components/Agency_types/AgencyTypeForm'
+import BreadcrumbsBar from "@/components/BreadcrumbsBar";
 
-import { Field, Form, Formik } from 'formik'
-import FormField from '../../components/FormField'
-import BaseDivider from '../../components/BaseDivider'
-import BaseButtons from '../../components/BaseButtons'
-import BaseButton from '../../components/BaseButton'
-
-import { create } from '../../stores/thunks/agency-types'
-import { useAppDispatch } from '../../stores/hooks'
-import { useRouter } from 'next/router'
-import { IAgencyType } from "../../interfaces";
-
-const TablesPage = () => {
-  const router = useRouter()
+const NewAgencyTypePage = () => {
   const dispatch = useAppDispatch()
-  const initValues: IAgencyType = {
+  const { loading } = useAppSelector((state) => state.agency_types)
+
+  // Initial values
+  const initialValues: IAgencyType = {
     titleRu: '',
     titleEn: '',
     titleTm: '',
   }
 
+  // Handle form submission
   const handleSubmit = async (data: IAgencyType) => {
     await dispatch(create(data))
-    await router.push('/agency_types/agency_types-list')
   }
+
   return (
-    <>
-      <Head>
-        <title>{getPageTitle('New Item')}</title>
-      </Head>
-      <SectionMain>
-        <SectionTitleLineWithButton icon={mdiChartTimelineVariant} title="New Item" main>
-          Breadcrumbs
-        </SectionTitleLineWithButton>
-        <CardBox>
-          <Formik
-            initialValues={initValues}
-            onSubmit={(values) => handleSubmit(values)}
+      <>
+        <Head>
+          <title>{getPageTitle('New Agency Type')}</title>
+        </Head>
+        <SectionMain>
+          <SectionTitleLineWithButton
+              icon={mdiChartTimelineVariant}
+              title="New Agency Type"
+              main
           >
-            <Form>
-              <FormField label="Title Ru">
-                <Field name="titleRu" placeholder="Your Title Ru" />
-              </FormField>
-
-              <FormField label="Title En">
-                <Field name="titleEn" placeholder="Your Title En" />
-              </FormField>
-
-              <FormField label="Title Tm">
-                <Field name="titleTm" placeholder="Your Title Tm" />
-              </FormField>
-
-              <BaseDivider />
-              <BaseButtons>
-                <BaseButton type="submit" color="info" label="Submit" />
-                <BaseButton type="reset" color="info" outline label="Reset" />
-                <BaseButton
-                  type="reset"
-                  color="danger"
-                  outline
-                  label="Cancel"
-                  onClick={() => router.push('/agency_types/agency_types-list')}
-                />
-              </BaseButtons>
-            </Form>
-          </Formik>
-        </CardBox>
-      </SectionMain>
-    </>
+            <BreadcrumbsBar items={[
+              { label: 'Dashboard', href: '/dashboard' },
+              { label: 'Agency Types', href: '/agency_types/agency_types-list' },
+              { label: 'New Agency Type', href: '/agency_types/agency_types-new' }
+            ]} />
+          </SectionTitleLineWithButton>
+          <CardBox>
+            <AgencyTypeForm
+                initialValues={initialValues}
+                onSubmit={handleSubmit}
+                isLoading={loading}
+            />
+          </CardBox>
+        </SectionMain>
+      </>
   )
 }
 
-TablesPage.getLayout = function getLayout(page: ReactElement) {
+NewAgencyTypePage.getLayout = function getLayout(page: ReactElement) {
   return <LayoutAuthenticated>{page}</LayoutAuthenticated>
 }
 
-export default TablesPage
+export default NewAgencyTypePage

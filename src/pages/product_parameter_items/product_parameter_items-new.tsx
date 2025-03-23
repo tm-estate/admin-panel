@@ -7,29 +7,29 @@ import {
 import Head from 'next/head';
 import React, { ReactElement } from 'react';
 import 'react-toastify/dist/ReactToastify.min.css';
-import CardBox from '../../components/CardBox';
-import LayoutAuthenticated from '../../layouts/Authenticated';
-import SectionMain from '../../components/SectionMain';
-import SectionTitleLineWithButton from '../../components/SectionTitleLineWithButton';
-import { getPageTitle } from '../../config';
+import CardBox from '@/components/CardBox';
+import LayoutAuthenticated from '@/layouts/Authenticated';
+import SectionMain from '@/components/SectionMain';
+import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton';
+import { getPageTitle } from '@/config';
 
 import { Field, Form, Formik } from 'formik';
-import FormField from '../../components/FormField';
-import BaseDivider from '../../components/BaseDivider';
-import BaseButtons from '../../components/BaseButtons';
-import BaseButton from '../../components/BaseButton';
-import FormCheckRadio from '../../components/FormCheckRadio';
-import FormCheckRadioGroup from '../../components/FormCheckRadioGroup';
-import FormFilePicker from '../../components/FormFilePicker';
-import FormImagePicker from '../../components/FormImagePicker';
-import { SwitchField } from '../../components/SwitchField';
+import FormField from '@/components/FormField';
+import BaseDivider from '@/components/BaseDivider';
+import BaseButtons from '@/components/BaseButtons';
+import BaseButton from '@/components/BaseButton';
+import FormCheckRadio from '@/components/FormCheckRadio';
+import FormCheckRadioGroup from '@/components/FormCheckRadioGroup';
+import FormFilePicker from '@/components/FormFilePicker';
+import FormImagePicker from '@/components/FormImagePicker';
+import SwitchField from '@/components/UI/SwitchField';
 
-// import { SelectField } from '../../components/SelectField';
-// import { SelectFieldMany } from '../../components/SelectFieldMany';
-import { RichTextField } from '../../components/RichTextField';
+// import { SelectField } from '@/components/SelectField';
+// import { SelectFieldMany } from '@/components/SelectFieldMany';
+import { RichTextField } from '@/components/RichTextField';
 
-import { create } from '../../stores/product_parameter_items/product_parameter_itemsSlice';
-import { useAppDispatch } from '../../stores/hooks';
+import { create } from '@/stores/slices/product_parameter_itemsSlice';
+import { useAppDispatch } from '@/stores/hooks';
 import { useRouter } from 'next/router';
 
 const TablesPage = () => {

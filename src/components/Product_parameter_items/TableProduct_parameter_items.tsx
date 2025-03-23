@@ -2,21 +2,21 @@ import { mdiEye, mdiTrashCan } from '@mdi/js'
 import React, { useEffect, useState, useMemo } from 'react'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.min.css'
-import BaseButton from '../BaseButton'
-import BaseButtons from '../BaseButtons'
-import CardBoxModal from '../CardBoxModal'
-import CardBox from '../CardBox'
-import ImageField from '../ImageField'
+import BaseButton from '@/components/BaseButton'
+import BaseButtons from '@/components/BaseButtons'
+import CardBoxModal from '@/components/CardBoxModal'
+import CardBox from '@/components/CardBox'
+import ImageField from '@/components/ImageField'
 import {
   fetch,
   deleteItem,
-} from '../../stores/product_parameter_items/product_parameter_itemsSlice'
-import { useAppDispatch, useAppSelector } from '../../stores/hooks'
+} from '@/stores/slices/product_parameter_itemsSlice'
+import { useAppDispatch, useAppSelector } from '@/stores/hooks'
 import { useRouter } from 'next/router'
-import dataFormatter from '../../helpers/dataFormatter'
+import dataFormatter from '@/helpers/dataFormatter'
 import { Field, Form, Formik } from 'formik'
-import { Pagination } from '../Pagination'
-import { saveFile } from '../../helpers/fileSaver'
+import { Pagination } from '@/components/Pagination'
+import { saveFile } from '@/helpers/fileSaver'
 
 const perPage = 5
 
@@ -36,7 +36,7 @@ const TableSampleProduct_parameter_items = ({ filterItems, setFilterItems, filte
     loading,
     count,
     notify: product_parameter_itemsNotify,
-  } = useAppSelector((state) => state.product_parameter_items)
+  } = useAppSelector((state) => state.product_parameters_items)
 
   const numPages = Math.floor(count / perPage) === 0 ? 1 : Math.ceil(count / perPage)
   for (let i = 0; i < numPages; i++) {
