@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ColorButtonKey } from '@/interfaces';
-import BaseButton from './BaseButton';
-import FileUploader from './Uploaders/UploadService';
+import BaseButton from '../Base/BaseButton';
+import FileUploader from '../Uploaders/UploadService';
 
 type Props = {
   label?: string;
