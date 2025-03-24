@@ -17,7 +17,7 @@ export const rolePermissions: Record<Role, Permission[]> = {
         // Dashboard
         Permission.VIEW_DASHBOARD,
 
-        // Users
+        // Agency Types
         Permission.VIEW_AGENCY_TYPES,
         Permission.CREATE_AGENCY_TYPE,
         Permission.EDIT_AGENCY_TYPE,

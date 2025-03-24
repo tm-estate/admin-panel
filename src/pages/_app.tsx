@@ -1,29 +1,15 @@
-import React, {useEffect} from 'react';
-import type { AppProps } from 'next/app';
-import type { ReactElement, ReactNode } from 'react';
-import type { NextPage } from 'next';
+import React from 'react';
 import Head from 'next/head';
 import { store } from '@/stores/store';
 import { Provider } from 'react-redux';
 import '@/css/main.css';
 import axios from 'axios';
-import { baseURLApi } from '@/config';
+import { baseURLApi } from "@/config";
 import Cookies from "js-cookie";
-import { getMe } from "@/stores/thunks/auth";
+import { AppPropsWithLayout } from "@/types/next";
 
-export type NextPageWithLayout<P = Record<string, unknown>, IP = P> = NextPage<
-  P,
-  IP
-> & {
-  getLayout?: (page: ReactElement) => ReactNode;
-};
-
-type AppPropsWithLayout = AppProps & {
-  Component: NextPageWithLayout;
-};
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
-  // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout || ((page) => page);
 
   if (typeof window !== 'undefined') {
@@ -34,7 +20,6 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     if (token) {
       axios.defaults.headers.common['Authorization'] = token;
 
-      store.dispatch(getMe());
     }
   }
 

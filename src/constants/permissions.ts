@@ -17,6 +17,9 @@ export enum Permission {
 
     // Moderators
     VIEW_MODERATORS = 'view_moderators',
+    CREATE_MODERATOR = 'create_moderator',
+    EDIT_MODERATOR = 'edit_moderator',
+    DELETE_MODERATORS = 'delete_moderator',
 
     // Products
     VIEW_PRODUCTS = 'view_products',
