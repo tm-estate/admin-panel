@@ -10,30 +10,14 @@ import TableUsers from '@/components/Users/TableUsers';
 import BaseButton from '@/components/Base/BaseButton';
 import axios from 'axios';
 import { addFilter } from '@/components/Filters';
-import { IFilterConfig, IFilterItem } from '@/interfaces';
+import { IFilterItem } from '@/interfaces';
 import BreadcrumbsBar from "@/components/BreadcrumbsBar";
+import { usersFilters } from "@/constants/usersFilters";
 
 const UsersPage = () => {
   const [filterItems, setFilterItems] = useState<IFilterItem[]>([]);
 
-  const [filters] = useState<IFilterConfig[]>([
-    { label: 'Name', key: 'name', selectType: 'search' },
-    { label: 'Phone', key: 'phone', selectType: 'search' },
-    { label: 'Email', key: 'email', selectType: 'search' },
-    {
-      label: 'Role',
-      key: 'role',
-      selectType: 'multi',
-      options: [
-        { key: 'admin', label: 'Admin' },
-        { key: 'user', label: 'User' }
-      ]
-    },
-    { label: 'Is Agent', key: 'isAgent', selectType: 'boolean' },
-    { label: 'Is Confirmed', key: 'isPhoneNumberConfirmed', selectType: 'boolean' },
-    { label: 'Created At', key: 'createdAt', selectType: 'date' },
-    { label: 'Updated At', key: 'updatedAt', selectType: 'date' }
-  ]);
+  const [filters] = useState(usersFilters);
 
   const handleAddFilter = () => {
     addFilter(filters, setFilterItems, filterItems);
