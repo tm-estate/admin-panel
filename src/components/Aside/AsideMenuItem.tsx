@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { mdiMinus, mdiPlus } from '@mdi/js';
-import BaseIcon from '../Base/BaseIcon';
+import BaseIcon from '@/components/Base/BaseIcon';
 import Link from 'next/link';
 import { getButtonColor } from '@/colors';
 import AsideMenuList from './AsideMenuList';
@@ -20,7 +20,6 @@ const AsideMenuItem = ({ item, isDropdownList = false }: Props) => {
   const [isDropdownActive, setIsDropdownActive] = useState(false);
   const { hasPermission } = useAuth();
 
-  // Check if user has permission to view this menu item
   if (item.permission && !hasPermission(item.permission as Permission)) {
     return null;
   }
@@ -43,12 +42,35 @@ const AsideMenuItem = ({ item, isDropdownList = false }: Props) => {
   useEffect(() => {
     if (item.href && isReady) {
       const linkPathName = new URL(item.href, location.href).pathname + '/';
-
       const activePathname = new URL(asPath, location.href).pathname;
-
       setIsLinkActive(linkPathName === activePathname);
     }
   }, [item.href, isReady, asPath]);
+
+  // If this item has children, filter them by permission
+  const menuChildren = item.menu ? item.menu.filter(child =>
+      !child.permission || hasPermission(child.permission as Permission)
+  ) : null;
+
+  // If no accessible children, don't render this item
+  if (item.menu && (!menuChildren || menuChildren.length === 0)) {
+    return null;
+  }
+
+  // If only one accessible child, render as direct link
+  if (item.menu && menuChildren && menuChildren.length === 1) {
+    const child = menuChildren[0];
+    return (
+        <AsideMenuItem
+            item={{
+              ...child,
+              icon: item.icon || child.icon,
+              label: item.label
+            }}
+            isDropdownList={isDropdownList}
+        />
+    );
+  }
 
   const asideMenuItemInnerContents = (
       <>
@@ -102,7 +124,7 @@ const AsideMenuItem = ({ item, isDropdownList = false }: Props) => {
         )}
         {item.menu && (
             <AsideMenuList
-                menu={item.menu}
+                menu={menuChildren}
                 className={`${asideMenuDropdownStyle} ${
                     isDropdownActive ? 'block dark:bg-slate-800/50' : 'hidden'
                 }`}
