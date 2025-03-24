@@ -22,7 +22,7 @@ export const usersFilters: IFilterConfig[] = [
         selectType: 'multi',
         options: [
             { key: 'admin', label: 'Admin' },
-            { key: 'user', label: 'User' }
+            { key: 'moderator', label: 'Moderator' }
         ]
     },
     {
