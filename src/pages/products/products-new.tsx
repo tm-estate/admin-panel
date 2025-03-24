@@ -12,6 +12,8 @@ import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { IProduct } from "@/interfaces";
 import ProductForm from '@/components/Products/ProductForm';
 import BreadcrumbsBar from "@/components/BreadcrumbsBar";
+import { withAuth } from "@/components/auth/withAuth";
+import { Permission } from "@/constants/permissions";
 
 
 const ProductsNewPage = () => {
@@ -94,4 +96,6 @@ ProductsNewPage.getLayout = function getLayout(page: ReactElement) {
     return <LayoutAuthenticated>{page}</LayoutAuthenticated>;
 };
 
-export default ProductsNewPage;
+export default withAuth(ProductsNewPage, {
+    permissions: [Permission.CREATE_PRODUCT]
+});

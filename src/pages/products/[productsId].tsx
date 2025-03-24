@@ -13,6 +13,8 @@ import { useRouter } from 'next/router';
 import { IProduct } from "@/interfaces";
 import ProductForm from '@/components/Products/ProductForm';
 import BreadcrumbsBar from "@/components/BreadcrumbsBar";
+import { Permission } from "@/constants/permissions";
+import { withAuth } from "@/components/auth/withAuth";
 
 const EditProduct = () => {
     const router = useRouter();
@@ -82,4 +84,6 @@ EditProduct.getLayout = function getLayout(page: ReactElement) {
     return <LayoutAuthenticated>{page}</LayoutAuthenticated>;
 };
 
-export default EditProduct;
+export default withAuth(EditProduct, {
+    permissions: [Permission.VIEW_PRODUCTS]
+});

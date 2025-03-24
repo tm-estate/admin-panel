@@ -9,35 +9,18 @@ import { getPageTitle } from '@/config';
 import BaseButton from '@/components/Base/BaseButton';
 import axios from 'axios';
 import TableProducts from "@/components/Products/TableProducts";
-import { IFilterConfig, IFilterItem } from '@/interfaces';
+import { IFilterItem } from '@/interfaces';
 import BreadcrumbsBar from "@/components/BreadcrumbsBar";
 import { addFilter } from "@/components/Filters";
 import { PermissionGuard } from "@/components/auth/PermissionGuard";
 import { Permission } from "@/constants/permissions";
+import { withAuth } from "@/components/auth/withAuth";
+import { NextPageWithLayout } from "@/types/next";
+import { productFilters } from "@/constants/productFilters";
 
-const ProductsTablesPage = () => {
+const ProductsTablesPage: NextPageWithLayout = () => {
     const [filterItems, setFilterItems] = useState<IFilterItem[]>([]);
-    const [filters] = useState<IFilterConfig[]>([
-        { label: 'Name', key: 'name', selectType: 'search' },
-        { label: 'Deal Type', key: 'dealType', selectType: 'select', itemRef: 'dealTypes', showField: 'titleRu' },
-        { label: 'Property Types', key: 'propertyType', selectType: 'multi', itemRef: 'propertyTypes', showField: 'titleRu' },
-        { label: 'Regions', key: 'region', selectType: 'multi', itemRef: 'regions', showField: 'titleRu' },
-        { label: 'Cities', key: 'city', selectType: 'multi', itemRef: 'cities', showField: 'titleRu' },
-        { label: 'City Areas', key: 'cityArea', selectType: 'multi', itemRef: 'cityAreas', showField: 'titleRu' },
-        { label: 'Creator', key: 'creator', selectType: 'search', itemRef: 'users', showField: 'name'},
-        { label: 'Address', key: 'address', selectType: 'search' },
-        { label: 'Prices', key: 'price', selectType: 'number' },
-        { label: 'Status', key: 'status', selectType: 'multi', options: [
-                { key: 'active', label: 'Active' },
-                { key: 'inactive', label: 'Inactive' },
-                { key: 'onModeration', label: 'On moderation' },
-                { key: 'rejected', label: 'Rejected' },
-                { key: 'waitingForPayment', label: 'Waiting for payment' }
-            ] },
-        { label: 'With Photo', key: 'withPhoto', selectType: 'boolean' },
-        { label: 'Created At', key: 'createdAt', selectType: 'date' },
-        { label: 'Updated At', key: 'updatedAt', selectType: 'date' }
-    ]);
+    const [filters] = useState(productFilters);
 
     const handleAddFilter = () => {
         addFilter(filters, setFilterItems, filterItems);
@@ -124,4 +107,6 @@ ProductsTablesPage.getLayout = function getLayout(page: ReactElement) {
     return <LayoutAuthenticated>{page}</LayoutAuthenticated>;
 };
 
-export default ProductsTablesPage;
+export default withAuth(ProductsTablesPage, {
+    permissions: [Permission.VIEW_PRODUCTS]
+});
