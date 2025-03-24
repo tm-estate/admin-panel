@@ -7,6 +7,7 @@ import axios, {
 } from 'axios';
 import { IAxiosInstance, IServerError } from '@/interfaces';
 import Cookies from 'js-cookie';
+import { COOKIE_OPTIONS } from "@/constants/cookies";
 
 const DEFAULT_ERROR: IServerError = {
     code: 'SERVER__ERROR',
@@ -47,12 +48,7 @@ axiosInstance.interceptors.response.use(
 
         if (headers.authorization) {
             // If response includes a new token, update the cookie
-            Cookies.set('token', headers.authorization, {
-                expires: 7, // 7 days
-                path: '/',
-                sameSite: 'strict',
-                secure: process.env.NODE_ENV === 'production'
-            });
+            Cookies.set('token', headers.authorization, COOKIE_OPTIONS);
 
             return {
                 token: headers.authorization,
