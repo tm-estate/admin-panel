@@ -10,6 +10,8 @@ import { mdiInformation } from '@mdi/js'
 import BaseIcon from '@/components/Base/BaseIcon'
 import { getPageTitle } from '@/config'
 import Link from 'next/link'
+import { Permission } from "@/constants/permissions";
+import { withAuth } from "@/components/auth/withAuth";
 
 const Dashboard = () => {
   const [users, setUsers] = React.useState('Loading...')
@@ -115,4 +117,6 @@ Dashboard.getLayout = function getLayout(page: ReactElement) {
   return <LayoutAuthenticated>{page}</LayoutAuthenticated>
 }
 
-export default Dashboard
+export default withAuth(Dashboard, {
+  permissions: [Permission.VIEW_DASHBOARD],
+});

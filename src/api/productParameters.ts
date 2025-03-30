@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { IProductParameter, IProductParameters, IProductParametersUpdatePayload, IServerResponse } from "@/interfaces";
-import { getAutocompleteData } from "./autocomplete";
 
 const API_BASE_URL = 'productParameters'
 
@@ -8,9 +7,6 @@ const productParametersApi = {
     async getProductParameter(id: string | string[]) {
         const result = await axios.get<IServerResponse<IProductParameter>>(`${API_BASE_URL}/admin/${id}`);
         return result.data;
-    },
-    async getProductParametersAutocomplete() {
-        return getAutocompleteData<IProductParameter[]>('${API_BASE_URL}');
     },
     async getProductParameters(query: string){
         const result = await axios.get<IServerResponse<IProductParameters>>(`${API_BASE_URL}/admin${query}`);

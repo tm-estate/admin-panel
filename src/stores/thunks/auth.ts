@@ -1,8 +1,5 @@
-// src/stores/thunks/auth.ts
-// Auth-related thunks for Redux
-
-import { createAsyncThunk } from '@reduxjs/toolkit';
-import { ISignInPayload, ISignUpPayload, IUser } from '@/interfaces';
+import {createAsyncThunk} from '@reduxjs/toolkit';
+import {ISignInPayload, ISignUpPayload, IUser} from '@/interfaces';
 import authApi from '@/api/auth';
 import { Role } from '@/constants/roles';
 import { Permission } from '@/constants/permissions';
@@ -45,10 +42,9 @@ export const getMe = createAsyncThunk<IUser, void, { rejectValue: string }>(
     'auth/getMe',
     async (_, { rejectWithValue }) => {
       try {
-        const response = await authApi.getMe();
-        return response;
+          return await authApi.getMe();
       } catch (error) {
-        return rejectWithValue(error?.message || 'Failed to fetch user data');
+          return rejectWithValue(error?.message || 'Failed to fetch user data');
       }
     }
 );
@@ -56,7 +52,7 @@ export const getMe = createAsyncThunk<IUser, void, { rejectValue: string }>(
 export const logout = createAsyncThunk(
     'auth/logout',
     async () => {
-      await authApi.logout();
+        await authApi.logout();
     }
 );
 

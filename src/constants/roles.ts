@@ -1,6 +1,3 @@
-// src/constants/roles.ts
-// Define roles and their permissions
-
 import { Permission } from './permissions';
 
 export enum Role {
@@ -81,9 +78,9 @@ export const rolePermissions: Record<Role, Permission[]> = {
         Permission.DELETE_PRODUCT,
 
         Permission.VIEW_USERS,
-        Permission.EDIT_USER,
 
         // Read-only access to reference data
+        Permission.VIEW_AGENCY_TYPES,
         Permission.VIEW_DEAL_TYPES,
         Permission.VIEW_PRODUCTS_PARAMS,
         // Permission.VIEW_PRODUCTS_PARAM_ITEMS, // uncomment when made fixes

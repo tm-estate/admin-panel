@@ -10,6 +10,9 @@ import BaseButton from '@/components/Base/BaseButton'
 import axios from 'axios'
 import TableCities from '@/components/Cities/TableCities'
 import BreadcrumbsBar from "@/components/BreadcrumbsBar";
+import { Permission } from "@/constants/permissions";
+import { withAuth } from "@/components/auth/withAuth";
+import { PermissionGuard } from "@/components/auth/PermissionGuard";
 
 const CitiesPage = () => {
   const getCitiesCSV = async () => {
@@ -45,13 +48,15 @@ const CitiesPage = () => {
 
           {/* Action Buttons */}
           <CardBox className='mb-6 flex flex-wrap gap-4'>
-            <BaseButton
-                className='mr-2'
-                href='/cities/cities-new'
-                color='success'
-                label='Add New City'
-                icon={mdiPlus}
-            />
+            <PermissionGuard permission={Permission.CREATE_CITY}>
+              <BaseButton
+                  className='mr-2'
+                  href='/cities/cities-new'
+                  color='success'
+                  label='Add New City'
+                  icon={mdiPlus}
+              />
+            </PermissionGuard>
             <BaseButton
                 color='warning'
                 label='Export CSV'
@@ -73,4 +78,6 @@ CitiesPage.getLayout = function getLayout(page: ReactElement) {
   return <LayoutAuthenticated>{page}</LayoutAuthenticated>
 }
 
-export default CitiesPage
+export default withAuth(CitiesPage, {
+  permissions: [Permission.VIEW_CITIES]
+});

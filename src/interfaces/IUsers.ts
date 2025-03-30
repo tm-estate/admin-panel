@@ -1,5 +1,5 @@
 import { Permission } from "@/constants/permissions";
-import {Role} from "@/constants/roles";
+import { Role } from "@/constants/roles";
 
 export interface IUser {
     _id?: string

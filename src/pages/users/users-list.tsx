@@ -13,6 +13,9 @@ import { addFilter } from '@/components/Filters';
 import { IFilterItem } from '@/interfaces';
 import BreadcrumbsBar from "@/components/BreadcrumbsBar";
 import { usersFilters } from "@/constants/usersFilters";
+import { withAuth } from "@/components/auth/withAuth";
+import { Permission } from "@/constants/permissions";
+import { PermissionGuard } from "@/components/auth/PermissionGuard";
 
 const UsersPage = () => {
   const [filterItems, setFilterItems] = useState<IFilterItem[]>([]);
@@ -63,13 +66,15 @@ const UsersPage = () => {
 
           {/* Action Buttons */}
           <CardBox className='mb-6 flex flex-wrap gap-4'>
-            <BaseButton
-                className='mr-2'
-                href='/users/users-new'
-                color='success'
-                label='Add New User'
-                icon={mdiPlus}
-            />
+            <PermissionGuard permission={Permission.CREATE_USER}>
+              <BaseButton
+                  className='mr-2'
+                  href='/users/users-new'
+                  color='success'
+                  label='Add New User'
+                  icon={mdiPlus}
+              />
+            </PermissionGuard>
             <BaseButton
                 color='info'
                 className='mr-2'
@@ -102,4 +107,6 @@ UsersPage.getLayout = function getLayout(page: ReactElement) {
   return <LayoutAuthenticated>{page}</LayoutAuthenticated>;
 };
 
-export default UsersPage;
+export default withAuth(UsersPage, {
+  permissions: [Permission.VIEW_USERS]
+});

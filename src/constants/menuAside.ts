@@ -52,12 +52,12 @@ const menuAside: MenuAsideItem[] = [
         icon: mdiViewList,
         permission: Permission.VIEW_USERS,
       },
-      {
-        href: '/users/moderators',
-        label: 'Moderator List',
-        icon: mdiViewList,
-        permission: Permission.VIEW_MODERATORS,
-      },
+      // {
+      //   href: '/users/moderators',
+      //   label: 'Moderator List',
+      //   icon: mdiViewList,
+      //   permission: Permission.VIEW_MODERATORS,
+      // },
       {
         href: '/users/users-new',
         label: 'Create User',
@@ -141,7 +141,7 @@ const menuAside: MenuAsideItem[] = [
         href: '/product_parameters/product-parameter-new',
         label: 'Create Product',
         icon: mdiSquareEditOutline,
-        permission: Permission.CREATE_PRODUCT_PARAMS,
+        permission: Permission.CREATE_PRODUCT_PARAM,
       },
     ],
   },

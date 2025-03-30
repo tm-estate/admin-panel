@@ -10,6 +10,9 @@ import TablePropertyTypes from '@/components/Property_types/TablePropertyTypes';
 import BaseButton from '@/components/Base/BaseButton';
 import axios from 'axios';
 import BreadcrumbsBar from "@/components/BreadcrumbsBar";
+import { withAuth } from "@/components/auth/withAuth";
+import { Permission } from "@/constants/permissions";
+import { PermissionGuard } from "@/components/auth/PermissionGuard";
 
 const PropertyTypesPage = () => {
   // Download CSV of property types
@@ -46,13 +49,15 @@ const PropertyTypesPage = () => {
 
           {/* Action Buttons */}
           <CardBox className='mb-6 flex flex-wrap gap-4'>
-            <BaseButton
-                className='mr-2'
-                href='/property_types/property_types-new'
-                color='success'
-                label='Add New Property Type'
-                icon={mdiPlus}
-            />
+            <PermissionGuard permission={Permission.CREATE_PROPERTY_TYPE}>
+              <BaseButton
+                  className='mr-2'
+                  href='/property_types/property_types-new'
+                  color='success'
+                  label='Add New Property Type'
+                  icon={mdiPlus}
+              />
+            </PermissionGuard>
             <BaseButton
                 color='warning'
                 label='Export CSV'
@@ -74,4 +79,6 @@ PropertyTypesPage.getLayout = function getLayout(page: ReactElement) {
   return <LayoutAuthenticated>{page}</LayoutAuthenticated>;
 };
 
-export default PropertyTypesPage;
+export default withAuth(PropertyTypesPage, {
+  permissions: [Permission.VIEW_PROPERTY_TYPES]
+});

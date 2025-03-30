@@ -15,11 +15,12 @@ export enum Permission {
     DELETE_USER = 'delete_user',
     CHANGE_PASSWORD = 'change_password',
 
-    // Moderators
-    VIEW_MODERATORS = 'view_moderators',
-    CREATE_MODERATOR = 'create_moderator',
-    EDIT_MODERATOR = 'edit_moderator',
-    DELETE_MODERATORS = 'delete_moderator',
+    //
+    // // Moderators
+    // VIEW_MODERATORS = 'view_moderators',
+    // CREATE_MODERATOR = 'create_moderator',
+    // EDIT_MODERATOR = 'edit_moderator',
+    // DELETE_MODERATORS = 'delete_moderator',
 
     // Products
     VIEW_PRODUCTS = 'view_products',
@@ -29,9 +30,9 @@ export enum Permission {
 
     // Products parameters
     VIEW_PRODUCTS_PARAMS = 'view_products_parameters',
-    CREATE_PRODUCT_PARAMS = 'create_product_parameter',
-    EDIT_PRODUCT_PARAMS = 'edit_product_parameter',
-    DELETE_PRODUCT_PARAMS = 'delete_product_parameter',
+    CREATE_PRODUCT_PARAM = 'create_product_parameter',
+    EDIT_PRODUCT_PARAM = 'edit_product_parameter',
+    DELETE_PRODUCT_PARAM = 'delete_product_parameter',
 
     // Products parameter item
     VIEW_PRODUCTS_PARAM_ITEMS = 'view_products_parameter_items',

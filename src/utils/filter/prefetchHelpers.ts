@@ -1,6 +1,6 @@
 import { IFilterConfig } from "@/interfaces";
 import { AppDispatch } from "@/stores/store";
-import { fetchAutocompleteOptions } from "@/stores/slices/autocompleteSlice";
+import { fetchAutocompleteOptions } from "@/stores/thunks/autocomplete";
 
 export const prefetchedEntityTypes = new Set<string>();
 

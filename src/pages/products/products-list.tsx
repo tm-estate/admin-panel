@@ -18,7 +18,7 @@ import { withAuth } from "@/components/auth/withAuth";
 import { NextPageWithLayout } from "@/types/next";
 import { productFilters } from "@/constants/productFilters";
 
-const ProductsTablesPage: NextPageWithLayout = () => {
+const ProductsPage: NextPageWithLayout = () => {
     const [filterItems, setFilterItems] = useState<IFilterItem[]>([]);
     const [filters] = useState(productFilters);
 
@@ -68,7 +68,7 @@ const ProductsTablesPage: NextPageWithLayout = () => {
                 <CardBox className='mb-6 flex flex-wrap gap-4'>
                     <PermissionGuard permission={Permission.CREATE_PRODUCT}>
                         <BaseButton
-                            className='mr-3'
+                            className='mr-2'
                             href="/products/products-new"
                             icon={mdiPlus}
                             label="Add New"
@@ -103,10 +103,10 @@ const ProductsTablesPage: NextPageWithLayout = () => {
     );
 };
 
-ProductsTablesPage.getLayout = function getLayout(page: ReactElement) {
+ProductsPage.getLayout = function getLayout(page: ReactElement) {
     return <LayoutAuthenticated>{page}</LayoutAuthenticated>;
 };
 
-export default withAuth(ProductsTablesPage, {
+export default withAuth(ProductsPage, {
     permissions: [Permission.VIEW_PRODUCTS]
 });

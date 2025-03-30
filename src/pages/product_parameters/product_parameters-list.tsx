@@ -10,6 +10,9 @@ import TableProductParameters from '@/components/Product_parameters/TableProduct
 import BaseButton from '@/components/Base/BaseButton';
 import axios from 'axios';
 import BreadcrumbsBar from "@/components/BreadcrumbsBar";
+import { withAuth } from "@/components/auth/withAuth";
+import { Permission } from "@/constants/permissions";
+import { PermissionGuard } from "@/components/auth/PermissionGuard";
 
 const ProductParametersPage = () => {
   // Download CSV of product parameters
@@ -46,13 +49,15 @@ const ProductParametersPage = () => {
 
           {/* Action Buttons */}
           <CardBox className='mb-6 flex flex-wrap gap-4'>
-            <BaseButton
-                className='mr-2'
-                href='/product_parameters/product_parameters-new'
-                color='success'
-                label='Add New Product Parameter'
-                icon={mdiPlus}
-            />
+            <PermissionGuard permission={Permission.CREATE_PRODUCT_PARAM}>
+              <BaseButton
+                  className='mr-2'
+                  href='/product_parameters/product_parameters-new'
+                  color='success'
+                  label='Add New Product Parameter'
+                  icon={mdiPlus}
+              />
+            </PermissionGuard>
             <BaseButton
                 color='warning'
                 label='Export CSV'
@@ -74,4 +79,6 @@ ProductParametersPage.getLayout = function getLayout(page: ReactElement) {
   return <LayoutAuthenticated>{page}</LayoutAuthenticated>;
 };
 
-export default ProductParametersPage;
+export default withAuth(ProductParametersPage, {
+  permissions: [Permission.VIEW_PRODUCTS_PARAMS]
+});

@@ -10,6 +10,9 @@ import TableCityAreas from '@/components/City_areas/TableCityAreas';
 import BaseButton from '@/components/Base/BaseButton';
 import axios from 'axios';
 import BreadcrumbsBar from "@/components/BreadcrumbsBar";
+import { withAuth } from "@/components/auth/withAuth";
+import { Permission } from "@/constants/permissions";
+import { PermissionGuard } from "@/components/auth/PermissionGuard";
 
 const CityAreasPage = () => {
   // Download CSV of city areas
@@ -46,13 +49,15 @@ const CityAreasPage = () => {
 
           {/* Action Buttons */}
           <CardBox className='mb-6 flex flex-wrap gap-4'>
-            <BaseButton
-                className='mr-2'
-                href='/city_areas/city_areas-new'
-                color='success'
-                label='Add New City Area'
-                icon={mdiPlus}
-            />
+            <PermissionGuard permission={Permission.CREATE_CITY_AREA}>
+              <BaseButton
+                  className='mr-2'
+                  href='/city_areas/city_areas-new'
+                  color='success'
+                  label='Add New City Area'
+                  icon={mdiPlus}
+              />
+            </PermissionGuard>
             <BaseButton
                 color='warning'
                 label='Export CSV'
@@ -74,4 +79,6 @@ CityAreasPage.getLayout = function getLayout(page: ReactElement) {
   return <LayoutAuthenticated>{page}</LayoutAuthenticated>;
 };
 
-export default CityAreasPage;
+export default withAuth(CardBox, {
+  permissions: [Permission.VIEW_CITY_AREAS]
+});

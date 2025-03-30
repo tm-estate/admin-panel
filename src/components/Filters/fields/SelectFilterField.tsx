@@ -4,8 +4,8 @@ import AsyncSelectField from '@/components/UI/AsyncSelectField';
 import SelectField from '@/components/UI/SelectField';
 import { IFilterItem } from '@/interfaces';
 import { useAppSelector } from '@/stores/hooks';
-
 import { FILTER_TYPES } from "@/constants/filterTypes";
+
 interface SelectFilterFieldProps {
     filterItem: IFilterItem;
     setFieldValue: (field: string, value: any) => void;
@@ -22,18 +22,25 @@ const SelectFilterField: React.FC<SelectFilterFieldProps> = ({
                                                                  errorClasses
                                                              }) => {
     const { id, config, fields } = filterItem;
-    const [initialOptions, setInitialOptions] = useState<any>(null);
+    const [initialOption, setInitialOption] = useState<any>(null);
 
+    const isMulti = config?.selectType === FILTER_TYPES.MULTI;
+
+    // Get options from cache if using autocomplete
     const autocompleteOptions = useAppSelector(state =>
         (state.autocomplete?.items?.[config?.itemRef || ''] || []) as any[]
     );
 
+    // Set initial option when fields or options change
     useEffect(() => {
-        if (initialOptions !== null || !fields.filterValue || !config) return;
+        if (!fields.filterValue || !config) return;
 
-        const isMulti = config.selectType === FILTER_TYPES.MULTI;
+        // Skip if initialOption is already set
+        if (initialOption !== null) return;
+
         const valueArray = isMulti ? fields.filterValue.split(',') : [fields.filterValue];
 
+        // If using static options
         if (config.options) {
             const mappedOptions = valueArray
                 .map(val => {
@@ -52,9 +59,10 @@ const SelectFilterField: React.FC<SelectFilterFieldProps> = ({
                 .filter(Boolean);
 
             if (mappedOptions.length > 0) {
-                setInitialOptions(isMulti ? mappedOptions : mappedOptions[0]);
+                setInitialOption(isMulti ? mappedOptions : mappedOptions[0]);
             }
         }
+        // If using autocomplete and options are loaded
         else if (config.itemRef && autocompleteOptions.length > 0) {
             const mappedOptions = valueArray
                 .map(val => {
@@ -71,15 +79,30 @@ const SelectFilterField: React.FC<SelectFilterFieldProps> = ({
                 .filter(Boolean);
 
             if (mappedOptions.length > 0) {
-                setInitialOptions(isMulti ? mappedOptions : mappedOptions[0]);
+                setInitialOption(isMulti ? mappedOptions : mappedOptions[0]);
             }
         }
-    }, [fields.filterValue, config, autocompleteOptions.length]);
+    }, [fields.filterValue, config, autocompleteOptions.length, initialOption, isMulti]);
 
     if (!config) return null;
 
-    const isMulti = config.selectType === FILTER_TYPES.MULTI;
+    // Handle change for both async and regular select
+    const handleSelectChange = (selected: any) => {
+        let value;
 
+        if (isMulti) {
+            value = Array.isArray(selected) && selected.length > 0
+                ? selected.map((s: any) => s.value).join(',')
+                : '';
+        } else {
+            value = selected?.value || '';
+        }
+
+        setFieldValue(`${id}_value`, value);
+        handleFilterValueChange(id, 'filterValue', value);
+    };
+
+    // Render AsyncSelectField for autocomplete
     if (config.itemRef) {
         return (
             <>
@@ -89,26 +112,11 @@ const SelectFilterField: React.FC<SelectFilterFieldProps> = ({
                     component={AsyncSelectField}
                     isMulti={isMulti}
                     itemRef={config.itemRef}
-                    showField={config.showField || 'label'}
-                    initialOption={initialOptions}
+                    showField={config.showField || 'titleRu'}
+                    initialOption={initialOption}
                     initialValue={fields.filterValue}
-                    onChange={(selected: any) => {
-                        let value;
-
-                        if (isMulti) {
-                            value = Array.isArray(selected) && selected.length > 0
-                                ? selected.map((s: any) => s.value).join(',')
-                                : '';
-                        } else {
-                            value = selected?.value || '';
-                        }
-
-                        setFieldValue(`${id}_value`, value);
-                        handleFilterValueChange(id, 'filterValue', value);
-                    }}
-                    onBlur={() => {
-                        setFieldTouched(`${id}_value`, true);
-                    }}
+                    onChange={handleSelectChange}
+                    onBlur={() => setFieldTouched(`${id}_value`, true)}
                 />
                 <ErrorMessage
                     name={`${id}_value`}
@@ -119,6 +127,7 @@ const SelectFilterField: React.FC<SelectFilterFieldProps> = ({
         );
     }
 
+    // Render SelectField for static options
     if (config.options) {
         return (
             <>
@@ -129,25 +138,10 @@ const SelectFilterField: React.FC<SelectFilterFieldProps> = ({
                     isMulti={isMulti}
                     options={config.options}
                     showField={config.showField || 'label'}
-                    initial={initialOptions}
+                    initial={initialOption}
                     initialValue={fields.filterValue}
-                    onChange={(selected: any) => {
-                        let value;
-
-                        if (isMulti) {
-                            value = Array.isArray(selected) && selected.length > 0
-                                ? selected.map((s: any) => s.value).join(',')
-                                : '';
-                        } else {
-                            value = selected?.value || '';
-                        }
-
-                        setFieldValue(`${id}_value`, value);
-                        handleFilterValueChange(id, 'filterValue', value);
-                    }}
-                    onBlur={() => {
-                        setFieldTouched(`${id}_value`, true);
-                    }}
+                    onChange={handleSelectChange}
+                    onBlur={() => setFieldTouched(`${id}_value`, true)}
                 />
                 <ErrorMessage
                     name={`${id}_value`}

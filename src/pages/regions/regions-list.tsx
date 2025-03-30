@@ -10,6 +10,9 @@ import TableRegions from '@/components/Regions/TableRegions';
 import BaseButton from '@/components/Base/BaseButton';
 import axios from 'axios';
 import BreadcrumbsBar from "@/components/BreadcrumbsBar";
+import { withAuth } from "@/components/auth/withAuth";
+import { Permission } from "@/constants/permissions";
+import { PermissionGuard } from "@/components/auth/PermissionGuard";
 
 const RegionsPage = () => {
   // Download CSV of regions
@@ -46,13 +49,15 @@ const RegionsPage = () => {
 
           {/* Action Buttons */}
           <CardBox className='mb-6 flex flex-wrap gap-4'>
-            <BaseButton
-                className='mr-2'
-                href='/regions/regions-new'
-                color='success'
-                label='Add New Region'
-                icon={mdiPlus}
-            />
+            <PermissionGuard permission={Permission.CREATE_REGION}>
+              <BaseButton
+                  className='mr-2'
+                  href='/regions/regions-new'
+                  color='success'
+                  label='Add New Region'
+                  icon={mdiPlus}
+              />
+            </PermissionGuard>
             <BaseButton
                 color='warning'
                 label='Export CSV'
@@ -74,4 +79,6 @@ RegionsPage.getLayout = function getLayout(page: ReactElement) {
   return <LayoutAuthenticated>{page}</LayoutAuthenticated>;
 };
 
-export default RegionsPage;
+export default withAuth(RegionsPage, {
+  permissions: [Permission.VIEW_PRODUCTS]
+});
