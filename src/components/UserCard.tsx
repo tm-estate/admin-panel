@@ -1,7 +1,7 @@
 import { Field, Form, Formik } from 'formik';
 import { useAppSelector } from '@/stores/hooks';
-import CardBox from './CardBox';
-import FormCheckRadio from './FormCheckRadio';
+import CardBox from './Cardbox/CardBox';
+import FormCheckRadio from './Form/FormCheckRadio';
 import UserAvatarCurrentUser from './UserAvatarCurrentUser';
 
 type Props = {

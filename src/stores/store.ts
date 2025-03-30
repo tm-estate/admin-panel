@@ -14,7 +14,7 @@ import property_typesReducer from './slices/property_typesSlice';
 import styleReducer from './slices/styleSlice'
 import regionsReducer from './slices/regionsSlice';
 import usersReducer from './slices/usersSlice';
-import { autocompleteInvalidationMiddleware } from './middlewares/autocompleteInvalidationMiddleware';
+import { autocompleteInvalidation } from '@/middlewares/autocompleteInvalidation';
 import agencyTypes from "@/api/agencyTypes";
 
 // Combine all reducers
@@ -42,7 +42,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
         serializableCheck: false,
-      }).concat(autocompleteInvalidationMiddleware),
+      }).concat(autocompleteInvalidation),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

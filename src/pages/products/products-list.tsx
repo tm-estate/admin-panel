@@ -1,41 +1,26 @@
 import { mdiChartTimelineVariant, mdiFilterVariant, mdiPlus, mdiDownload } from '@mdi/js';
 import Head from 'next/head';
 import React, { ReactElement, useState } from 'react';
-import CardBox from '@/components/CardBox';
+import CardBox from '@/components/Cardbox/CardBox';
 import LayoutAuthenticated from '@/layouts/Authenticated';
-import SectionMain from '@/components/SectionMain';
-import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton';
+import SectionMain from '@/components/Section/SectionMain';
+import SectionTitleLineWithButton from '@/components/Section/SectionTitleLineWithButton';
 import { getPageTitle } from '@/config';
-import BaseButton from '@/components/BaseButton';
+import BaseButton from '@/components/Base/BaseButton';
 import axios from 'axios';
 import TableProducts from "@/components/Products/TableProducts";
-import { IFilterConfig, IFilterItem } from '@/interfaces';
+import { IFilterItem } from '@/interfaces';
 import BreadcrumbsBar from "@/components/BreadcrumbsBar";
 import { addFilter } from "@/components/Filters";
+import { PermissionGuard } from "@/components/auth/PermissionGuard";
+import { Permission } from "@/constants/permissions";
+import { withAuth } from "@/components/auth/withAuth";
+import { NextPageWithLayout } from "@/types/next";
+import { productFilters } from "@/constants/productFilters";
 
-const ProductsTablesPage = () => {
+const ProductsPage: NextPageWithLayout = () => {
     const [filterItems, setFilterItems] = useState<IFilterItem[]>([]);
-    const [filters] = useState<IFilterConfig[]>([
-        { label: 'Name', key: 'name', selectType: 'search' },
-        { label: 'Deal Type', key: 'dealType', selectType: 'select', itemRef: 'dealTypes', showField: 'titleRu' },
-        { label: 'Property Types', key: 'propertyType', selectType: 'multi', itemRef: 'propertyTypes', showField: 'titleRu' },
-        { label: 'Regions', key: 'region', selectType: 'multi', itemRef: 'regions', showField: 'titleRu' },
-        { label: 'Cities', key: 'city', selectType: 'multi', itemRef: 'cities', showField: 'titleRu' },
-        { label: 'City Areas', key: 'cityArea', selectType: 'multi', itemRef: 'cityAreas', showField: 'titleRu' },
-        { label: 'Creator', key: 'creator', selectType: 'search', itemRef: 'users', showField: 'name'},
-        { label: 'Address', key: 'address', selectType: 'search' },
-        { label: 'Prices', key: 'price', selectType: 'number' },
-        { label: 'Status', key: 'status', selectType: 'multi', options: [
-                { key: 'active', label: 'Active' },
-                { key: 'inactive', label: 'Inactive' },
-                { key: 'onModeration', label: 'On moderation' },
-                { key: 'rejected', label: 'Rejected' },
-                { key: 'waitingForPayment', label: 'Waiting for payment' }
-            ] },
-        { label: 'With Photo', key: 'withPhoto', selectType: 'boolean' },
-        { label: 'Created At', key: 'createdAt', selectType: 'date' },
-        { label: 'Updated At', key: 'updatedAt', selectType: 'date' }
-    ]);
+    const [filters] = useState(productFilters);
 
     const handleAddFilter = () => {
         addFilter(filters, setFilterItems, filterItems);
@@ -81,15 +66,17 @@ const ProductsTablesPage = () => {
 
                 {/* Action Buttons */}
                 <CardBox className='mb-6 flex flex-wrap gap-4'>
+                    <PermissionGuard permission={Permission.CREATE_PRODUCT}>
+                        <BaseButton
+                            className='mr-2'
+                            href="/products/products-new"
+                            icon={mdiPlus}
+                            label="Add New"
+                            color="success"
+                        />
+                    </PermissionGuard>
                     <BaseButton
-                        className={'mr-3'}
-                        href='/products/products-new'
-                        color='success'
-                        label='Add New Product'
-                        icon={mdiPlus}
-                    />
-                    <BaseButton
-                        className={'mr-3'}
+                        className='mr-3'
                         color='info'
                         label='Add Filter'
                         icon={mdiFilterVariant}
@@ -116,8 +103,10 @@ const ProductsTablesPage = () => {
     );
 };
 
-ProductsTablesPage.getLayout = function getLayout(page: ReactElement) {
+ProductsPage.getLayout = function getLayout(page: ReactElement) {
     return <LayoutAuthenticated>{page}</LayoutAuthenticated>;
 };
 
-export default ProductsTablesPage;
+export default withAuth(ProductsPage, {
+    permissions: [Permission.VIEW_PRODUCTS]
+});

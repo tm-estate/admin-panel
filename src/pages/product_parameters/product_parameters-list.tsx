@@ -1,15 +1,18 @@
 import { mdiChartTimelineVariant, mdiPlus, mdiDownload } from '@mdi/js';
 import Head from 'next/head';
 import React, { ReactElement } from 'react';
-import CardBox from '@/components/CardBox';
+import CardBox from '@/components/Cardbox/CardBox';
 import LayoutAuthenticated from '@/layouts/Authenticated';
-import SectionMain from '@/components/SectionMain';
-import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton';
+import SectionMain from '@/components/Section/SectionMain';
+import SectionTitleLineWithButton from '@/components/Section/SectionTitleLineWithButton';
 import { getPageTitle } from '@/config';
 import TableProductParameters from '@/components/Product_parameters/TableProductParameters';
-import BaseButton from '@/components/BaseButton';
+import BaseButton from '@/components/Base/BaseButton';
 import axios from 'axios';
 import BreadcrumbsBar from "@/components/BreadcrumbsBar";
+import { withAuth } from "@/components/auth/withAuth";
+import { Permission } from "@/constants/permissions";
+import { PermissionGuard } from "@/components/auth/PermissionGuard";
 
 const ProductParametersPage = () => {
   // Download CSV of product parameters
@@ -46,13 +49,15 @@ const ProductParametersPage = () => {
 
           {/* Action Buttons */}
           <CardBox className='mb-6 flex flex-wrap gap-4'>
-            <BaseButton
-                className='mr-2'
-                href='/product_parameters/product_parameters-new'
-                color='success'
-                label='Add New Product Parameter'
-                icon={mdiPlus}
-            />
+            <PermissionGuard permission={Permission.CREATE_PRODUCT_PARAM}>
+              <BaseButton
+                  className='mr-2'
+                  href='/product_parameters/product_parameters-new'
+                  color='success'
+                  label='Add New Product Parameter'
+                  icon={mdiPlus}
+              />
+            </PermissionGuard>
             <BaseButton
                 color='warning'
                 label='Export CSV'
@@ -74,4 +79,6 @@ ProductParametersPage.getLayout = function getLayout(page: ReactElement) {
   return <LayoutAuthenticated>{page}</LayoutAuthenticated>;
 };
 
-export default ProductParametersPage;
+export default withAuth(ProductParametersPage, {
+  permissions: [Permission.VIEW_PRODUCTS_PARAMS]
+});

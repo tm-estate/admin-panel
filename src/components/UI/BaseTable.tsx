@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { mdiEye, mdiPencil, mdiTrashCan } from '@mdi/js';
 import { ToastContainer, toast } from 'react-toastify';
-import BaseButton from '@/components/BaseButton';
-import BaseButtons from '@/components/BaseButtons';
-import CardBoxModal from '@/components/CardBoxModal';
+import BaseButton from '@/components/Base/BaseButton';
+import BaseButtons from '@/components/Base/BaseButtons';
+import CardBoxModal from '@/components/Cardbox/CardBoxModal';
 import { Pagination } from '@/components/Pagination';
 import { INotify } from '@/interfaces';
 import { useRouter } from 'next/router';

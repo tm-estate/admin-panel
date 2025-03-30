@@ -28,8 +28,7 @@ export const white: StyleObject = {
   aside: 'bg-white',
   asideScrollbars: 'aside-scrollbars-light',
   asideBrand: '',
-  asideMenuItem:
-    'text-gray-700 dark:hover:bg-gray-700/50 hover:bg-gray-100 hover:bg-opacity-50',
+  asideMenuItem: 'text-gray-700 dark:hover:bg-gray-700/50 hover:bg-gray-100 hover:bg-opacity-50',
   asideMenuItemActive: 'font-bold text-black dark:text-white',
   asideMenuDropdown: 'bg-gray-100/75',
   navBarItemLabel: 'text-blue-600',

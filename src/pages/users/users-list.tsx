@@ -1,39 +1,26 @@
 import { mdiChartTimelineVariant, mdiFilterVariant, mdiPlus, mdiDownload } from '@mdi/js';
 import Head from 'next/head';
 import React, { ReactElement, useState } from 'react';
-import CardBox from '@/components/CardBox';
+import CardBox from '@/components/Cardbox/CardBox';
 import LayoutAuthenticated from '@/layouts/Authenticated';
-import SectionMain from '@/components/SectionMain';
-import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton';
+import SectionMain from '@/components/Section/SectionMain';
+import SectionTitleLineWithButton from '@/components/Section/SectionTitleLineWithButton';
 import { getPageTitle } from '@/config';
 import TableUsers from '@/components/Users/TableUsers';
-import BaseButton from '@/components/BaseButton';
+import BaseButton from '@/components/Base/BaseButton';
 import axios from 'axios';
 import { addFilter } from '@/components/Filters';
-import { IFilterConfig, IFilterItem } from '@/interfaces';
+import { IFilterItem } from '@/interfaces';
 import BreadcrumbsBar from "@/components/BreadcrumbsBar";
+import { usersFilters } from "@/constants/usersFilters";
+import { withAuth } from "@/components/auth/withAuth";
+import { Permission } from "@/constants/permissions";
+import { PermissionGuard } from "@/components/auth/PermissionGuard";
 
 const UsersPage = () => {
   const [filterItems, setFilterItems] = useState<IFilterItem[]>([]);
 
-  const [filters] = useState<IFilterConfig[]>([
-    { label: 'Name', key: 'name', selectType: 'search' },
-    { label: 'Phone', key: 'phone', selectType: 'search' },
-    { label: 'Email', key: 'email', selectType: 'search' },
-    {
-      label: 'Role',
-      key: 'role',
-      selectType: 'multi',
-      options: [
-        { key: 'admin', label: 'Admin' },
-        { key: 'user', label: 'User' }
-      ]
-    },
-    { label: 'Is Agent', key: 'isAgent', selectType: 'boolean' },
-    { label: 'Is Confirmed', key: 'isPhoneNumberConfirmed', selectType: 'boolean' },
-    { label: 'Created At', key: 'createdAt', selectType: 'date' },
-    { label: 'Updated At', key: 'updatedAt', selectType: 'date' }
-  ]);
+  const [filters] = useState(usersFilters);
 
   const handleAddFilter = () => {
     addFilter(filters, setFilterItems, filterItems);
@@ -79,13 +66,15 @@ const UsersPage = () => {
 
           {/* Action Buttons */}
           <CardBox className='mb-6 flex flex-wrap gap-4'>
-            <BaseButton
-                className='mr-2'
-                href='/users/users-new'
-                color='success'
-                label='Add New User'
-                icon={mdiPlus}
-            />
+            <PermissionGuard permission={Permission.CREATE_USER}>
+              <BaseButton
+                  className='mr-2'
+                  href='/users/users-new'
+                  color='success'
+                  label='Add New User'
+                  icon={mdiPlus}
+              />
+            </PermissionGuard>
             <BaseButton
                 color='info'
                 className='mr-2'
@@ -118,4 +107,6 @@ UsersPage.getLayout = function getLayout(page: ReactElement) {
   return <LayoutAuthenticated>{page}</LayoutAuthenticated>;
 };
 
-export default UsersPage;
+export default withAuth(UsersPage, {
+  permissions: [Permission.VIEW_USERS]
+});

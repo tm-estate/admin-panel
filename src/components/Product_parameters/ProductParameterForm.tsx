@@ -1,12 +1,12 @@
 import React from 'react';
 import { Field, Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
-import FormField from '@/components/FormField';
-import BaseDivider from '@/components/BaseDivider';
-import BaseButtons from '@/components/BaseButtons';
-import BaseButton from '@/components/BaseButton';
-import FormCheckRadio from '@/components/FormCheckRadio';
-import FormCheckRadioGroup from '@/components/FormCheckRadioGroup';
+import FormField from '@/components/Form/FormField';
+import BaseDivider from '@/components/Base/BaseDivider';
+import BaseButtons from '@/components/Base/BaseButtons';
+import BaseButton from '@/components/Base/BaseButton';
+import FormCheckRadio from '@/components/Form/FormCheckRadio';
+import FormCheckRadioGroup from '@/components/Form/FormCheckRadioGroup';
 import SwitchField from '@/components/UI/SwitchField';
 import { IProductParameter } from "@/interfaces";
 import * as Yup from 'yup';

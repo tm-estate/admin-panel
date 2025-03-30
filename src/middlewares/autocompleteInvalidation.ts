@@ -3,7 +3,7 @@ import { clearAutocompleteCache } from '@/stores/slices/autocompleteSlice';
 
 // This middleware automatically invalidates the autocomplete cache
 // when related entities are created, updated, or deleted
-export const autocompleteInvalidationMiddleware: Middleware = store => next => action => {
+export const autocompleteInvalidation: Middleware = store => next => action => {
     // Process the action first
     const result = next(action);
 

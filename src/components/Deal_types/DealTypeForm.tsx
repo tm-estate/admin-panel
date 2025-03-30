@@ -1,10 +1,10 @@
 import React from 'react';
 import { Field, Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
-import FormField from '@/components/FormField';
-import BaseDivider from '@/components/BaseDivider';
-import BaseButtons from '@/components/BaseButtons';
-import BaseButton from '@/components/BaseButton';
+import FormField from '@/components/Form/FormField';
+import BaseDivider from '@/components/Base/BaseDivider';
+import BaseButtons from '@/components/Base/BaseButtons';
+import BaseButton from '@/components/Base/BaseButton';
 import { IDealType } from "@/interfaces";
 import * as Yup from 'yup';
 

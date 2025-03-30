@@ -2,10 +2,10 @@ import { mdiChartTimelineVariant } from '@mdi/js';
 import Head from 'next/head';
 import React, { ReactElement } from 'react';
 import 'react-toastify/dist/ReactToastify.min.css';
-import CardBox from '@/components/CardBox';
+import CardBox from '@/components/Cardbox/CardBox';
 import LayoutAuthenticated from '@/layouts/Authenticated';
-import SectionMain from '@/components/SectionMain';
-import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton';
+import SectionMain from '@/components/Section/SectionMain';
+import SectionTitleLineWithButton from '@/components/Section/SectionTitleLineWithButton';
 import { getPageTitle } from '@/config';
 import { create } from '@/stores/thunks/users';
 import { useAppDispatch, useAppSelector } from '@/stores/hooks';
@@ -21,7 +21,7 @@ const NewUserPage = () => {
     name: '',
     phone: '',
     email: '',
-    role: 'user',
+    role: '',
     isAgent: false,
     isPhoneNumberConfirmed: false,
     disabled: false,

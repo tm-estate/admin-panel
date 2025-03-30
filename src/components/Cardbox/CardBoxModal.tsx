@@ -1,11 +1,11 @@
 import { mdiClose } from '@mdi/js';
 import { ReactNode } from 'react';
 import type { ColorButtonKey } from '@/interfaces';
-import BaseButton from './BaseButton';
-import BaseButtons from './BaseButtons';
+import BaseButton from '../Base/BaseButton';
+import BaseButtons from '../Base/BaseButtons';
 import CardBox from './CardBox';
 import CardBoxComponentTitle from './CardBoxComponentTitle';
-import OverlayLayer from './OverlayLayer';
+import OverlayLayer from '../OverlayLayer';
 
 type Props = {
   title: string;

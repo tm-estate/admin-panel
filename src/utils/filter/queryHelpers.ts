@@ -1,6 +1,7 @@
 import { IFilterConfig, IFilterItem } from "@/interfaces";
-import { isRangeFilter, FILTER_TYPES } from "./filterTypes";
+import { isRangeFilter } from "./filterTypes";
 import { uniqueId } from "lodash";
+import { FILTER_TYPES } from "@/constants/filterTypes";
 
 export const generateFilterQuery = (filterItems: IFilterItem[]) => {
     let query = '';

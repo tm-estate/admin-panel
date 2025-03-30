@@ -1,6 +1,6 @@
 import React from 'react';
 import { Field } from 'formik';
-import FormField from '@/components/FormField';
+import FormField from '@/components/Form/FormField';
 import TextField from '@/components/UI/TextField';
 
 interface FormTextFieldProps {

@@ -1,18 +1,19 @@
 import React, { ReactNode, useEffect } from 'react'
 import { useState } from 'react'
 import { mdiForwardburger, mdiBackburger, mdiMenu } from '@mdi/js'
-import menuAside from '@/menuAside'
-import menuNavBar from '@/menuNavBar'
-import BaseIcon from '@/components/BaseIcon'
-import NavBar from '@/components/NavBar'
-import NavBarItemPlain from '@/components/NavBarItemPlain'
-import AsideMenu from '@/components/AsideMenu'
+import menuAside from '@/constants/menuAside'
+import menuNavBar from '@/constants/menuNavBar'
+import BaseIcon from '@/components/Base/BaseIcon'
+import NavBar from '@/components/Navbar/NavBar'
+import NavBarItemPlain from '@/components/Navbar/NavBarItemPlain'
+import AsideMenu from '@/components/Aside/AsideMenu'
 import FooterBar from '@/components/FooterBar'
 import { useAppDispatch, useAppSelector } from '@/stores/hooks'
-import FormField from '@/components/FormField'
+import FormField from '@/components/Form/FormField'
 import { Field, Form, Formik } from 'formik'
 import { useRouter } from 'next/router'
 import { getMe, logout } from '@/stores/thunks/auth'
+import Cookies from 'js-cookie'
 
 type Props = {
   children: ReactNode
@@ -22,26 +23,29 @@ export default function LayoutAuthenticated({ children }: Props) {
   const dispatch = useAppDispatch()
   const router = useRouter()
   const { user, loading } = useAppSelector((state) => state.auth)
-  let localToken
-  if (typeof window !== 'undefined') {
-    // Perform localStorage action
-    localToken = localStorage.getItem('token')
-  }
-
-  useEffect(() => {
-    dispatch(getMe())
-      .unwrap()
-      .catch(() => {
-        dispatch(logout())
-        router.push('/login')
-      })
-  }, [dispatch])
 
   const darkMode = useAppSelector((state) => state.style.darkMode)
-
   const [isAsideMobileExpanded, setIsAsideMobileExpanded] = useState(false)
   const [isAsideLgActive, setIsAsideLgActive] = useState(false)
 
+  // Initialize auth when the layout mounts
+  useEffect(() => {
+    // Only check if we don't have a user yet
+    if (!user) {
+      // Get token from cookie
+      const token = Cookies.get('token')
+      if (token) {
+        dispatch(getMe())
+            .unwrap()
+            .catch(() => {
+              dispatch(logout())
+              router.push('/login')
+            })
+      }
+    }
+  }, [dispatch, user, router])
+
+  // Handle route changes
   useEffect(() => {
     const handleRouteChangeStart = () => {
       setIsAsideMobileExpanded(false)
@@ -50,62 +54,62 @@ export default function LayoutAuthenticated({ children }: Props) {
 
     router.events.on('routeChangeStart', handleRouteChangeStart)
 
-    // If the component is unmounted, unsubscribe
-    // from the event with the `off` method:
     return () => {
       router.events.off('routeChangeStart', handleRouteChangeStart)
     }
-  }, [router.events, dispatch])
+  }, [router.events])
 
   const layoutAsidePadding = 'xl:pl-60'
 
   return (
-    <div className={`${darkMode ? 'dark' : ''} overflow-hidden lg:overflow-visible`}>
-      <div
-        className={`${layoutAsidePadding} ${
-          isAsideMobileExpanded ? 'ml-60 lg:ml-0' : ''
-        } pt-14 min-h-screen w-screen transition-position lg:w-auto bg-gray-50 dark:bg-slate-800 dark:text-slate-100`}
-      >
-        <NavBar
-          menu={menuNavBar}
-          className={`${layoutAsidePadding} ${isAsideMobileExpanded ? 'ml-60 lg:ml-0' : ''}`}
+      <div className={`${darkMode ? 'dark' : ''} overflow-hidden lg:overflow-visible`}>
+        <div
+            className={`${layoutAsidePadding} ${
+                isAsideMobileExpanded ? 'ml-60 lg:ml-0' : ''
+            } pt-14 min-h-screen w-screen transition-position lg:w-auto bg-gray-50 dark:bg-slate-800 dark:text-slate-100`}
         >
-          <NavBarItemPlain
-            display="flex lg:hidden"
-            onClick={() => setIsAsideMobileExpanded(!isAsideMobileExpanded)}
+          <NavBar
+              menu={menuNavBar}
+              className={`${layoutAsidePadding} ${isAsideMobileExpanded ? 'ml-60 lg:ml-0' : ''}`}
           >
-            <BaseIcon path={isAsideMobileExpanded ? mdiBackburger : mdiForwardburger} size="24" />
-          </NavBarItemPlain>
-          <NavBarItemPlain
-            display="hidden lg:flex xl:hidden"
-            onClick={() => setIsAsideLgActive(true)}
-          >
-            <BaseIcon path={mdiMenu} size="24" />
-          </NavBarItemPlain>
-          <NavBarItemPlain useMargin>
-            <Formik
-              initialValues={{
-                search: '',
-              }}
-              onSubmit={(values) => alert(JSON.stringify(values, null, 2))}
+            <NavBarItemPlain
+                display="flex lg:hidden"
+                onClick={() => setIsAsideMobileExpanded(!isAsideMobileExpanded)}
             >
-              <Form>
-                <FormField isBorderless isTransparent>
-                  <Field name="search" placeholder="Search" />
-                </FormField>
-              </Form>
-            </Formik>
-          </NavBarItemPlain>
-        </NavBar>
-        <AsideMenu
-          isAsideMobileExpanded={isAsideMobileExpanded}
-          isAsideLgActive={isAsideLgActive}
-          menu={menuAside}
-          onAsideLgClose={() => setIsAsideLgActive(false)}
-        />
-        {children}
-        <FooterBar>Hand-crafted & Made with ❤️</FooterBar>
+              <BaseIcon path={isAsideMobileExpanded ? mdiBackburger : mdiForwardburger} size="24" />
+            </NavBarItemPlain>
+            <NavBarItemPlain
+                display="hidden lg:flex xl:hidden"
+                onClick={() => setIsAsideLgActive(true)}
+            >
+              <BaseIcon path={mdiMenu} size="24" />
+            </NavBarItemPlain>
+            <NavBarItemPlain useMargin>
+              <Formik
+                  initialValues={{
+                    search: '',
+                  }}
+                  onSubmit={(values) => alert(JSON.stringify(values, null, 2))}
+              >
+                <Form>
+                  <FormField isBorderless isTransparent>
+                    <Field name="search" placeholder="Search" />
+                  </FormField>
+                </Form>
+              </Formik>
+            </NavBarItemPlain>
+          </NavBar>
+
+          {/* Notice we're using the original menu instead of filtering it here */}
+          <AsideMenu
+              isAsideMobileExpanded={isAsideMobileExpanded}
+              isAsideLgActive={isAsideLgActive}
+              menu={menuAside}
+              onAsideLgClose={() => setIsAsideLgActive(false)}
+          />
+
+          {children}
+        </div>
       </div>
-    </div>
   )
 }

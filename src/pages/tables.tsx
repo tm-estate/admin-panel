@@ -1,10 +1,10 @@
 import { mdiChartTimelineVariant } from '@mdi/js';
 import Head from 'next/head';
 import React, { ReactElement } from 'react';
-import CardBox from '@/components/CardBox';
+import CardBox from '@/components/Cardbox/CardBox';
 import LayoutAuthenticated from '@/layouts/Authenticated';
-import SectionMain from '@/components/SectionMain';
-import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton';
+import SectionMain from '@/components/Section/SectionMain';
+import SectionTitleLineWithButton from '@/components/Section/SectionTitleLineWithButton';
 import TableSampleClients from '@/components/TableSampleClients';
 import { getPageTitle } from '@/config';
 

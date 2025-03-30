@@ -4,12 +4,14 @@ import React from 'react'
 import axios from 'axios'
 import type { ReactElement } from 'react'
 import LayoutAuthenticated from '@/layouts/Authenticated'
-import SectionMain from '@/components/SectionMain'
-import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton'
+import SectionMain from '@/components/Section/SectionMain'
+import SectionTitleLineWithButton from '@/components/Section/SectionTitleLineWithButton'
 import { mdiInformation } from '@mdi/js'
-import BaseIcon from '@/components/BaseIcon'
+import BaseIcon from '@/components/Base/BaseIcon'
 import { getPageTitle } from '@/config'
 import Link from 'next/link'
+import { Permission } from "@/constants/permissions";
+import { withAuth } from "@/components/auth/withAuth";
 
 const Dashboard = () => {
   const [users, setUsers] = React.useState('Loading...')
@@ -115,4 +117,6 @@ Dashboard.getLayout = function getLayout(page: ReactElement) {
   return <LayoutAuthenticated>{page}</LayoutAuthenticated>
 }
 
-export default Dashboard
+export default withAuth(Dashboard, {
+  permissions: [Permission.VIEW_DASHBOARD],
+});

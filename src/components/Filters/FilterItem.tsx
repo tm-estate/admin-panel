@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Field } from 'formik';
-import BaseButton from '@/components/BaseButton';
+import BaseButton from '@/components/Base/BaseButton';
 import SelectField from '@/components/UI/SelectField';
 import { IFilterConfig, IFilterItem } from '@/interfaces';
 import { isRangeFilter, getFilterLabel } from '@/utils/filter/filterTypes';

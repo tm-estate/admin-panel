@@ -2,13 +2,13 @@ import { mdiChartTimelineVariant } from '@mdi/js';
 import Head from 'next/head';
 import { uniqueId } from 'lodash';
 import React, { ReactElement } from 'react';
-import CardBox from '@/components/CardBox';
+import CardBox from '@/components/Cardbox/CardBox';
 import LayoutAuthenticated from '@/layouts/Authenticated';
-import SectionMain from '@/components/SectionMain';
-import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton';
+import SectionMain from '@/components/Section/SectionMain';
+import SectionTitleLineWithButton from '@/components/Section/SectionTitleLineWithButton';
 import { getPageTitle } from '@/config';
 import TableProduct_parameter_items from '@/components/Product_parameter_items/TableProduct_parameter_items';
-import BaseButton from '@/components/BaseButton';
+import BaseButton from '@/components/Base/BaseButton';
 import axios from 'axios';
 
 const Product_parameter_itemsTablesPage = () => {

@@ -2,10 +2,10 @@ import { mdiChartTimelineVariant } from '@mdi/js';
 import Head from 'next/head';
 import React, { ReactElement, useEffect, useState } from 'react';
 import 'react-toastify/dist/ReactToastify.min.css';
-import CardBox from '@/components/CardBox';
+import CardBox from '@/components/Cardbox/CardBox';
 import LayoutAuthenticated from '@/layouts/Authenticated';
-import SectionMain from '@/components/SectionMain';
-import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton';
+import SectionMain from '@/components/Section/SectionMain';
+import SectionTitleLineWithButton from '@/components/Section/SectionTitleLineWithButton';
 import { getPageTitle } from '@/config';
 import { update, getProductParameter } from '@/stores/thunks/product-parameters';
 import { useAppDispatch, useAppSelector } from '@/stores/hooks';
@@ -17,18 +17,18 @@ import BreadcrumbsBar from "@/components/BreadcrumbsBar";
 const EditProductParameter = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { product_parametersId } = router.query;
+  const { product_parameterId } = router.query;
   const { product_parameter, loading } = useAppSelector((state) => state.product_parameters);
   const [isLoading, setIsLoading] = useState(true);
   const [initialValues, setInitialValues] = useState<IProductParameter | null>(null);
 
   // Fetch product parameter data when component mounts
   useEffect(() => {
-    if (product_parametersId) {
+    if (product_parameterId) {
       setIsLoading(true);
-      dispatch(getProductParameter(product_parametersId));
+      dispatch(getProductParameter(product_parameterId));
     }
-  }, [product_parametersId, dispatch]);
+  }, [product_parameterId, dispatch]);
 
   // Update form when product parameter data is loaded
   useEffect(() => {
@@ -40,7 +40,7 @@ const EditProductParameter = () => {
 
   // Handle form submission
   const handleSubmit = async (data: IProductParameter) => {
-    await dispatch(update({ id: product_parametersId, data }));
+    await dispatch(update({ id: product_parameterId, data }));
   };
 
   return (
@@ -57,7 +57,7 @@ const EditProductParameter = () => {
             <BreadcrumbsBar items={[
               { label: 'Dashboard', href: '/dashboard' },
               { label: 'Product Parameters', href: '/product_parameters/product_parameters-list' },
-              { label: `Edit Product Parameter ${product_parametersId}`, href: `/product_parameters/${product_parametersId}` }
+              { label: `Edit Product Parameter ${product_parameterId}`, href: `/product_parameters/${product_parameterId}` }
             ]} />
           </SectionTitleLineWithButton>
           <CardBox>

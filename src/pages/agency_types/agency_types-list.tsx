@@ -1,15 +1,18 @@
 import { mdiChartTimelineVariant, mdiPlus, mdiDownload } from '@mdi/js'
 import Head from 'next/head'
 import React, { ReactElement } from 'react'
-import CardBox from '@/components/CardBox'
+import CardBox from '@/components/Cardbox/CardBox'
 import LayoutAuthenticated from '@/layouts/Authenticated'
-import SectionMain from '@/components/SectionMain'
-import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton'
+import SectionMain from '@/components/Section/SectionMain'
+import SectionTitleLineWithButton from '@/components/Section/SectionTitleLineWithButton'
 import { getPageTitle } from '@/config'
-import BaseButton from '@/components/BaseButton'
+import BaseButton from '@/components/Base/BaseButton'
 import axios from 'axios'
 import TableAgencyTypes from "@/components/Agency_types/TableAgencyTypes";
 import BreadcrumbsBar from "@/components/BreadcrumbsBar";
+import { withAuth } from "@/components/auth/withAuth";
+import { Permission } from "@/constants/permissions";
+import { PermissionGuard } from "@/components/auth/PermissionGuard";
 
 const AgencyTypesPage = () => {
     // Download CSV of agency types
@@ -54,13 +57,15 @@ const AgencyTypesPage = () => {
 
                 {/* Action Buttons */}
                 <CardBox className='mb-6 flex flex-wrap gap-4'>
-                    <BaseButton
-                        className='mr-2'
-                        href='/agency_types/agency_types-new'
-                        color='success'
-                        label='Add New Agency Type'
-                        icon={mdiPlus}
-                    />
+                    <PermissionGuard permission={Permission.CREATE_AGENCY_TYPE}>
+                        <BaseButton
+                            className='mr-2'
+                            href='/agency_types/agency_types-new'
+                            color='success'
+                            label='Add New Agency Type'
+                            icon={mdiPlus}
+                        />
+                    </PermissionGuard>
                     <BaseButton
                         color='warning'
                         label='Export CSV'
@@ -82,4 +87,6 @@ AgencyTypesPage.getLayout = function getLayout(page: ReactElement) {
     return <LayoutAuthenticated>{page}</LayoutAuthenticated>
 }
 
-export default AgencyTypesPage
+export default withAuth(AgencyTypesPage, {
+    permissions: [Permission.VIEW_AGENCY_TYPES]
+});

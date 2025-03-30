@@ -2,16 +2,18 @@ import { mdiChartTimelineVariant } from '@mdi/js';
 import Head from 'next/head';
 import React, { ReactElement } from 'react';
 import 'react-toastify/dist/ReactToastify.min.css';
-import CardBox from '@/components/CardBox';
+import CardBox from '@/components/Cardbox/CardBox';
 import LayoutAuthenticated from '@/layouts/Authenticated';
-import SectionMain from '@/components/SectionMain';
-import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton';
+import SectionMain from '@/components/Section/SectionMain';
+import SectionTitleLineWithButton from '@/components/Section/SectionTitleLineWithButton';
 import { getPageTitle } from '@/config';
 import { create } from '@/stores/thunks/products';
 import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { IProduct } from "@/interfaces";
 import ProductForm from '@/components/Products/ProductForm';
 import BreadcrumbsBar from "@/components/BreadcrumbsBar";
+import { withAuth } from "@/components/auth/withAuth";
+import { Permission } from "@/constants/permissions";
 
 
 const ProductsNewPage = () => {
@@ -94,4 +96,6 @@ ProductsNewPage.getLayout = function getLayout(page: ReactElement) {
     return <LayoutAuthenticated>{page}</LayoutAuthenticated>;
 };
 
-export default ProductsNewPage;
+export default withAuth(ProductsNewPage, {
+    permissions: [Permission.CREATE_PRODUCT]
+});

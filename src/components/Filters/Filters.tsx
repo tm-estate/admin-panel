@@ -2,15 +2,16 @@ import React, { useEffect, useMemo, useCallback, useRef } from 'react';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { useRouter } from 'next/router';
-import CardBox from '@/components/CardBox';
+import CardBox from '@/components/Cardbox/CardBox';
 import { useAppDispatch } from '@/stores/hooks';
 import { IFilterConfig, IFilterItem } from '@/interfaces';
-import { isRangeFilter, FILTER_TYPES } from '@/utils/filter/filterTypes';
+import { isRangeFilter } from '@/utils/filter/filterTypes';
 import {generateFilterQuery, parseQueryToFilterItems, updateBrowserUrl} from '@/utils/filter/queryHelpers';
 import { prefetchFilterData, prefetchSingleFilter } from '@/utils/filter/prefetchHelpers';
 import FilterItem from './FilterItem';
 import FilterControls from './FilterControls';
 import AppliedFilters from './AppliedFilters';
+import { FILTER_TYPES } from "@/constants/filterTypes";
 
 interface FiltersProps {
     filters: IFilterConfig[];
