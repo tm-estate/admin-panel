@@ -1,6 +1,5 @@
 import {
   mdiAccountCircle,
-  mdiMonitor,
   mdiTable,
   mdiHandshake,
   mdiShape,
@@ -9,10 +8,11 @@ import {
   mdiHome,
   mdiViewDashboard,
   mdiSquareEditOutline,
-  mdiViewList
+  mdiViewList,
+  mdiChat,
 } from '@mdi/js'
 import { MenuAsideItem } from '@/interfaces'
-import { Permission } from "@/constants/permissions";
+import { Permission } from '@/constants/permissions'
 
 const menuAside: MenuAsideItem[] = [
   {
@@ -224,6 +224,17 @@ const menuAside: MenuAsideItem[] = [
     href: '/profile',
     label: 'Profile',
     icon: mdiAccountCircle,
+  },
+  {
+    // href: '/chat-requests/chat-requests-list',
+    href: '/chats',
+    label: 'Chats',
+    icon: mdiChat,
+  },
+  {
+    href: '/chat-requests',
+    label: 'Chats requests',
+    icon: mdiChat,
   },
 
   // {

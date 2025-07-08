@@ -1,21 +1,21 @@
-import { configureStore } from '@reduxjs/toolkit';
-import { combineReducers } from 'redux';
+import { configureStore } from '@reduxjs/toolkit'
+import { combineReducers } from 'redux'
 import authSlice from './slices/authSlice'
 import agency_typesReducer from './slices/agency_typesSlice'
-import autocompleteReducer from './slices/autocompleteSlice';
-import citiesReducer from './slices/citiesSlice';
-import city_areasReducer from './slices/city_areasSlice';
-import deal_typesReducer from './slices/deal_typesSlice';
+import autocompleteReducer from './slices/autocompleteSlice'
+import citiesReducer from './slices/citiesSlice'
+import city_areasReducer from './slices/city_areasSlice'
+import deal_typesReducer from './slices/deal_typesSlice'
 import mainReducer from './slices/mainSlice'
-import productsReducer from './slices/productsSlice';
-import product_parametersReducer from './slices/product_parametersSlice';
-import product_parameters_itemsReducer from './slices/product_parameter_itemsSlice';
-import property_typesReducer from './slices/property_typesSlice';
+import productsReducer from './slices/productsSlice'
+import product_parametersReducer from './slices/product_parametersSlice'
+import product_parameters_itemsReducer from './slices/product_parameter_itemsSlice'
+import property_typesReducer from './slices/property_typesSlice'
 import styleReducer from './slices/styleSlice'
-import regionsReducer from './slices/regionsSlice';
-import usersReducer from './slices/usersSlice';
-import { autocompleteInvalidation } from '@/middlewares/autocompleteInvalidation';
-import agencyTypes from "@/api/agencyTypes";
+import regionsReducer from './slices/regionsSlice'
+import chatsReducer from './slices/chatsSlice'
+import usersReducer from './slices/usersSlice'
+import { autocompleteInvalidation } from '@/middlewares/autocompleteInvalidation'
 
 // Combine all reducers
 const rootReducer = combineReducers({
@@ -33,18 +33,19 @@ const rootReducer = combineReducers({
   product_parameters_items: product_parameters_itemsReducer,
   property_types: property_typesReducer,
   regions: regionsReducer,
+  chats: chatsReducer,
   users: usersReducer,
-});
+})
 
 // Configure the store with the autocomplete invalidation middleware
 export const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware({
-        serializableCheck: false,
-      }).concat(autocompleteInvalidation),
-});
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }).concat(autocompleteInvalidation),
+})
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch

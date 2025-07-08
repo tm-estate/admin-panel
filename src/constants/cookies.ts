@@ -1,6 +1,7 @@
 import { CookieAttributes } from "js-cookie";
 
 export const TOKEN_COOKIE_NAME = 'token';
+export const CHAT_TOKEN_COOKIE_NAME = 'chat_token';
 export const COOKIE_OPTIONS: CookieAttributes = {
     expires: 7, // 7 days
     path: '/',
