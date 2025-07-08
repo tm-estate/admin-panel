@@ -2,7 +2,7 @@ import dayjs from 'dayjs'
 
 export default {
   capitalize(str) {
-    return String(str).charAt(0).toUpperCase() + String(str).slice(1);
+    return String(str).charAt(0).toUpperCase() + String(str).slice(1)
   },
   filesFormatter(arr) {
     if (!arr || !arr.length) return []
@@ -25,6 +25,10 @@ export default {
   dateTimeFormatter(date) {
     if (!date) return ''
     return dayjs(date).format('DD.MM.YY HH:mm')
+  },
+  dateTimeFormatterFull(date) {
+    if (!date) return ''
+    return dayjs(date).format('DD.MM.YYYY HH:mm')
   },
   booleanFormatter(val) {
     return val ? 'Yes' : 'No'
@@ -126,14 +130,14 @@ export default {
     return { label: val.id, id: val.id }
   },
   phoneFormatter(str) {
-    const regex = /^993(\d{2})(\d{6})$/;
-    const match = str.match(regex);
+    const regex = /^993(\d{2})(\d{6})$/
+    const match = str.match(regex)
 
     if (!match) return str
 
-    const operatorCode = match[1];
-    const subscriberNumber = match[2];
+    const operatorCode = match[1]
+    const subscriberNumber = match[2]
 
-    return `+993(${operatorCode})${subscriberNumber}`;
-  }
+    return `+993(${operatorCode})${subscriberNumber}`
+  },
 }

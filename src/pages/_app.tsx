@@ -7,6 +7,7 @@ import axios from 'axios';
 import { baseURLApi } from "@/config";
 import Cookies from "js-cookie";
 import { AppPropsWithLayout } from "@/types/next";
+import {ChatProvider} from "@/context/ChatContext";
 
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
@@ -61,7 +62,9 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
             <link rel='icon' href='/favicon.svg' />
           </Head>
 
-          <Component {...pageProps} />
+          <ChatProvider>
+            <Component {...pageProps} />
+          </ChatProvider>
         </>,
       )}
     </Provider>
