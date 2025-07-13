@@ -30,4 +30,4 @@ COPY --from=builder /app/public ./public
 EXPOSE 3001
 
 # Run the Next.js production server
-CMD ["yarn", "start"]
+CMD ["yarn", "start", "-p", "3001"]
