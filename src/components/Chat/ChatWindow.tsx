@@ -58,6 +58,12 @@ const ChatWindow: React.FC<IProps> = ({}) => {
 
     try {
       dispatch(closeConversationAPI(conversationId as string))
+      dispatch(
+        setSelectedConversation({
+          ...selectedConversation,
+          status: ChatStatus.CLOSED,
+        })
+      )
       dispatch(getFilteredConversationsAPI({ query: '', data: { status: ChatStatus.CLOSED } }))
     } catch (e) {
       console.error('Failed to handle close conversation:', e)
