@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import {useAuth} from "@/hooks/useAuth";
+import {Permission} from "@/constants/permissions";
 
 // Public routes that don't require authentication
 const publicRoutes = [

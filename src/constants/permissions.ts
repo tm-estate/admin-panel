@@ -24,6 +24,7 @@ export enum Permission {
 
     // Products
     VIEW_PRODUCTS = 'view_products',
+    MODERATE_PRODUCTS = 'moderate_products',
     CREATE_PRODUCT = 'create_product',
     EDIT_PRODUCT = 'edit_product',
     DELETE_PRODUCT = 'delete_product',

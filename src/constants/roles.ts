@@ -29,6 +29,7 @@ export const rolePermissions: Record<Role, Permission[]> = {
 
         // Products
         Permission.VIEW_PRODUCTS,
+        Permission.MODERATE_PRODUCTS,
         Permission.CREATE_PRODUCT,
         Permission.EDIT_PRODUCT,
         Permission.DELETE_PRODUCT,

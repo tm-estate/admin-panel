@@ -219,7 +219,25 @@ const menuAside: MenuAsideItem[] = [
       },
     ],
   },
-
+  {
+    label: 'Moderator',
+    icon: mdiHome,
+    // permission: Permission.VIEW_CITY_AREAS,
+    menu: [
+      {
+        href: '/moderator/products-list',
+        label: 'Products',
+        icon: mdiViewList,
+        // permission: Permission.VIEW_CITY_AREAS,
+      },
+      {
+        href: '/moderator/users-list',
+        label: 'Users',
+        icon: mdiSquareEditOutline,
+        // permission: Permission.CREATE_CITY_AREA,
+      },
+    ]
+  },
   {
     href: '/profile',
     label: 'Profile',
