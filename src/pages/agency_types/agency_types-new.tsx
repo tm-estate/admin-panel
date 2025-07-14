@@ -12,6 +12,8 @@ import { useAppDispatch, useAppSelector } from '@/stores/hooks'
 import { IAgencyType } from "@/interfaces";
 import AgencyTypeForm from '@/components/Agency_types/AgencyTypeForm'
 import BreadcrumbsBar from "@/components/BreadcrumbsBar";
+import { withAuth } from "@/components/auth/withAuth";
+import { Permission } from "@/constants/permissions";
 
 const NewAgencyTypePage = () => {
   const dispatch = useAppDispatch()
@@ -62,4 +64,6 @@ NewAgencyTypePage.getLayout = function getLayout(page: ReactElement) {
   return <LayoutAuthenticated>{page}</LayoutAuthenticated>
 }
 
-export default NewAgencyTypePage
+export default withAuth(NewAgencyTypePage, {
+  permissions: [Permission.CREATE_AGENCY_TYPE]
+});

@@ -13,6 +13,8 @@ import { useRouter } from 'next/router';
 import { IRegion } from "@/interfaces";
 import RegionForm from '@/components/Regions/RegionForm';
 import BreadcrumbsBar from "@/components/BreadcrumbsBar";
+import { Permission } from "@/constants/permissions";
+import { withAuth } from "@/components/auth/withAuth";
 
 const EditRegion = () => {
   const router = useRouter();
@@ -83,4 +85,6 @@ EditRegion.getLayout = function getLayout(page: ReactElement) {
   return <LayoutAuthenticated>{page}</LayoutAuthenticated>;
 };
 
-export default EditRegion;
+export default withAuth(EditRegion, {
+  permissions: [Permission.EDIT_REGION]
+});

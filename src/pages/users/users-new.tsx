@@ -12,6 +12,8 @@ import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { IUser } from "@/interfaces";
 import UserForm from '@/components/Users/UserForm';
 import BreadcrumbsBar from "@/components/BreadcrumbsBar";
+import { withAuth } from "@/components/auth/withAuth";
+import { Permission } from "@/constants/permissions";
 
 const NewUserPage = () => {
   const dispatch = useAppDispatch();
@@ -65,4 +67,6 @@ NewUserPage.getLayout = function getLayout(page: ReactElement) {
   return <LayoutAuthenticated>{page}</LayoutAuthenticated>;
 };
 
-export default NewUserPage;
+export default withAuth(NewUserPage, {
+  permissions: [Permission.CREATE_USER]
+});

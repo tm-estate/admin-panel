@@ -13,6 +13,8 @@ import { useRouter } from 'next/router';
 import { ICityArea } from "@/interfaces";
 import CityAreaForm from '@/components/City_areas/CityAreaForm';
 import BreadcrumbsBar from "@/components/BreadcrumbsBar";
+import { Permission } from "@/constants/permissions";
+import { withAuth } from "@/components/auth/withAuth";
 
 const EditCityArea = () => {
   const router = useRouter();
@@ -94,4 +96,6 @@ EditCityArea.getLayout = function getLayout(page: ReactElement) {
   return <LayoutAuthenticated>{page}</LayoutAuthenticated>;
 };
 
-export default EditCityArea;
+export default withAuth(EditCityArea, {
+  permissions: [Permission.EDIT_CITY_AREA]
+});

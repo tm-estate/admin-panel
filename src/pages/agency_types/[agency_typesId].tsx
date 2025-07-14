@@ -13,6 +13,8 @@ import { useRouter } from 'next/router'
 import { IAgencyType } from "@/interfaces";
 import AgencyTypeForm from '@/components/Agency_types/AgencyTypeForm'
 import BreadcrumbsBar from "@/components/BreadcrumbsBar";
+import { withAuth } from "@/components/auth/withAuth";
+import { Permission } from "@/constants/permissions";
 
 const EditAgencyType = () => {
   const router = useRouter()
@@ -90,4 +92,6 @@ EditAgencyType.getLayout = function getLayout(page: ReactElement) {
   return <LayoutAuthenticated>{page}</LayoutAuthenticated>
 }
 
-export default EditAgencyType
+export default withAuth(EditAgencyType, {
+  permissions: [Permission.EDIT_AGENCY_TYPE]
+});

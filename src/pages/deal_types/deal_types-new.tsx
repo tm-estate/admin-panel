@@ -12,6 +12,8 @@ import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { IDealType } from "@/interfaces";
 import DealTypeForm from '@/components/Deal_types/DealTypeForm';
 import BreadcrumbsBar from "@/components/BreadcrumbsBar";
+import { withAuth } from "@/components/auth/withAuth";
+import { Permission } from "@/constants/permissions";
 
 const NewDealTypePage = () => {
   const dispatch = useAppDispatch();
@@ -62,4 +64,6 @@ NewDealTypePage.getLayout = function getLayout(page: ReactElement) {
   return <LayoutAuthenticated>{page}</LayoutAuthenticated>;
 };
 
-export default NewDealTypePage;
+export default withAuth(NewDealTypePage, {
+  permissions: [Permission.CREATE_DEAL_TYPE]
+});

@@ -13,6 +13,8 @@ import { useRouter } from 'next/router';
 import { IUser } from "@/interfaces";
 import UserForm from '@/components/Users/UserForm';
 import BreadcrumbsBar from "@/components/BreadcrumbsBar";
+import { withAuth } from "@/components/auth/withAuth";
+import { Permission } from "@/constants/permissions";
 
 const EditUser = () => {
   const router = useRouter();
@@ -80,4 +82,6 @@ EditUser.getLayout = function getLayout(page: ReactElement) {
   return <LayoutAuthenticated>{page}</LayoutAuthenticated>;
 };
 
-export default EditUser;
+export default withAuth(EditUser, {
+  permissions: [Permission.EDIT_USER]
+});

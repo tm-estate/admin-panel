@@ -12,6 +12,8 @@ import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { ICityArea } from "@/interfaces";
 import CityAreaForm from '@/components/City_areas/CityAreaForm';
 import BreadcrumbsBar from "@/components/BreadcrumbsBar";
+import { withAuth } from "@/components/auth/withAuth";
+import { Permission } from "@/constants/permissions";
 
 const NewCityAreaPage = () => {
   const dispatch = useAppDispatch();
@@ -66,4 +68,6 @@ NewCityAreaPage.getLayout = function getLayout(page: ReactElement) {
   return <LayoutAuthenticated>{page}</LayoutAuthenticated>;
 };
 
-export default NewCityAreaPage;
+export default withAuth(NewCityAreaPage, {
+  permissions: [Permission.CREATE_CITY_AREA]
+});

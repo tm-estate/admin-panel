@@ -12,6 +12,8 @@ import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { IRegion } from "@/interfaces";
 import RegionForm from '@/components/Regions/RegionForm';
 import BreadcrumbsBar from "@/components/BreadcrumbsBar";
+import { withAuth } from "@/components/auth/withAuth";
+import { Permission } from "@/constants/permissions";
 
 const NewRegionPage = () => {
   const dispatch = useAppDispatch();
@@ -67,4 +69,6 @@ NewRegionPage.getLayout = function getLayout(page: ReactElement) {
   return <LayoutAuthenticated>{page}</LayoutAuthenticated>;
 };
 
-export default NewRegionPage;
+export default withAuth(NewRegionPage, {
+  permissions: [Permission.CREATE_REGION]
+});

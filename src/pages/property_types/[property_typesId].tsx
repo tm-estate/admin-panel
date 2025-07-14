@@ -13,6 +13,8 @@ import { useRouter } from 'next/router';
 import { IPropertyType } from "@/interfaces";
 import PropertyTypeForm from '@/components/Property_types/PropertyTypeForm';
 import BreadcrumbsBar from "@/components/BreadcrumbsBar";
+import { withAuth } from "@/components/auth/withAuth";
+import { Permission } from "@/constants/permissions";
 
 const EditPropertyType = () => {
   const router = useRouter();
@@ -83,4 +85,6 @@ EditPropertyType.getLayout = function getLayout(page: ReactElement) {
   return <LayoutAuthenticated>{page}</LayoutAuthenticated>;
 };
 
-export default EditPropertyType;
+export default withAuth(EditPropertyType, {
+  permissions: [Permission.EDIT_PROPERTY_TYPE]
+});

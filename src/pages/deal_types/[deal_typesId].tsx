@@ -13,6 +13,8 @@ import { useRouter } from 'next/router';
 import { IDealType } from "@/interfaces";
 import DealTypeForm from '@/components/Deal_types/DealTypeForm';
 import BreadcrumbsBar from "@/components/BreadcrumbsBar";
+import { withAuth } from "@/components/auth/withAuth";
+import { Permission } from "@/constants/permissions";
 
 const EditDealType = () => {
   const router = useRouter();
@@ -83,4 +85,6 @@ EditDealType.getLayout = function getLayout(page: ReactElement) {
   return <LayoutAuthenticated>{page}</LayoutAuthenticated>;
 };
 
-export default EditDealType;
+export default withAuth(EditDealType, {
+  permissions: [Permission.EDIT_DEAL_TYPE]
+});

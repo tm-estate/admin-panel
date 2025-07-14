@@ -85,5 +85,5 @@ EditProduct.getLayout = function getLayout(page: ReactElement) {
 };
 
 export default withAuth(EditProduct, {
-    permissions: [Permission.VIEW_PRODUCTS]
+    permissions: [Permission.EDIT_PRODUCT]
 });

@@ -12,6 +12,8 @@ import { useAppDispatch, useAppSelector } from '@/stores/hooks';
 import { IPropertyType } from "@/interfaces";
 import PropertyTypeForm from '@/components/Property_types/PropertyTypeForm';
 import BreadcrumbsBar from "@/components/BreadcrumbsBar";
+import { Permission } from "@/constants/permissions";
+import { withAuth } from "@/components/auth/withAuth";
 
 const NewPropertyTypePage = () => {
   const dispatch = useAppDispatch();
@@ -63,4 +65,6 @@ NewPropertyTypePage.getLayout = function getLayout(page: ReactElement) {
   return <LayoutAuthenticated>{page}</LayoutAuthenticated>;
 };
 
-export default NewPropertyTypePage;
+export default withAuth(NewPropertyTypePage, {
+  permissions: [Permission.CREATE_PROPERTY_TYPE]
+});
