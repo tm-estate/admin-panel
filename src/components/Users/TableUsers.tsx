@@ -12,6 +12,8 @@ import dataFormatter from '@/helpers/dataFormatter';
 import { Pagination } from '@/components/Pagination';
 import Filters from '@/components/Filters/Filters';
 import { ITableProps } from "@/interfaces/ITable";
+import { Permission } from "@/constants/permissions";
+import { useAuth } from "@/hooks/useAuth";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -39,7 +41,6 @@ const TableUsers: React.FC<ITableProps> = ({
   } = useAppSelector((state) => state.users);
 
   const totalPages = Math.max(1, Math.ceil(count / ITEMS_PER_PAGE));
-
   const safeFormatter = (value) => {
     if (value === null || value === undefined) return '';
     if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
@@ -53,7 +54,6 @@ const TableUsers: React.FC<ITableProps> = ({
     }
     return '';
   };
-
   const showNotification = (type, message) => {
     toast(message, {
       type,
@@ -61,7 +61,6 @@ const TableUsers: React.FC<ITableProps> = ({
       autoClose: 3000
     });
   };
-
   const loadUsers = async (page = currentPage, data = filterData, isManualApply = false) => {
     if (!isManualApply && router.asPath.includes('?') && JSON.stringify(data) === '{}') {
       return;
@@ -74,6 +73,7 @@ const TableUsers: React.FC<ITableProps> = ({
 
     dispatch(getUsers({ query: queryString, data }));
   };
+  const { hasPermission } = useAuth();
 
   useEffect(() => {
     if (usersNotify?.showNotification) {
@@ -83,7 +83,6 @@ const TableUsers: React.FC<ITableProps> = ({
       );
     }
   }, [usersNotify?.showNotification]);
-
   useEffect(() => {
     const handleInitialLoad = async () => {
       if (router.asPath.includes('?')) {
@@ -126,7 +125,9 @@ const TableUsers: React.FC<ITableProps> = ({
   };
 
   const handleRowClick = (id) => {
-    router.push(`/users/${id}`);
+    if (hasPermission(Permission.VIEW_USERS) && hasPermission(Permission.EDIT_USER)) {
+      router.push(`/users/${id}`);
+    }
   };
 
   const handleSort = (e) => {
