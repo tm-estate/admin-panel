@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { IProduct, IProductUpdatePayload } from "@/interfaces";
+import {IProduct, IProductRejectPayload, IProductUpdatePayload} from "@/interfaces";
 import productsApi from "@/api/products";
+import moderatorApi from "@/api/moderator";
 
 export const getProducts = createAsyncThunk(
     'products/fetch',
@@ -28,6 +29,69 @@ export const getProduct = createAsyncThunk('product/fetch',
         }
     }
 );
+
+// Add these to your existing products.ts thunks file
+
+export const approve = createAsyncThunk(
+    'products/approve',
+    async (payload: string, { rejectWithValue }) => {
+        try {
+            const res = await moderatorApi.approve(payload);
+            return res.data;
+        } catch (error) {
+            if (!error.response) {
+                throw error;
+            }
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+export const reject = createAsyncThunk(
+    'products/reject',
+    async (payload: IProductRejectPayload, { rejectWithValue }) => {
+        try {
+            const res = await moderatorApi.reject(payload);
+            return res.data;
+        } catch (error) {
+            if (!error.response) {
+                throw error;
+            }
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+export const rejectAndBlock = createAsyncThunk(
+    'products/rejectAndBlock',
+    async (payload: IProductRejectPayload, { rejectWithValue }) => {
+        try {
+            const res = await moderatorApi.rejectAndBlockUser(payload);
+            return res.data;
+        } catch (error) {
+            if (!error.response) {
+                throw error;
+            }
+            console.log(111, error.response.data.message[0])
+            return rejectWithValue(error.response.data.message || error.response.data.message[0]);
+        }
+    }
+);
+
+// export const getProductHistory = createAsyncThunk(
+//     'products/getHistory',
+//     async (productId: string, { rejectWithValue }) => {
+//         try {
+//             const result = await productsApi.getProductHistory(productId);
+//             return result.data;
+//         } catch (error) {
+//             if (!error.response) {
+//                 throw error;
+//             }
+//             return rejectWithValue(error.response.data);
+//         }
+//     }
+// );
 
 export const deleteProduct = createAsyncThunk('products/delete',
     async (payload: string, { rejectWithValue }) => {

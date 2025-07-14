@@ -1,6 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { fulfilledNotify, rejectNotify, resetNotify } from '@/helpers/notifyStateHandler'
-import { create, deleteProduct, getProduct, getProducts, update } from "@/stores/thunks/products";
+import {
+    approve,
+    create,
+    deleteProduct,
+    getProduct,
+    getProducts, reject, rejectAndBlock,
+    update
+} from "@/stores/thunks/products";
 import { INotify, IProduct } from "@/interfaces";
 
 interface MainState {
@@ -85,6 +92,67 @@ export const productsSlice = createSlice({
           state.loading = false;
           fulfilledNotify(state, 'Product has been created');
         })
+
+        // Add these cases to your existing productsSlice.ts extraReducers
+
+        .addCase(approve.rejected, (state, action) => {
+            state.loading = false;
+            rejectNotify(state, action);
+        })
+        .addCase(approve.pending, (state) => {
+            state.loading = true;
+            resetNotify(state);
+        })
+        .addCase(approve.fulfilled, (state, action) => {
+            state.loading = false;
+            fulfilledNotify(state, 'Product approved successfully');
+            state.products = state.products.filter(product => product._id !== action.meta.arg);
+            state.count = Math.max(0, state.count - 1);
+        })
+
+        .addCase(reject.rejected, (state, action) => {
+            state.loading = false;
+            rejectNotify(state, action);
+        })
+        .addCase(reject.pending, (state) => {
+            state.loading = true;
+            resetNotify(state);
+        })
+        .addCase(reject.fulfilled, (state, action) => {
+            state.loading = false;
+            fulfilledNotify(state, 'Product rejected successfully');
+            state.products = state.products.filter(product => product._id !== action.meta.arg.id);
+            state.count = Math.max(0, state.count - 1);
+        })
+
+        .addCase(rejectAndBlock.rejected, (state, action) => {
+            state.loading = false;
+            rejectNotify(state, action);
+        })
+        .addCase(rejectAndBlock.pending, (state) => {
+            state.loading = true;
+            resetNotify(state);
+        })
+        .addCase(rejectAndBlock.fulfilled, (state, action) => {
+            state.loading = false;
+            fulfilledNotify(state, 'Product rejected and user blocked successfully');
+            console.log(action)
+            state.products = state.products.filter(product => product._id !== action.meta.arg.id);
+            state.count = Math.max(0, state.count - 1);
+        })
+
+        // .addCase(getProductHistory.rejected, (state, action) => {
+        //     state.loading = false;
+        //     rejectNotify(state, action);
+        // })
+        // .addCase(getProductHistory.pending, (state) => {
+        //     state.loading = true;
+        //     resetNotify(state);
+        // })
+        // .addCase(getProductHistory.fulfilled, (state, action) => {
+        //     state.loading = false;
+        //     // You might want to add a history field to your state if needed
+        // })
 
         .addCase(update.rejected, (state, action) => {
           state.loading = false
