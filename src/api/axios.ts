@@ -9,10 +9,10 @@ import { IAxiosInstance, IServerError } from '@/interfaces';
 import Cookies from 'js-cookie';
 import { COOKIE_OPTIONS } from "@/constants/cookies";
 
-const DEFAULT_ERROR: IServerError = {
-    code: 'SERVER__ERROR',
+const DEFAULT_ERROR: IServerError<string> = {
+    statusCode: 'SERVER__ERROR',
     message: 'SERVER__ERROR',
-    data: {},
+    error: '',
 };
 
 const axiosOptions: AxiosRequestConfig = {
