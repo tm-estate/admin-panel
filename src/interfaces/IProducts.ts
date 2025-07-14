@@ -57,3 +57,10 @@ export interface IProductUpdatePayload {
     id: string | string[];
     data: IProduct
 }
+
+export interface IProductRejectPayload {
+    id: string | string[];
+    reason: string
+}
+
+
