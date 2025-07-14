@@ -12,6 +12,8 @@ import dataFormatter from '@/helpers/dataFormatter';
 import { Pagination } from '@/components/Pagination';
 import Filters from '@/components/Filters';
 import { ITableProps } from "@/interfaces/ITable";
+import Image from "next/image";
+import ImageItem from "@/components/UI/Image/ImageItem";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -194,8 +196,10 @@ const TableProducts: React.FC<ITableProps> = ({
                       <td className="p-4">
                         {item.images && item.images.length > 0 && (
                             <div className="w-16 h-16 rounded overflow-hidden">
-                              <img
+                              <ImageItem
                                   src={item.images[0]}
+                                  width={64}
+                                  height={64}
                                   alt="Product"
                                   className="w-full h-full object-cover"
                               />
