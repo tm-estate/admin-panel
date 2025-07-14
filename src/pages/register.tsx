@@ -23,7 +23,7 @@ export default function Register() {
   const handleSubmit = async (value) => {
     setLoading(true);
     try {
-      const { data: response } = await axios.post('/auth/signup', value);
+      const { data: response } = await axios.post('/auth/register', value);
       await router.push('/login');
       setLoading(false);
       notify('success', 'Please check your email for verification link');
@@ -72,7 +72,7 @@ export default function Register() {
                   label={loading ? 'Loading...' : 'Register'}
                   color='info'
                 />
-                <BaseButton href={'/login'} label={'Login'} color='info' />
+                {/*<BaseButton href={'/login'} label={'Login'} color='info' />*/}
               </BaseButtons>
             </Form>
           </Formik>

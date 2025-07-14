@@ -1,12 +1,16 @@
-// src/pages/unauthorized.tsx
-// Unauthorized access page
-
 import React from 'react';
 import Head from 'next/head';
-import { getPageTitle } from '@/config';
+import {getPageTitle} from '@/config';
 import Link from 'next/link';
+import {useAuth} from "@/hooks/useAuth";
+import {Permission} from "@/constants/permissions";
+import {logout} from "@/stores/thunks/auth";
+import {useAppDispatch} from "@/stores/hooks";
 
 const Unauthorized = () => {
+    const { hasPermission } = useAuth();
+    const dispatch = useAppDispatch()
+
     return (
         <>
             <Head>
@@ -25,9 +29,17 @@ const Unauthorized = () => {
                         </p>
                     </div>
 
-                    <Link href="/dashboard" className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 inline-block">
-                        Back to Dashboard
-                    </Link>
+                    {
+                        !hasPermission(Permission.VIEW_DASHBOARD)
+                        ? <Link href="/login" className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 inline-block" onClick={() => dispatch(logout())}>
+                            Back to Login
+                        </Link>
+                        : <Link href="/dashboard" className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 inline-block">
+                            Back to Dashboard
+                        </Link>
+                    }
+
+
                 </div>
             </div>
         </>

@@ -51,14 +51,14 @@ export default function Login() {
           <Formik
             initialValues={{
               login: 'admin@gmail.com',
-              password: '1111',
+              password: '1234',
               remember: true,
             }}
             onSubmit={(values) => handleSubmit(values)}
           >
             <Form>
               <FormField label="Login" help="Please enter your login">
-                <Field name="login" />
+                <Field name="login" type="text" />
               </FormField>
 
               <FormField label="Password" help="Please enter your password">
