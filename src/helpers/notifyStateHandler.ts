@@ -8,15 +8,15 @@ export const rejectNotify = (state, action) => {
     state.notify.textNotification = action.payload;
   } else if (typeof action === 'object') {
     const obj = { ...action.payload?.errors };
-    delete obj['_errors'];
+    const arr = [...action.payload];
 
+    delete obj['_errors'];
     let msg = '';
 
     for (const key in obj) {
       msg += `${key}: ${obj[key]['_errors']}; \n `;
     }
-
-    state.notify.textNotification = msg;
+    state.notify.textNotification = msg || arr.join(', ');
   } else {
     state.notify.textNotification = '';
   }
