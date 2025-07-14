@@ -12,6 +12,7 @@ type Props = {
   buttonColor: ColorButtonKey;
   buttonLabel: string;
   isActive: boolean;
+  isDisabled?: boolean;
   children: ReactNode;
   onConfirm: () => void;
   onCancel?: () => void;
@@ -19,6 +20,7 @@ type Props = {
 
 const CardBoxModal = ({
   title,
+  isDisabled,
   buttonColor,
   buttonLabel,
   isActive,
@@ -32,7 +34,7 @@ const CardBoxModal = ({
 
   const footer = (
     <BaseButtons>
-      <BaseButton label={buttonLabel} color={buttonColor} onClick={onConfirm} />
+      <BaseButton label={buttonLabel} color={buttonColor} onClick={onConfirm} disabled={isDisabled} />
       {!!onCancel && (
         <BaseButton
           label='Cancel'
@@ -50,7 +52,7 @@ const CardBoxModal = ({
       className={onCancel ? 'cursor-pointer' : ''}
     >
       <CardBox
-        className={`transition-transform shadow-lg max-h-modal w-11/12 md:w-3/5 lg:w-2/5 xl:w-4/12 z-50`}
+        className={`transition-transform shadow-lg max-h-modal min-h-fit w-11/12 md:w-3/5 lg:w-2/5 xl:w-4/12 z-50`}
         isModal
         footer={footer}
       >

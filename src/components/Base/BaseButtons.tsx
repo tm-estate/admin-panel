@@ -12,22 +12,22 @@ type Props = {
 
 const BaseButtons = ({
   type = 'justify-start',
-  mb = '-mb-3',
-  classAddon = 'mr-3 last:mr-0 mb-3',
+  // mb = 'mb-3',
+  // classAddon = 'mr-3 last:mr-0 mb-3',
   noWrap = false,
   children,
   className,
 }: Props) => {
   return (
     <div
-      className={`flex items-center ${type} ${className} ${mb} ${
+      className={`flex items-center ${type ? type : 'justify-start'} ${className} ${
         noWrap ? 'flex-nowrap' : 'flex-wrap'
       }`}
     >
       {Children.map(children, (child: ReactElement) =>
         child
           ? cloneElement(child, {
-              className: `${classAddon} ${child.props.className}`,
+              className: `${child.props.className} ml-2`,
             })
           : null,
       )}
